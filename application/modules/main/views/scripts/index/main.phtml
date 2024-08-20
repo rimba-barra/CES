@@ -1,0 +1,1606 @@
+<script type="text/javascript">
+	var apps = {
+			'title'                  : '<?php echo $this->apps_title; ?>', 
+			'version'                : '<?php echo $this->apps_version; ?>', 
+			'copyright'              : '<?php echo $this->apps_copyright; ?>', 
+			'uid'                    : '<?php echo $this->apps_uid; ?>', 
+			'username'               : '<?php echo $this->apps_username; ?>', 
+			'loginname'              : '<?php echo $this->apps_loginname; ?>', 
+			'timeout'                : parseInt('<?php echo $this->apps_timeout; ?>'), 
+			'timeoutwarning'         : parseInt('<?php echo $this->apps_timeoutwarning; ?>'), 
+			'timeoutwarninginterval' : parseInt('<?php echo $this->apps_timeoutwarninginterval; ?>'), 
+			'passminlength'          : parseInt('<?php echo $this->apps_passminlength; ?>'), 
+			'token'                  : '<?php echo $this->apps_token; ?>', 
+			'ldap'                   : parseInt('<?php echo $this->apps_ldap; ?>'), 
+			'gid'                    : 0, 
+			'projectpt'              : 0, 
+			'project'                : 0, 
+			'pt'                     : 0, 
+			'projectname'            : '', 
+			'ptname'                 : '', 
+			'projectiscpms'          : 0
+		},
+		currentmodule = {'name': '<?php echo $this->currentmodule['name']; ?>', 'url': '<?php echo $this->currentmodule['url']; ?>', loaded: false},
+		dMenu         = <?php echo $this->modulemenu; ?>,
+		dMenuRaw      = <?php echo $this->modulemenuRaw; ?>;
+
+	function loadReport(sender, url, param, onclose) {
+		var winId = 'win-print';
+		var win = desktop.getWindow(winId);
+		if (!win) {
+			win = desktop.createWindow({
+				id: winId,
+				title: 'Print',
+				iconCls: 'icon-print',
+				width: '75%',
+				height: '70%',
+				minWidth: 600,
+				minHeight: 400,
+				animCollapse: false,
+				constrain: true,
+				constrainHeader: false,
+				taskbarButton: false,
+				renderTo: Ext.getBody(),
+				modal: true,
+				layout: 'fit',
+				shadow: 'frame',
+				shadowOffset: 10,
+				listeners: {
+					boxready: function () {
+						win.body.mask('Loading...');
+						var loadtm = setTimeout(function () {
+							Ext.fly('front-content').load({
+								url: url,
+								autoAbort: true,
+								scripts: true,
+								autoLoad: true,
+								success: function (request, response) {
+									if (typeof response.responseText == 'undefined') {
+										return;
+									}
+									var report_name = response.responseText;
+									var printpage;
+									if (report_name != 'ERROR') {
+										if (param)
+										{
+											printpage = '<iframe id="frameprint" src="resources/stimulsoft/index.php?stimulsoft_client_key=ViewerFx&stimulsoft_report_key=' + report_name + param + '&projectpt=' + apps.projectpt + '&project=' + apps.project + '&pt=' + apps.pt + '&uid=' + apps.uid + '" frameborder=0 style="height:100%;width:100%;"></iframe>';
+										} else {
+											var param_store;
+											if (Ext.isObject(sender.up('gridpanel'))) {
+												param_store = sender.up('gridpanel').getStore().proxy.extraParams;
+											} else {
+												param_store = sender.up('form').getForm().getValues();
+											}
+											var param_string = '';
+											console.log(param_store);
+											for (var key in param_store) {
+												if (param_store.hasOwnProperty(key)) {
+													if (param_store[key] == undefined || param_store[key] == null) {
+														param_store[key] = '';
+													}
+													if (param_store[key].indexOf('{') != -1) {
+														param_string += '&' + Ext.Object.toQueryString(Ext.decode(param_store[key], true));
+													} else {
+														param_string += '&' + key + '=' + param_store[key];
+													}
+
+												}
+											}
+											printpage = '<iframe id="frameprint" src="resources/stimulsoft/index.php?stimulsoft_client_key=ViewerFx&stimulsoft_report_key=' + report_name + param_string + '&projectpt=' + apps.projectpt + '&project=' + apps.project + '&pt=' + apps.pt + '&uid=' + apps.uid + '" frameborder=0 style="height:100%;width:100%;"></iframe>';
+										}
+										win.setBorder(false);
+									} else {
+										printpage = '<div style="padding:10px;color:#ff0000;font-weight:bold;">ERROR: Report file not found !</div>';
+									}
+									win.body.setHTML(printpage);
+									Ext.fly('front-content').update();
+								},
+								failure: function (request, response) {}
+							});
+							clearTimeout(loadtm);
+							win.body.unmask();
+						}, 750);
+					}
+				},
+				close: function () {
+					if (Ext.isFunction(onclose))
+						onclose(sender);
+					this.doClose();
+				}
+			});
+		}
+		win.show();
+	}
+
+	Ext.define('Ext.form.field.Month', {
+		extend: 'Ext.form.field.Date',
+		alias: 'widget.monthfield',
+		requires: ['Ext.picker.Month'],
+		alternateClassName: ['Ext.form.MonthField', 'Ext.form.Month'],
+		selectMonth: null,
+		createPicker: function () {
+			var me = this,
+			format = Ext.String.format;
+			return Ext.create('Ext.picker.Month', {
+				pickerField: me,
+				ownerCt: me.ownerCt,
+				renderTo: document.body,
+				floating: true,
+				hidden: true,
+				focusOnShow: true,
+				minDate: me.minValue,
+				maxDate: me.maxValue,
+				disabledDatesRE: me.disabledDatesRE,
+				disabledDatesText: me.disabledDatesText,
+				disabledDays: me.disabledDays,
+				disabledDaysText: me.disabledDaysText,
+				format: me.format,
+				showToday: me.showToday,
+				startDay: me.startDay,
+				minText: format(me.minText, me.formatDate(me.minValue)),
+				maxText: format(me.maxText, me.formatDate(me.maxValue)),
+				listeners: {
+					select: {scope: me, fn: me.onSelect},
+					monthdblclick: {scope: me, fn: me.onOKClick},
+					yeardblclick: {scope: me, fn: me.onOKClick},
+					OkClick: {scope: me, fn: me.onOKClick},
+					CancelClick: {scope: me, fn: me.onCancelClick}
+				},
+				keyNavConfig: {
+					esc: function () {
+						me.collapse();
+					}
+				}
+			});
+		},
+		onCancelClick: function () {
+			var me = this;
+			me.selectMonth = null;
+			me.collapse();
+		},
+		onOKClick: function () {
+			var me = this;
+			if (me.selectMonth) {
+				me.setValue(me.selectMonth);
+				me.fireEvent('select', me, me.selectMonth);
+			}
+			me.collapse();
+		},
+		onSelect: function (m, d) {
+			var me = this;
+			me.selectMonth = new Date((d[0] + 1) + '/1/' + d[1]);
+		}
+	});
+
+	Ext.override(Ext.menu.Menu, {
+		onMouseLeave: function (e) {
+			var me = this;
+			// BEGIN FIX
+			var visibleSubmenu = false;
+			me.items.each(function (item) {
+				if (item.menu && item.menu.isVisible()) {
+					visibleSubmenu = true;
+				}
+			})
+			if (visibleSubmenu) {
+				// console.log('apply fix hide submenu');
+				return;
+			}
+			// END FIX
+			me.deactivateActiveItem();
+			if (me.disabled) {
+				return;
+			}
+			me.fireEvent('mouseleave', me, e);
+		}
+	});
+
+	function loadportalURL(params){
+		// console.log(appBaseUrl)
+		if (typeof params.url == 'undefined' || params.url == '')
+			return false;
+
+		var form = document.createElement("form");
+
+		form.setAttribute("method", "post");
+		form.setAttribute("action", params.url);
+		form.setAttribute("target", "_self");
+		// form.setAttribute("target", "_blank");
+
+		var param_post = JSON.parse(atob(params.key));
+		for (var i in param_post) {
+			var val = param_post[i];
+			if(i == 'module_name' || i == 'url_module' || i == 'url_portal'){ val = btoa(val); }
+			if(i == 'session'){ val = JSON.stringify(val); }
+
+			var input 	= document.createElement('input');
+			input.type  = 'hidden';
+			input.name  = i;
+			input.value = val;
+			form.appendChild(input);
+		}
+
+		document.body.appendChild(form);
+		form.submit();
+		document.body.removeChild(form);
+	}
+
+	function loadOtherURL(b)
+	{
+		if (typeof b.url == 'undefined' || b.url == '' || b.url_host == 'undefined' || b.url_host == '')
+			return false;
+		if (b.url && b.url_host) {
+			var param = {'key': b.key, 'url_post': b.url};
+			var url_master = b.url_host;
+
+			OpenWindowWithPost(url_master,
+					//"width=730,height=345,left=100,top=100,resizable=yes,scrollbars=yes",
+					"",
+					"NewWinTab", param);
+
+			// console.log(b.key);
+			// window.open(
+			// b.url,
+			// '_blank' // <- This is what makes it open in a new window.
+			// );
+		}
+	}
+
+	function OpenWindowWithPost(url, windowoption, name, params)
+	{
+		var form = document.createElement("form");
+		form.setAttribute("method", "post");
+		form.setAttribute("action", url);
+		form.setAttribute("target", name);
+
+		for (var i in params) {
+			if (params.hasOwnProperty(i)) {
+				var input = document.createElement('input');
+				input.type = 'hidden';
+				input.name = i;
+				input.value = params[i];
+				form.appendChild(input);
+			}
+		}
+
+		document.body.appendChild(form);
+
+		//window.open("post.htm", name, windowoption);
+		window.open("post.htm", name);
+
+		form.submit();
+
+		document.body.removeChild(form);
+	}
+
+	var toCurrency = function (a) {
+		if (!Ext.isEmpty(a) && Ext.String.trim(a.toString())) {
+			return Ext.String.trim(Ext.util.Format.currency(parseFloat(a), ' ', 2).toString())
+		}
+	};
+	var toFloat = function (a) {
+		if (!Ext.isEmpty(a) && Ext.String.trim(a.toString())) {
+			return parseFloat(a.toString().replace(/,/gi, ''))
+		}
+	};
+	var MyApps, myToast, desktop, countdownTimer, lact = $.cookie('utime');
+	function resetTimer() {
+		ms = 0;
+		then = new Date();
+		then.setTime(then.getTime() - ms)
+	}
+	function formatTime(a) {
+		var b = new Array();
+		var c = Math.floor((a / 3600));
+		jamshow = (c < 10 ? '0' + c : c);
+		var d = Math.floor((a / 60));
+		mntshow = (d < 10 ? '0' + d : d);
+		var e = Math.floor(a);
+		dtkshow = (e < 10 ? '0' + e : e);
+		b[0] = jamshow + ':' + mntshow + ':' + dtkshow;
+		b[1] = $.trim((c ? c + ' hour' + (c > 1 ? 's' : '') : '') + ' ' + (d ? d + ' minute' + (d > 1 ? 's' : '') : '') + ' ' + (e ? e + ' second' + (e > 1 ? 's' : '') : ''));
+		return b
+	}
+	function sessionEnd(a) {
+		normalleave = 1;
+		resetTimer();
+		Ext.TaskManager.destroy(this);
+		desktop.body.unmask();
+		desktop.hide();
+		Ext.fly('main-info').hide();
+		Ext.Msg.show({
+			title: 'Info',
+			msg: a,
+			icon: Ext.Msg.WARNING,
+			buttons: Ext.Msg.OK,
+			fn: function () {
+				logout(1)
+			}
+		})
+	}
+	function countdown() {
+		return Ext.TaskManager.start({
+			run: function () {
+				if ($.cookie('uid') == null) {
+					sessionEnd('Session has lost !')
+				}
+				if ($.cookie('utime') != null && lact != $.cookie('utime')) {
+					lact = $.cookie('utime');
+					resetTimer()
+				}
+				ynow = new Date();
+				ms = Math.floor((ynow.getTime() - then.getTime()) / 1000);
+				var a = apps.timeout - ms;
+				if (a < 0) {
+					sessionEnd('Session has expired !')
+				} else {
+					countdowntm = formatTime(a);
+					var date = new Date(null);
+					date.setSeconds(a); // specify value for SECONDS here
+					var result = date.toISOString().substr(11, 8);
+					Ext.get('countdown-timer').update(result);
+
+					//Ext.get('countdown-timer').update(countdowntm[0]);
+					if (a > (apps.timeout - apps.timeoutwarning) || a == 3) {
+						Ext.getCmp('extendsession-button').setDisabled(true)
+					} else {
+						Ext.getCmp('extendsession-button').setDisabled(false)
+					}
+					if (a == apps.timeoutwarning || (a > 0 && a < apps.timeoutwarning && !((apps.timeoutwarning - a) % apps.timeoutwarninginterval))) {
+						myToast = $().toastmessage('showToast', {
+							text: '<div style="line-height:1.5em;">Your session will be expired in <br /><b>' + countdowntm[1] + '</b><br /><span style="font-size:0.9em;"><input type="button" value="Extend Session" style="cursor:pointer;font-size:0.9em;padding:4px 8px;margin:10px 0px;" onclick="extendsession();$().toastmessage(\'removeToast\',myToast);" /><br />or click the <b>"Extend"</b> button at the bottom right corner to extend the session time.</span></div>',
+							sticky: false,
+							stayTime: 5000,
+							type: 'warning',
+							position: 'middle-center',
+							closeText: ''
+						})
+					}
+				}
+			},
+			interval: 1000
+		})
+	}
+	function logout(b) {
+		switch (b) {
+			case 0:
+			desktop.hide();
+			Ext.fly('main-info').hide();
+			Ext.Ajax.abortAll();
+			Ext.Msg.confirm('Logout', 'Do you want to logout?', function (a) {
+				if (a == 'yes') {
+					logout(1)
+				} else {
+					desktop.show();
+					Ext.fly('main-info').show()
+				}
+			});
+			break;
+			case 1:
+			normalleave = 1;
+			Ext.TaskManager.destroy(countdown);
+			$('#content').fadeOut(300, function () {
+				$('#wrapper-front').fadeIn(150, function () {
+					loadBasePage({
+						actionName: 'logoutprocess'
+					})
+				})
+			});
+			break;
+			default:
+			break
+		}
+	}
+	function extendsession() {
+		Ext.fly('front-content').load({
+			url:
+			'main/index/extendsession',
+			callback: function (a, b, c, d) {
+				if (b) {
+					var e = formatTime(apps.timeout);
+					$().toastmessage('showToast', {
+						text: '<div style="line-height:1.5em;">Session extended for the next<br /><b>' + e[1] + '</b></div>',
+						sticky: false,
+						stayTime: 2000,
+						type: 'notice',
+						position: 'middle-center',
+						closeText: ''
+					})
+				}
+			}
+		})
+	}
+	function help() {
+		openWindow({
+			id: 'win-help',
+			title: 'Help',
+			icon: 'app/main/images/icons/help.png',
+			width: '75%',
+			height: '70%',
+			minWidth: 600,
+			minHeight: 400,
+			content: Ext.create('Ext.panel.Panel', {
+				layout: 'border',
+				bodyPadding: 2,
+				items: [{
+					xtype: 'treepanel',
+					region: 'west',
+					split: true,
+					maxWidth: 600,
+					minWidth: 300,
+					width: 300,
+					collapsible: true,
+					icon: 'app/main/images/icons/help-book.png',
+					title: 'Index',
+					dockedItems: [{
+						xtype: 'panel',
+						dock: 'top',
+						layout: 'fit',
+						bodyPadding: 2,
+						bodyStyle: 'background:transparent;',
+						items: [{
+							xtype: 'textfield',
+							anchor: '100%'
+						}]
+					}]
+				},
+				{
+					xtype: 'panel',
+					region: 'center',
+					itemId: 'help-content',
+					title: '&#160;',
+					split: 'true'
+				}]
+			})
+		})
+	}
+	function tos() {
+		if (apps.appId != 'cashier') {
+			openWindow({
+				id: 'win-tos',
+				title: 'Whats New',
+				icon: 'app/main/images/icons/list-information.png',
+				width: '75%',
+				height: '70%',
+				minWidth: 600,
+				minHeight: 400,
+				bodyStyle: 'background:#fff;',
+				content: Ext.fly('tos').getHTML()
+			})
+		} else {
+			$.ajax({
+				type: "POST",
+				url: 'main/popup/read',
+				data: {},
+				dataType: 'json',
+				success: function (response)
+				{
+					var result, total, data, user_id;
+					total = response.total;
+					data = response.data;
+					user_id = response.user_id;
+					if (total > 0) {
+						$.each(data, function (index, value) {
+							openPage({
+								itemId: value.widget,
+								id: value.widget,
+								title: value.popupname,
+								controller: value.controller,
+								widget: value.widget,
+								content: Ext.create(value.widget),
+							});
+							localStorage.setItem("whatsnewPop"+apps.appId, 1);
+						});
+					}
+				}
+			});
+		}
+	}
+	function changepassword(b) {
+		switch (b) {
+			case 0:
+			if (apps.ldap) {
+				Ext.Msg.confirm('Change Password', 'This action may also affected to your other application password that connected to LDAP server. Please contact application administrator for more information.<br />Do you want to continue?', function (a) {
+					if (a == 'yes') {
+						changepassword(1)
+					}
+				})
+			} else {
+				changepassword(1)
+			}
+			break;
+			case 1:
+			openWindowForm({
+				id:
+				'win-password',
+				title: 'Change Password',
+				icon: 'app/main/images/icons/key.png',
+				width: 350,
+				height: 200,
+				content: Ext.create('PasswordForm')
+			});
+			break;
+			default:
+			break
+		}
+	}
+	Ext.define('PasswordForm', {
+		extend: 'Ext.form.Panel',
+		frame: true,
+		autoScroll: true,
+		bodyBorder: true,
+		bodyPadding: 5,
+		bodyStyle: 'border-top:none;border-left:none;border-right:none;',
+		initComponent: function () {
+			var a = this;
+			Ext.applyIf(a, {
+				dockedItems: [{
+					xtype: 'toolbar',
+					dock: 'bottom',
+					ui: 'footer',
+					layout: {
+						padding: 3,
+						type: 'hbox'
+					},
+					items: [{
+						xtype: 'button',
+						text: '?',
+						itemId: 'btnHelp',
+						iconCls: '',
+						padding: 5,
+						width: 75,
+						handler: a.passwordHelp
+					},
+					'->', {
+						xtype: 'button',
+						text: 'Save',
+						itemId: 'btnSave',
+						iconCls: 'icon-save',
+						padding: 5,
+						width: 75,
+						handler: a.submitPassword
+					},
+					{
+						xtype: 'button',
+						text: 'Cancel',
+						itemId: 'btnCancel',
+						iconCls: 'icon-cancel',
+						padding: 5,
+						width: 75,
+						handler: a.closeWindow
+					}]
+				}],
+				defaults: {
+					labelSeparator: ' ',
+					labelClsExtra: 'small',
+					anchor: '100%',
+					xtype: 'textfield',
+					inputType: 'password',
+					allowBlank: false,
+					maxLength: 50,
+					enforceMaxLength: 50,
+				},
+				items: [{
+					fieldLabel: 'Current Password',
+					itemId: 'pas1',
+					name: 'pas1'
+				},
+				{
+					fieldLabel: 'New Password',
+					itemId: 'pas2',
+					name: 'pas2',
+					minLength: apps.passminlength
+				},
+				{
+					fieldLabel: 'Confirm Password',
+					itemId: 'pas3',
+					name: 'pas3'
+				}]
+			});
+			a.callParent(arguments)
+		},
+		closeWindow: function () {
+			this.up('window').close()
+		},
+		passwordHelp: function () {
+			Ext.Msg.show({
+				title: 'Password Help',
+				msg: '<div class="small">Min. ' + apps.passminlength + ' character' + (apps.passminlength > 1 ? 's' : '') + ', CASE-SENSITIVE.</div>',
+				icon: Ext.Msg.INFO,
+				buttons: Ext.Msg.OK
+			})
+		},
+		submitPassword: function (c) {
+			var d = this.up('form').getForm();
+			if (d.isValid()) {
+				var e = d.findField('pas1'),
+				pas2 = d.findField('pas2'),
+				pas3 = d.findField('pas3');
+				if (MD5(e.getValue()) != apps.token) {
+					Ext.Msg.show({
+						title: 'Change Password',
+						msg: 'Please input current password correctly !<br />Password is CASE-SENSITIVE !',
+						icon: Ext.Msg.ERROR,
+						buttons: Ext.Msg.OK,
+						fn: function () {
+							e.focus()
+						}
+					})
+				} else {
+					if (pas2.getValue().length < apps.passminlength || pas2.getValue().match(/[^A-Za-z0-9!@#$%^&*()_+<>?,.\-\/]/gi)) {
+						Ext.Msg.show({
+							title: 'Change Password',
+							msg: 'New password does not meet minimum requirement !',
+							icon: Ext.Msg.ERROR,
+							buttons: Ext.Msg.OK,
+							fn: function () {
+								pas2.focus()
+							}
+						})
+					} else {
+						if (e.getValue().toLowerCase() == pas2.getValue().toLowerCase()) {
+							Ext.Msg.show({
+								title: 'Change Password',
+								msg: 'New password is similar to the current password !<br />Please choose another one !',
+								icon: Ext.Msg.WARNING,
+								buttons: Ext.Msg.OK,
+								fn: function () {
+									pas2.focus()
+								}
+							})
+						} else {
+							if (pas2.getValue() != pas3.getValue()) {
+								Ext.Msg.show({
+									title: 'Change Password',
+									msg: 'Please confirm the same new password !<br />Password is CASE-SENSITIVE !',
+									icon: Ext.Msg.ERROR,
+									buttons: Ext.Msg.OK,
+									fn: function () {
+										pas3.focus()
+									}
+								})
+							} else {
+								d.submit({
+									url: 'main/index/changepassword',
+									waitMsg: 'Submitting new password, please wait ...',
+									success: function (a, b) {
+										apps.token = MD5(pas2.getValue());
+										if (b.result.success == true) {
+											Ext.Msg.show({
+												title: 'Change Password',
+												msg: 'Password changed successfully !',
+												icon: Ext.Msg.INFO,
+												buttons: Ext.Msg.OK,
+												fn: function () {
+													c.up('window').close()
+												}
+											})
+										} else {
+											Ext.Msg.show({
+												title: 'Change Password',
+												msg: 'Error: Unable to change password !',
+												icon: Ext.Msg.ERROR,
+												buttons: Ext.Msg.OK
+											})
+										}
+									},
+									failure: function () {
+										Ext.Msg.show({
+											title: 'Change Password',
+											msg: 'Error: Unable to change password !',
+											icon: Ext.Msg.ERROR,
+											buttons: Ext.Msg.OK
+										})
+									}
+								})
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+function setObject(a, b) {
+	if (a.setObject == true)
+		return false;
+	for (var o in objs) {
+		var c = objs[o][a.getItemId()];
+		if (c != null && c != 'undefined') {
+			for (var x in c) {
+				var d = a.down('#' + c[x]),
+				tb;
+				if (d) {
+					d.setVisible(true);
+					tb = d.up('toolbar');
+					if (tb) {
+						tb.setVisible(true)
+					}
+				}
+			}
+			a.setObject = true;
+			break
+		}
+	}
+	if ($.isFunction(b)) {
+		b()
+	}
+}
+function setupObject(p, q, r) {
+	if (p.setupObject == true || p.setObject == true)
+		return false;
+	Ext.each(p.query('gridpanel, treepanel, [bindAction]'), function (l) {
+		if (l.isXType('panel')) {
+			var n = l.down('actioncolumn'),
+			toolbar = l.down('toolbar[dock="top"]');
+			l.addListener({
+				itemcontextmenu: function (d, f, g, h, e) {
+					var i = d.up('panel'),
+					contextMenu = l.contextMenu,
+					contextMenuItems = [];
+					if (contextMenu) {
+						Ext.each(contextMenu, function (a) {
+							if (a.bindAction && acts[a.bindAction]) {
+								a.ref = 'contextMenu';
+								a.handler = function () {
+									s(d, (Ext.isDefined(a.useActionBaseName) && a.useActionBaseName == true ? acts[a.bindAction] : a.bindAction))
+								}
+							}
+							contextMenuItems.push(a)
+						})
+					}
+					if (n && n.isVisible() && n.items.length) {
+						var j = '';
+						Ext.each(n.items, function (a) {
+							if (a && a.getClass() != 'x-hide-display') {
+								j = {
+									xtype: 'menuitem',
+									text: a.text,
+									icon: a.icon,
+									iconCls: a.iconCls,
+									ref: 'actioncolumn',
+									handler: function () {
+										s(d, (Ext.isDefined(a.useActionBaseName) && a.useActionBaseName == true ? acts[a.bindAction] : a.bindAction))
+									}
+								};
+								contextMenuItems.push(j)
+							}
+						})
+					}
+					if (contextMenuItems.length) {
+						var k = Ext.create('Ext.menu.Menu', {
+							items: contextMenuItems,
+							listeners: {
+								beforeRender: function (c) {
+									c.items.each(function (a) {
+										if (a.bindAction) {
+											var b = p.down('[bindAction=' + a.bindAction + ']');
+											if (b && (!b.isVisible() || b.isDisabled())) {
+												c.remove(a)
+											}
+										}
+									})
+								},
+								beforeShow: function (a) {
+									if (a.items.length < 1) {
+										return false
+									}
+								}
+							}
+						});
+						e.stopEvent();
+						k.showAt(e.xy)
+					}
+				}
+			});
+			if (n) {
+				n.addListener({
+					afterrender: function (f) {
+						var g = 0;
+						Ext.each(f.items, function (d) {
+							if (d.bindAction) {
+								var e = f.up('gridpanel');
+								d.hidden = true;
+								d.getClass = function () {
+									return 'x-hide-display'
+								};
+								d.handler = Ext.emptyFn;
+								d.baseClassName = 'ux-actioncolumn ' + (!d.icon && d.iconCls ? d.iconCls : '');
+								if (acts[d.bindAction]) {
+									d.className = d.baseClassName + ' act-' + (Ext.isDefined(d.useActionBaseName) && d.useActionBaseName == true ? acts[d.bindAction] : d.bindAction);
+									d.getClass = function () {
+										return d.className
+									};
+									d.handler = function (a, b, c) {
+										f.up('panel').getSelectionModel().select(b);
+										s(f, (Ext.isDefined(d.useActionBaseName) && d.useActionBaseName == true ? acts[d.bindAction] : d.bindAction))
+									};
+									g++
+								}
+							} else {
+								d.getClass = function () {
+									return d.baseClassName
+								};
+								g++
+							}
+						});
+						f.setVisible(g > 0);
+						f.setWidth(g * 25)
+					},
+					__click__: function (a, b, c, d, e) {
+						a.up('panel').getSelectionModel().select(c);
+						m = e.getTarget().className.match(/\bact-(\w+)\b/);
+						if (m) {
+							s(a, m[1])
+						}
+					}
+				})
+			}
+			if (toolbar) {
+				toolbar.addListener({
+					afterrender: function (b) {
+						var c = 0;
+						b.items.each(function (a) {
+							if (a.isVisible()) {
+								c++
+							}
+						});
+						b.setVisible(c > 0)
+					}
+				})
+			}
+		} else if (l.isXType('combobox')) {
+			l.onTrigger2Click = function () {
+				s(l, l.bindAction.create)
+			};
+			l.onTrigger3Click = function () {
+				s(l, l.bindAction.update)
+			};
+			l.onTrigger4Click = function () {
+				s(l, l.bindAction.destroy)
+			}
+		} else {
+			var o = acts[l.bindAction];
+			l.addListener({
+				beforeshow: function (a) {
+					if (!o) {
+						return false
+					}
+				},
+				click: function (a) {
+					if (o) {
+						s(a, (Ext.isDefined(l.useActionBaseName) && l.useActionBaseName == true ? o : l.bindAction))
+					}
+				}
+			});
+			l.setVisible(o)
+		}
+	});
+	var s = function (a, b) {
+		if (!Ext.isFunction(q)) {
+			return false
+		}
+		q(a, b, r)
+	};
+	p.setupObject = true
+}
+Ext.Loader.setConfig({
+	disableCaching: true,
+	enabled: true,
+	paths: {
+		app: 'app/main/js-css',
+		Main: 'app/main'
+	}
+});
+
+Ext.define('Apps', {
+	extend: 'app.Cipdev',
+	cbxprojectpt: [],
+	customFilter: null,
+	init: function () {
+		var a = this;
+
+
+		a.customFilter = new Ext.util.Filter({
+			filterFn : function(item) {
+				var searchValue = a.cbxprojectpt.getValue();
+				var module_name = item.get('module_name');
+				var project_name = item.get('project_name');
+
+				return module_name.indexOf(searchValue) == 0 ||
+				project_name.indexOf(searchValue) == 0;
+			}
+		});
+
+			// ComboBox with a custom item template
+			a.cbxprojectpt = Ext.create('Ext.form.field.ComboBox', {
+				width:1,
+				align:'left',
+				displayField: 'module_name_project_name',
+				// valueField: 'url',
+				store: new Ext.create('Ext.data.Store', {
+					fields: [
+					{name: 'module_name', type: 'string'},
+					{name: 'project_name', type: 'string'},
+					{name: 'module_name_project_name', type: 'string'},
+					{name: 'url', type: 'string'}
+					],
+					data: dMenuRaw
+				}),
+				queryMode: 'local',
+				listeners: {
+					select: function (cmb, record, index){
+						// openModule({moduleName:record[0].data.module_name, url:record[0].data.url});
+						openModule({moduleName:(record[0].data.module_name + " - " + record[0].data.project_name), url:record[0].data.url});
+						this.setValue("")
+					},
+					// beforequery: function (record) {
+					// 	this.store.clearFilter();                
+					// 	this.store.filter(a.customFilter);
+					// 	return true;
+					// }
+					beforequery: function (record) {
+						record.query = new RegExp(record.query, 'i');
+						record.forceAll = true;
+					}
+				},
+				listConfig : {
+					itemTpl : '<b>{module_name}</b> - {project_name}'
+				}
+			});
+
+
+			a.callParent();
+			desktop = a.getDesktop();
+			resetTimer();
+			countdownTimer = countdown();
+			Ext.fly('ver-info').update(apps.version);
+			Ext.fly('copyright-info').update(apps.copyright);
+
+			if (currentmodule.url && currentmodule.name) {
+				openModule({
+					url: currentmodule.url,
+					moduleName: currentmodule.name
+				})
+			}
+		},
+		getStartConfig: function () {
+			var a = this,
+			ret = a.callParent();
+			return Ext.apply(ret, {
+				title: apps.username,
+				icon: 'app/main/images/icons/user.png',
+				width: 485,
+				height: 420,
+				menu: dMenu,
+				toolConfig: {
+					minWidth: 250,
+					width: 'auto',
+					items: [{
+						text: 'Whats New',
+						textAlign: 'left',
+						padding: 5,
+						icon: 'app/main/images/icons/list-information.png',
+						handler: function () {
+							tos()
+						}
+					},
+					'-', {
+						text: 'Help',
+						textAlign: 'left',
+						padding: 5,
+						icon: 'app/main/images/icons/help.png',
+						handler: function () {
+							help()
+						}
+					},
+					'-', {
+						text: 'Change Password',
+						textAlign: 'left',
+						padding: 5,
+						icon: 'app/main/images/icons/key.png',
+						handler: function () {
+							changepassword(0)
+						}
+					},
+					'->', '-', {
+						text: 'Logout',
+						textAlign: 'Left',
+						padding: 5,
+						icon: 'app/main/images/icons/turnoff.png',
+						handler: function () {
+							logout(0)
+						}
+					},
+					a.cbxprojectpt,
+					]
+				}
+			})
+		},
+		getDesktopConfig: function () {
+			var a = this,
+			ret = a.callParent();
+			return Ext.apply(ret, {
+				bodyStyle: 'background:url(' + 'app/main/images/Ciputra.png) no-repeat center center fixed transparent'
+			})
+		},
+		getMenubarConfig: function () {
+			var a = this,
+			ret = a.callParent();
+			return Ext.apply(ret, {
+				hidden: true
+			})
+		},
+		getTaskbarConfig: function () {
+			var a = this,
+			ret = a.callParent();
+			return Ext.apply(ret, {
+				startBtnText: 'start',
+				quickStart: null,
+				trayItems: [{
+					xtype: 'tbtext',
+					text: '00:00:00',
+					id: 'countdown-timer'
+				},
+				'-', {
+					text: 'Extend',
+					icon: 'app/main/images/icons/hourglass.png',
+					id: 'extendsession-button',
+					handler: function () {
+						extendsession()
+					}
+				},
+				'-', {
+					text: 'Logout',
+					icon: 'app/main/images/icons/turnoff.png',
+					handler: function () {
+						logout(0)
+					}
+				}]
+			})
+		},
+	});
+
+function openModule(b) {
+	if (typeof b.url == 'undefined' || b.url == '')
+		return false;
+	if (desktop.windows.items.length && currentmodule.url) {
+		if (currentmodule.loaded && currentmodule.url == b.url) {
+			Ext.Msg.confirm('Change Module', 'The module you have selected is already active.<br />Do you want to close all the open forms and reload the module ?', function (a) {
+				if (a == 'yes') {
+					currentmodule.loaded = false;
+					loadModule(b)
+				}
+			})
+		} else if (currentmodule.url != b.url) {
+			Ext.Msg.confirm('Change Module', 'Do you want to close all the open forms and change module ?', function (a) {
+				if (a == 'yes') {
+					loadModule(b)
+				}
+			})
+		}
+		return false
+	}
+	loadModule(b)
+}
+
+function loadModule(c) {
+	Ext.fly('apps-title').update();
+	Ext.fly('apps-text-running').update();
+	Ext.fly('apps-ver').update();
+	Ext.fly('project-pt').update();
+	Ext.fly('group').update();
+
+	desktop.closeAllWindows();
+	desktop.menubar.setVisible(false);
+	desktop.menubar.removeAll();
+
+	if (typeof c.moduleName == 'undefined') {
+		c.moduleName = ''
+	} else {
+		c.moduleName = ' ' + c.moduleName.toUpperCase()
+	}
+
+	desktop.body.mask('Loading' + c.moduleName + ', please wait ...').dom.style.zIndex = '15000';
+
+	Ext.fly('front-content').load({
+		url       : c.url,
+		autoAbort : true,
+		scripts   : true,
+		autoLoad  : true,
+		success   : function (a, b) {
+			currentmodule.name   = c.moduleName;
+			currentmodule.url    = c.url;
+			currentmodule.loaded = true
+		},
+		failure: function (a, b) {}
+	})
+}
+
+function openWindowForm(a) {
+	if (!a.content || !a.content.isXType('form'))
+		return;
+	var b = 'FORM-' + a.id,
+	win = desktop.getWindow('WINDOW-' + b);
+	if (win)
+		return false;
+	return openWindow({
+		id: b,
+		title: a.title,
+		icon: !a.icon && !a.iconCls ? 'app/main/images/icons/form.png' : a.icon,
+		iconCls: a.iconCls,
+		width: a.content.width || a.width || 500,
+		resizable: false,
+		minimizable: false,
+		maximizable: false,
+		maximized: false,
+		constrainHeader: false,
+		taskbarButton: false,
+		modal: true,
+		renderTo: Ext.getBody(),
+		sender: a.sender,
+		controller: a.controller,
+		content: a.content,
+		listeners: a.listeners
+	})
+}
+
+function openPage(a) {
+		var _is_directload = is_directload(a);
+		if (_is_directload == 1) {
+			console.log("direct");
+			return loadcontroller(a);
+		} else {
+			if (typeof a == 'undefined' || typeof a.widget == 'undefined' || (a.widget).trim() == '')
+				return false;
+			return openWindow({
+				id: a.id,
+				title: a.title,
+				icon: !a.icon && !a.iconCls ? 'app/main/images/icons/window.png' : a.icon,
+				iconCls: a.iconCls,
+				width: '75%',
+				height: '70%',
+				minWidth: 600,
+				minHeight: 400,
+				sender: a.sender,
+				controller: a.controller,
+				content: Ext.create(a.widget),
+				listeners: a.listeners
+			})
+		}
+	}
+
+	function openWindow(c, o) {
+		if (typeof c == 'undefined' || typeof c.id == 'undefined' || (c.id).trim() == '')
+			return false;
+		var d = 'WINDOW-' + c.id,
+		win = desktop.getWindow(d),
+		dBody = Ext.getBody(),
+		bodySize = dBody.getViewSize(),
+		width = null,
+		height = null;
+		if (!win) {
+			win = desktop.createWindow({
+				id: d,
+				title: c.title,
+				icon: !c.icon && !c.iconCls ? 'app/main/images/icons/window.png' : c.icon,
+				iconCls: c.iconCls,
+				width: c.width || width,
+				height: c.height || height,
+				resizable: typeof c.resizable != 'undefined' ? c.resizable : true,
+				minimizable: typeof c.minimizable != 'undefined' ? c.minimizable : true,
+				maximizable: typeof c.maximizable != 'undefined' ? c.maximizable : true,
+				maximized: false,
+				minWidth: c.minWidth || 300,
+				minHeight: c.minHeight || 150,
+				maxWidth: bodySize.width,
+				maxHeight: typeof c.maximizable == 'undefined' || c.maximizable == true ? bodySize.height : Math.round(bodySize.height * 0.9),
+				animCollapse: false,
+				constrain: true,
+				constrainHeader: false,
+				taskbarButton: typeof c.taskbarButton != 'undefined' ? c.taskbarButton : true,
+				modal: c.modal || false,
+				layout: 'fit',
+				shadow: 'frame',
+				autoScroll: typeof c.autoScroll != 'undefined' ? c.autoScroll : true,
+				bodyStyle: c.bodyStyle,
+				shadowOffset: 10,
+				onEsc: Ext.emptyFn,
+				renderTo: c.renderTo,
+				sender: c.sender,
+				controller: c.controller,
+				listeners: Ext.Object.merge(c.listeners || {},
+				{
+					boxready: function () {
+						win.center();
+						if (c.maximized) {
+							win.animateTarget = null;
+							win.toggleMaximize()
+						}
+						win.body.mask('Loading...');
+						var b = setTimeout(function () {
+							if (Ext.isString(c.content)) {
+								win.update(c.content);
+								win.setBodyStyle('padding', 5)
+							} else {
+								if (c.controller && Ext.isObject(_Apps)) {
+									var a = _Apps.getController(c.controller);
+									if (a)
+										setupObject(c.content, a.execAction, a)
+								}
+								win.add(c.content);
+								win.setBorder(!c.content)
+							}
+							win.center();
+							clearTimeout(b);
+							win.body.unmask()
+						},
+						!c.modal ? 500 : 50)
+					}
+				})
+			})
+		}
+		win.show();
+		return win
+	}
+
+	var PagingToolbarPageSize = Ext.extend(Object, {
+		options: [5, 10, 15, 20, 25, 30, 50, 75, 100, 200, 300, 500, 1000],
+		mode: 'local',
+		displayText: 'Records per Page',
+		prependCombo: true,
+		constructor: function (a) {
+			Ext.apply(this, a);
+			PagingToolbarPageSize.superclass.constructor.call(this, a)
+		},
+		init: function (c) {
+			var d = this.options;
+			var e = Ext.create('Ext.form.field.ComboBox', {
+				triggerAction: 'all',
+				forceSelection: true,
+				autoSelect: true,
+				selectOnFocus: true,
+				selectOnTab: true,
+				lazyRender: true,
+				editable: false,
+				mode: this.mode,
+				value: c.getStore().pageSize,
+				width: 60,
+				maxLength: 4,
+				enableKeyEvents: true,
+				maskRe: /[0-9]/,
+				store: d,
+				listeners: {
+					select: function (a) {
+						var b = a.getValue();
+						c.getStore().pageSize = isNaN(b) || !b ? 25 : b;
+						c.getStore().loadPage(1)
+					},
+				}
+			});
+			var f = 0;
+			if (this.prependCombo) {
+				f = c.items.indexOf(c.first)
+			} else {
+				f = c.items.indexOf(c.refresh);
+				c.insert(++f, '-')
+			}
+			c.insert(++f, this.displayText);
+			c.insert(++f, e);
+			if (this.prependCombo) {
+				c.insert(++f, '-')
+			}
+			c.on({
+				beforedestroy: function () {
+					e.destroy()
+				}
+			})
+		},
+		loadStore: function (a) {}
+	});
+	Ext.Ajax.on('beforerequest', function (a, b, c) {
+		resetTimer();
+		Ext.Ajax.extraParams = {
+			'btab_sessid': btab_sessid
+		}
+	});
+	Ext.Ajax.on('requestcomplete', function (a, b, c, d) {
+		var e, scriptsFinder = /<script id="logout"[^>]*>([\s\S]+)<\/script>/gi;
+		if (b.responseText.match(scriptsFinder)) {
+			while (e = scriptsFinder.exec(b.responseText)) {
+				eval(e[1])
+			}
+		}
+		if (b.status == 200) {
+			resetTimer()
+		}
+	});
+	Ext.override(Ext.data.TreeStore, {
+		load: function (a) {
+			a = a || {};
+			a.params = a.params || {};
+			var b = this,
+			node = a.node || b.tree.getRootNode(),
+			root;
+			if (!node) {
+				node = b.setRootNode({
+					expanded: true
+				})
+			}
+			if (b.clearOnLoad) {
+				node.removeAll(false)
+			}
+			Ext.applyIf(a, {
+				node: node
+			});
+			a.params[b.nodeParam] = node ? node.getId() : 'root';
+			if (node) {
+				node.set('loading', true)
+			}
+			return b.callParent([a])
+		}
+	});
+	Ext.override(Ext.form.Basic, {
+		setValues: function (d) {
+			var e = this,
+			v, vLen, val, field;
+			function setVal(a, b) {
+				var c = e.findField(a);
+				if (c) {
+					if ((c.isXType('textfield') || c.isXType('displayfield')) && c.currencyFormat && !c.inCurrency) {
+						b = toCurrency(toFloat(b));
+						c.inCurrency = true
+					}
+					c.setValue(b);
+					if (e.trackResetOnLoad) {
+						c.resetOriginalValue()
+					}
+				}
+			}
+			if (Ext.isArray(d)) {
+				vLen = d.length;
+				for (v = 0; v < vLen; v++) {
+					val = d[v];
+					setVal(val.id, val.value)
+				}
+			} else {
+				Ext.iterate(d, setVal)
+			}
+			return this
+		}
+	});
+	Ext.override(Ext.form.field.Base, {
+		validateOnChange: false,
+		validateOnBlur: false,
+		afterLabelTextTpl: ['<tpl if="allowBlank == false">', '<sup style="color:rgb(255,0,0);font-size:0.8em;" class="' + Ext.baseCSSPrefix + 'required">*</sup>', '</tpl>'],
+		setReadOnly: function (a) {
+			if (!this.isXType('checkbox') && !this.isXType('radio')) {
+				var x = '';
+				if (this.fieldStyle) {
+					this.fieldStyle = this.fieldStyle.replace('background:#ffffff;', '');
+					this.fieldStyle = this.fieldStyle.replace('background:#ebebe4;', '');
+					x = this.fieldStyle
+				}
+				if (!a) {
+					this.setFieldStyle('background:#ffffff;' + x)
+				} else {
+					this.setFieldStyle('background:#ebebe4;' + x)
+				}
+			}
+			this.callParent(arguments)
+		},
+		setRequired: function (a) {
+			this.clearInvalid();
+			this.fieldLabel = this.fieldLabel.replace('<sup style="color:rgb(255,0,0);font-size:0.8em;padding-left:3px;">*</sup>', '');
+			this.setFieldLabel(this.fieldLabel + (a ? '<sup style="color:rgb(255,0,0);font-size:0.8em;padding-left:3px;">*</sup>' : ''));
+			this.allowBlank = !a
+		},
+		setFieldLabel: function (a) {
+			a = a || '';
+			var b = this,
+			separator = b.labelSeparator,
+			labelEl = b.labelEl;
+			b.fieldLabel = a;
+			if (b.rendered) {
+				if (Ext.isEmpty(a) && b.hideEmptyLabel) {
+					labelEl.parent().setDisplayed('none')
+				} else {
+					if (separator) {
+						a = b.trimLabelSeparator() + separator
+					}
+					labelEl.update(a);
+					labelEl.parent().setDisplayed('')
+				}
+			}
+		}
+	});
+	Ext.override(Ext.form.field.Trigger, {
+		setReadOnly: function (a) {
+			if (!this.isXType('checkbox') && !this.isXType('radio')) {
+				var x = '';
+				if (this.fieldStyle) {
+					this.fieldStyle = this.fieldStyle.replace('background:#ffffff;', '');
+					this.fieldStyle = this.fieldStyle.replace('background:#ebebe4;', '');
+					x = this.fieldStyle
+				}
+				if (!a) {
+					this.setFieldStyle('background:#ffffff;' + x)
+				} else {
+					this.setFieldStyle('background:#ebebe4;' + x)
+				}
+			}
+			this.callParent(arguments)
+		},
+		setRequired: function (a) {
+			this.clearInvalid();
+			this.fieldLabel = this.fieldLabel.replace('<sup style="color:rgb(255,0,0);font-size:0.8em;padding-left:3px;">*</sup>', '');
+			this.setFieldLabel(this.fieldLabel + (a ? '<sup style="color:rgb(255,0,0);font-size:0.8em;padding-left:3px;">*</sup>' : ''));
+			this.allowBlank = !a
+		}
+	});
+	Ext.override(Ext.form.field.Text, {
+		setValue: function (a) {
+			var b = this;
+			if (b.currencyFormat && !b.inCurrency) {
+				a = toCurrency(toFloat(a));
+				b.inCurrency = true
+			}
+			b.callParent(arguments)
+		},
+		listeners: {
+			added: function () {
+				this.setReadOnly(this.readOnly)
+			},
+			change: function (a) {
+				a.clearInvalid()
+			},
+			blur: function (a) {
+				if (!a.readOnly && !a.isDisabled() && a.currencyFormat) {
+					a.setValue(toCurrency(toFloat(a.getValue())));
+					a.inCurrency = true
+				}
+			},
+			focus: function (a) {
+				if (!a.readOnly && !a.isDisabled() && a.currencyFormat) {
+					a.setValue(toFloat(a.getValue()));
+					a.inCurrency = false
+				}
+			}
+		}
+	});
+	Ext.override(Ext.form.field.ComboBox, {
+		listeners: {
+			added: function () {
+				this.setReadOnly(this.readOnly)
+			},
+			blur: function (a) {
+				a.collapse()
+			},
+			change: function (a) {
+				a.clearInvalid();
+				if (!a.getValue()) {
+					a.setValue('')
+				}
+			},
+			expand: function (a) {
+				if (a.addBlankValue == true) {
+					var b = a.getStore(),
+					obj = {};
+					if (b.getCount() && b.getAt(0).get(a.valueField) != 0) {
+						obj[a.valueField] = 0;
+						obj[a.displayField] = '';
+						b.insert(0, [obj])
+					}
+				}
+			},
+			collapse: function (a) {
+				if (a.addBlankValue == true) {
+					var b = a.getStore();
+					if (b.getCount() && b.getAt(0).get(a.valueField) == 0) {
+						b.removeAt(0)
+					}
+				}
+			},
+		},
+		trigger2Cls: 'x-form-add-trigger',
+		trigger3Cls: 'x-form-edit-trigger',
+		trigger4Cls: 'x-form-delete-trigger',
+		initTrigger: function () {
+			var a = this;
+			a.callParent(arguments);
+			var b = a.triggerEl.select('.x-form-trigger', true);
+			if (a.bindAction && Ext.isString(a.bindAction)) {
+				a.bindAction = {
+					create: a.bindAction
+				}
+			}
+			if (Ext.isObject(a.bindAction) && a.bindAction.create && acts[a.bindAction.create]) {
+				b.elements[1].dom.title = 'Add'
+			} else {
+				b.elements[1].up('.x-trigger-cell').setWidth(0);
+				b.elements[1].setVisible(false)
+			}
+			if (Ext.isObject(a.bindAction) && a.bindAction.update && acts[a.bindAction.update]) {
+				b.elements[2].dom.title = 'Edit'
+			} else {
+				b.elements[2].up('.x-trigger-cell').setWidth(0);
+				b.elements[2].setVisible(false)
+			}
+			if (Ext.isObject(a.bindAction) && a.bindAction.destroy && acts[a.bindAction.destroy]) {
+				b.elements[3].dom.title = 'Delete'
+			} else {
+				b.elements[3].up('.x-trigger-cell').setWidth(0);
+				b.elements[3].setVisible(false)
+			}
+		},
+		onTrigger2Click: Ext.emptyFn,
+		onTrigger3Click: Ext.emptyFn,
+		onTrigger4Click: Ext.emptyFn
+	});
+	Ext.override(Ext.dom.Element, {
+		setReadOnly: Ext.emptyFn
+	});
+
+
+//David MIS - 09/03/2021
+//force change pass jika masih default
+function changepassreminder() {
+	var if_pass_default = <?php echo intval($this->apps_userpassdefault) ?>;
+	var if_changepassword = localStorage.getItem("changepassword");
+	if (if_pass_default == 1 && if_changepassword === null) {
+		Ext.Msg.show({
+			title: 'Change Password',
+			msg: 'Anda masih menggunakan password default. <br>Harap segera ganti password anda.',
+			icon: Ext.Msg.WARNING,
+			buttons: Ext.Msg.OK,
+			fn: function () {
+				changepassword(0);
+				localStorage.setItem("changepassword", 1);
+			}
+		});
+	}
+}
+
+setTimeout(function () {
+	changepassreminder();
+}, 1000);
+
+function setCookie(name, value, days=0) {
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+}
+
+function deleteCookie(key) {
+	var keyValue = getCookie(key);
+	setCookie(key, keyValue, '-1');
+}
+
+function getCookieall() {
+	var cookies = {};
+	if (document.cookie && document.cookie != '') {
+		var split = document.cookie.split(';');
+		for (var i = 0; i < split.length; i++) {
+			var name_value = split[i].split("=");
+			name_value[0] = name_value[0].replace(/^ /, '');
+			cookies[decodeURIComponent(name_value[0])] = decodeURIComponent(name_value[1]);
+		}
+	}
+	return cookies;
+}
+
+</script>

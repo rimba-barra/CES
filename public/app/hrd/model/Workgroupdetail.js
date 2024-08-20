@@ -1,0 +1,26 @@
+Ext.define('Hrd.model.Workgroupdetail', {
+    extend: 'Ext.data.Model',
+    alias: 'model.workgroupdetailmodel',
+    idProperty: 'workgroupdetail_id',
+    fields: [
+        {name: 'hideparam', type: 'string'},
+        {name: 'workgroupdetail_id', type: 'int'},
+        {name: 'workgroup_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'department_id', type: 'int'},
+        {name: 'department', type: 'string'},
+        {name: 'employee_id', type: 'int'},
+        {name: 'employee_nik', type: 'string'},
+        {name: 'employee_name', type: 'string'},
+        {name: 'code', type: 'string'},
+        {name: 'description', type: 'string'},
+        {name: 'active', type: 'bit'},
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'modion', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'modiby', type: 'string'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'statedata', type: 'string'},
+    ]
+});

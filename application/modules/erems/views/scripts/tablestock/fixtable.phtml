@@ -1,0 +1,139 @@
+<?php
+
+
+        // foreach ($data as  $value) {
+        //     echo '<tr>';
+        //     foreach ($value as $val) {
+        //         echo '<td>'.$val.'<td>';
+        //     }
+        // }
+
+?>
+
+<style type="text/css">
+	/* table.tableizer-table {
+		font-size: 12px;
+		border: 1px solid #CCC; 
+		font-family: Arial, Helvetica, sans-serif;
+	} 
+	.tableizer-table td {
+		padding: 4px;
+		margin: 3px;
+		border: 1px solid #CCC;
+	}
+	.tableizer-table th {
+		background-color: #104E8B; 
+		color: #FFF;
+		font-weight: bold;
+	} */
+
+    .table-stock td {
+		text-align: center;
+                /* background-color: red; */
+	}
+	.table-stock{
+		border: 4px solid black;
+	}
+        .table-stock tr{
+		border: 4px solid black;
+	}
+        .table-stock td{
+		border: 4px solid black;
+	}
+        .table-stock th {
+                text-align: center;
+                background-color: gray;
+                border: 4px solid black;
+        }
+        .btn-copy-clipboard{
+            margin-bottom: 10px;
+            background-color: #28a745;
+        }
+</style>
+<!-- <div class="col col-md-12" style="margin-bottom: 20px"> 
+    <p>NIVATA</p>
+    <p>CIPUTRA BEACH RESORT</p>
+    <p><b>Peta Stock Per 31 Aug 2021</b></p>
+    <p><b>Nivata Residences Bali</b></p>
+</div> -->
+<div class="col col-md-12 text-center" style="margin-bottom: 20px"> 
+    <i class="fas fa-square" style="font-size:20px;color:red"></i> <span style="margin-right: 10px"><b>: Sold</b> </span> 
+    <i class="fas fa-square" style="font-size:20px;color:yellow"></i> <span style="margin-right: 10px"><b>: Sold Under 30%</b> </span>
+    <i class="fas fa-square" style="font-size:20px;color:gray"></i> <span style="margin-right: 10px"><b>: Proses Batal</b> </span>
+    <i class="fas fa-square" style="font-size:20px;color:orange"></i> <span style="margin-right: 10px"><b>: Hold</b> </span>
+    <i class="fas fa-square" style="font-size:20px;color:salmon"></i> <span style="margin-right: 10px"><b>: Broken</b> </span>
+    <i class="fas fa-square" style="font-size:20px;color:blue"></i> <span style="margin-right: 10px"><b>: Booked</b> </span>
+    <i class="fas fa-square" style="font-size:20px;color:greenyellow"></i> <span style="margin-right: 10px"><b>: Planning</b> </span>
+    <i class="fas fa-square" style="font-size:20px;color:green"></i> <span><b>: Available</b> </span>
+</div>
+
+<button type="button" class="btn btn-success btn-sm btn-copy-clipboard" id="btn-export" >Export Excel</button>
+
+<table class = "table table-stock" id = "idtablestock">
+<tbody>
+<?php
+    $param = $this->data['data'];
+    $file = $this->filename;
+    // var_dump($file); die();
+
+    require_once dirname(__DIR__) . '\\tablestock\\'.$file.'.phtml';
+
+    foreach ($data as  $value) {
+        echo '<tr>';
+        foreach ($value as $xx) {
+            if ($xx === "0") {
+                echo   '<td style="background-color: whitesmoke;"><b>-</b></td>'; 
+            }else{
+                foreach ($param as $val) {
+                    if(trim($val['unit_number']) == $xx){
+                            if($val['batal'] == 1){
+                                echo '<td class="btn-detail" style="background-color: gray;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                            } 
+                            else 
+                            {
+                                
+                                if($val['status']==5){
+                                    if ($val['persen_payment'] < 30){
+                                        echo   '<td class="btn-detail" style="background-color: yellow;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                    }else {
+                                        echo   '<td class="btn-detail" style="background-color: red;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                    }
+                                }
+                                else if($val['status']==11){
+                                    echo   '<td class="btn-detail" style="background-color: orange;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                }
+                                else if($val['status']==10) {
+                                    echo   '<td class="btn-detail" style="background-color: salmon;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                }
+                                else if($val['status']==4) {
+                                    echo   '<td class="btn-detail" style="background-color: blue;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                }
+                                else if($val['status']==1) {
+                                    echo   '<td class="btn-detail" style="background-color: greenyellow;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                }
+                                else if($val['status']==3) {
+                                    echo   '<td class="btn-detail" style="background-color: green;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                } else {
+                                    echo   '<td class="btn-detail" style="background-color: whitesmoke;" unit-id="'.$val['unit_id'].'"> <a href="" class="btn-detail" unit-id="'.$val['unit_id'].'" style="text-decoration: none;color:black; "><b>'.$xx.'</b></a></td>';
+                                }
+                            }
+                            
+                    }
+                    // else { 
+                    //         return  '<td style="background-color: whitesmoke;"><b></b></td>'; 
+                    // }    
+                }
+            }
+            
+        }
+        echo "</tr>";
+    }
+
+        
+?>
+</tbody>
+</table>
+
+<div class="modal" id="modal-detail" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index: 99999;">
+        
+</div>

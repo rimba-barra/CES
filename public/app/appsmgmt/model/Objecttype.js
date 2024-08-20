@@ -1,0 +1,1 @@
+Ext.define('Appsmgmt.model.Objecttype',{extend:'Ext.data.Model',alias:'model.ObjecttypeModel',idProperty:'object_id',fields:[{name:'object_type_id',type:'int'},{name:'object_type_name',type:'string'},{name:'description',type:'string'},{name:'active',type:'boolean'}]});

@@ -1,0 +1,27 @@
+Ext.define('Cashier.model.Deptprefixdetail', {
+    extend: 'Ext.data.Model',
+    alias: 'model.deptprefixdetailmodel',
+    idProperty: 'deptprefixdetail_id',
+    fields: [
+        {name: 'project_id', type: 'int'},
+        {name: 'projectcode', type: 'string'},
+        {name: 'projectname', type: 'string'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'ptcode', type: 'string'},
+        {name: 'ptname', type: 'string'},
+        {name: 'deptprefixdetail_id', type: 'int'},
+        {name: 'deptprefix_id', type: 'int'},       
+        {name: 'deptprefix', type: 'string'},
+        {name: 'department_id', type: 'int'},
+        {name: 'department', type: 'string'},       
+        {name: 'deptcode', type: 'string'},       
+        {name: 'deptdesc', type: 'string'},
+        {name: 'active', type: 'bit'}, 
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'modion', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'modiby', type: 'string'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'hideparam', type: 'string'},
+    ]
+});

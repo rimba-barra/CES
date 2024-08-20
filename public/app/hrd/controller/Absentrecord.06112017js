@@ -1,0 +1,3851 @@
+Ext.define('Hrd.controller.Absentrecord', {
+    extend: 'Hrd.library.box.controller.Controller',
+    alias: 'controller.Absentrecord',
+    requires: ['Hrd.library.box.tools.DefaultConfig', 'Hrd.library.box.tools.EventSelector',
+        'Hrd.minic.absentrecord.Reason', 'Hrd.minic.absentrecord.Onduty',
+        'Hrd.library.box.tools.Util',
+        'Hrd.minimodule.absent.ProcessAbsent', 'Hrd.library.absentrecord.Tools',
+        'Hrd.template.combobox.Checkedcombobox', //edited by ahmad riadi
+
+
+    ],
+    views: [],
+    comboBoxIdEl: [],
+    controllerName: 'absentrecord',
+    formWidth: 800,
+    refs: [
+        {
+            ref: 'formshift',
+            selector: 'absentrecordformsetupshift'
+        },
+        {
+            ref: 'gridemployee',
+            selector: 'absentrecordemployeegrid'
+        },
+        {
+            ref: 'form',
+            selector: 'absentrecordformdata'
+        },
+        {
+            ref: 'formonduty',
+            selector: 'absentrecordformdataonduty'
+        },
+        {
+            ref: 'formgen',
+            selector: 'absentrecordformgeneratesheet'
+        },
+        {
+            ref: 'panel',
+            selector: 'absentrecordpanel'
+        },
+        {
+            ref: 'formprocessabsent',
+            selector: 'absentrecordformtoolprocessabsent'
+        },
+        {
+            ref: 'formgenholiday',
+            selector: 'absentrecordformemployeeoption'
+        },
+        {
+            ref: 'formtransfer',
+            selector: 'absentrecordformtooltransfer'
+        },
+        {
+            ref: 'formlate',
+            selector: 'absentrecordformtoolprocesslate'
+        },
+        {
+            ref: 'formhal',
+            selector: 'absentrecordformtoolprocesshourandlost'
+        },
+        {
+            ref: 'formexcel',
+            selector: 'absentrecordformtoolfileinput'
+        },
+        {
+            ref: 'formreason',
+            selector: 'absentrecordformreason'
+        },
+        {
+            ref: 'formtlk',
+            selector: 'absentrecordformtlk'
+        },
+        {
+            ref: 'formtime',
+            selector: 'absentrecordformtime'
+        },
+        {
+            ref: 'formcutiber',
+            selector: 'absentrecordformcutibersama'
+        },
+        {
+            ref: 'gridcutibersama',
+            selector: 'absentrecordemployeecutibersamagrid'
+        },
+        {
+            ref: 'gridjatahcuti',
+            selector: 'absentrecordjcgrid'
+        },
+        {
+            ref: 'gridinvalidabsent',
+            selector: 'absentrecordemployeeiagrid'
+        },
+        {
+            ref: 'forminvalidabsent',
+            selector: 'absentrecordforminvalidabsent'
+        },
+        /* start added by ahmad riadi 06-04-2017 */
+        {
+            ref: 'gridcutiintranet',
+            selector: 'absentrecordgridbrowseintranetcuti'
+        },
+        {
+            ref: 'gridcutidetailintranet',
+            selector: 'absentrecordgridintranetcutidetail'
+        },
+        {
+            ref: 'gridijinintranet',
+            selector: 'absentrecordgridbrowseintranetijin'
+        },
+        {
+            ref: 'griddinasintranet',
+            selector: 'absentrecordgridbrowseintranetdinas'
+        },
+        {
+            ref: 'formtransferintranet',
+            selector: 'absentrecordformtransferbyintranet'
+        },
+        {
+            ref: 'formoptioncuti',
+            selector: 'absentrecordformoptionscuti'
+        },
+        {
+            ref: 'formoptionijin',
+            selector: 'absentrecordformoptionsijin'
+        },
+        {
+            ref: 'formoptiondinas',
+            selector: 'absentrecordformoptionsdinas'
+        },
+        {
+            ref: 'formdataintranetcuti',
+            selector: 'absentrecordformdataintranetcuti'
+        },
+        {
+            ref: 'formdataintranetdinas',
+            selector: 'absentrecordformdataintranetdinas'
+        },
+        {
+            ref: 'formdataintranetijin',
+            selector: 'absentrecordformdataintranetijin'
+        },
+        {
+            ref: 'formviewlog',
+            selector: 'absentrecordformviewlog'
+        },
+        {
+            ref: 'gridlog',
+            selector: 'absentrecordgridviewlog'
+        },
+        {
+            ref: 'gridabsentrecord',
+            selector: 'absentrecordemployeegrid'
+        },
+                /* end added by ahmad riadi 06-04-2017 */
+
+
+    ],
+    //unitFormula: null,
+    //storeProcess: 'Otherspaymentdatadetail',
+    bindPrefixName: 'Absentrecord',
+    browseHandler: null,
+    util: null,
+    filterLoaded: {
+        department: false,
+        employeeList: false
+    },
+    localStore: {
+        selectedUnit: null
+    },
+    currentFilter: {
+        month: 0,
+        dep: 0,
+        year: 0,
+        emIndex: -1,
+        emId: 0
+    },
+    globalParams: {},
+    fpnl: null, // buat nampung jumlah finger print absent sementara
+    reasonDeleteClick: false,
+    textCombos: [
+        {
+            textfieldName: 'absenttype_code',
+            comboboxName: 'absenttype_id',
+            formRef: 'absentrecordformdatareason',
+            displayField: 'code'
+        },
+        {
+            textfieldName: 'parametertlk_code',
+            comboboxName: 'parametertlk_parametertlk_id',
+            formRef: 'absentrecordformdataonduty',
+            displayField: 'code'
+        }
+    ],
+    atgcLeave: null, // ABSENTTYPEGROUPCODE_LEAVE
+    //
+    /* start added by ahmad riadi 10-04-2017*/
+    rowintranetcuti: null, rowintranetijin: null, rowintranetdinas: null,
+    configintranet: null, absenttype_id_default: 0,
+    hrd_check_cuti: null, hrd_check_ijin: null, hrd_check_dinas: null,
+    stores: [
+        'Checked',
+    ],
+    /* end added by ahmad riadi 10-04-2017*/
+    constructor: function (configs) {
+        var me = this;
+        var config = new Hrd.library.box.tools.DefaultConfig({
+            moduleName: me.controllerName
+        });
+        config.run(this);
+        me.registerMiniCtrl('reason', new Hrd.minic.absentrecord.Reason({
+            controllerName: 'Absentrecord'
+        }));
+        me.registerMiniCtrl('onduty', new Hrd.minic.absentrecord.Onduty({
+            controllerName: 'Absentrecord'
+        }));
+        this.callParent(arguments);
+        Ext.tip.QuickTipManager.init();
+
+        // event untuk single klik di grid
+        if (typeof gbAbsentRecord === 'undefined') {
+            gbAbsentRecord = {
+                reasonClick: function (index) {
+
+                    me.gridReasonItemClick(index);
+                },
+                tlkClick: function (index) {
+                    me.gridTlkItemClick(index);
+                },
+                timeClick: function (index) {
+                    me.gridTimeItemClick(index);
+                }
+            };
+        }
+
+
+        //  me.reason = new Hrd.model.absentrecord.Reason();
+    },
+    alreadyInitStatus: false,
+    init: function () {
+
+        this.callParent(arguments);
+        var me = this;
+
+        if (me.alreadyInitStatus) {
+            return;
+        }
+        me.alreadyInitStatus = true;
+
+
+        var events = new Hrd.library.box.tools.EventSelector();
+        me.tools = new Hrd.library.box.tools.Tools({config: me.myConfig});
+        me.util = new Hrd.library.box.tools.Util();
+        var processAbsent = new Hrd.minimodule.absent.ProcessAbsent({
+            controllerName: me.bindPrefixName
+        });
+
+
+
+        this.control(events.getEvents(me, me.controllerName));
+
+
+        var hourObjects = ['time_in', 'time_out'];
+        for (var x in hourObjects) {
+            this.control(events.timeInput('absentrecordformtime', me.tools.inputHoursObjects(hourObjects[x])));
+
+        }
+
+
+
+        /* added 27 Agustus */
+        var hourObjects = ['timein', 'timeout'];
+        for (var x in hourObjects) {
+            this.control(events.timeInput('absentrecordformdata', me.tools.inputHoursObjects(hourObjects[x])));
+
+        }
+
+        var newEvs = {};
+        newEvs['absentrecordgrid toolbar button[action=generate]'] = {
+            click: me.generateSheet
+        };
+        newEvs['absentrecordformsetupshift'] = {
+            afterrender: me.shift().fdar
+        };
+        newEvs['absentrecordgrid toolbar button[action=setupshift]'] = {
+            click: me.shift().winShow
+        };
+        // tool delete
+        newEvs['absentrecordgrid toolbar button[action=delete]'] = {
+            click: function () {
+                me.toolDelete().form();
+            }
+        };
+        newEvs['absentrecordformtooldelete button[action=delete]'] = {
+            click: function (el) {
+                me.toolDelete().confirm(el);
+            }
+        };
+        //
+
+
+        // setup shift
+        newEvs['absentrecordformsetupshift button[action=save]'] = {
+            click: me.shift().insertToSheet
+        };
+        newEvs['absentrecordformsetupshift [name=shifttype_id]'] = {
+            change: me.shift().comboOnChange
+        };
+        newEvs['absentrecordformsetupshift button[action=genholiday]'] = {
+            click: me.shift().genHoliday
+        };
+
+        newEvs['#MyAbsentGrid button[action=processlate]'] = {
+            click: function (el) {
+
+
+                me.toolProcessLate().form();
+            }
+        };
+
+
+
+        newEvs['absentrecordgrid toolbar button[action=transfer]'] = {
+            click: function (el) {
+                me.toolTransfer().form();
+            }
+        };
+
+        newEvs['absentrecordgrid toolbar button[action=processjklt]'] = {
+            click: function (el) {
+                me.toolTotalHourandLost().form();
+            }
+        };
+
+
+        newEvs['absentrecordgrid toolbar button[action=processday]'] = {
+            click: function (el) {
+                me.toolProcessDay().process();
+            }
+        };
+
+        newEvs['absentrecordgrid toolbar button[action=importexcel]'] = {
+            click: function (el) {
+                me.toolExcel().form();
+            }
+        };
+
+        newEvs['absentrecordformemployeeoption button[action=process]'] = {
+            click: me.shift().genHolidayProcess
+        };
+        newEvs['absentrecordemployeegrid'] = {
+            afterrender: me.emGrid().fdar,
+            itemdblclick: me.emGrid().select,
+            selectionchange: me.emGrid().select
+        };
+        newEvs['absentrecordformdata button[action=reason]'] = {
+            click: me.showFormReason
+        };
+        newEvs['absentrecordformdata button[action=onduty]'] = {
+            click: me.showFormOnduty
+        };
+        newEvs['absentrecordformsearch [name=search_department_id]'] = {
+            select: function () {
+
+                me.filterEmployeeList();
+            }
+        };
+
+        newEvs['absentrecordformsearch [name=year_pick]'] = {
+            //change: me.resetGrid
+            select: function () {
+                me.storeFilter();
+                me.yearPickOnChange();
+            }
+        };
+        newEvs['absentrecordformsearch [name=month_pick]'] = {
+            //change: me.resetGrid
+            select: function () {
+                me.storeFilter();
+                me.monthPickOnChange();
+            }
+        };
+        newEvs['absentrecordformgeneratesheet button[action=continue]'] = {
+            //change: me.resetGrid
+            click: me.continueOnClick
+        };
+        newEvs['absentrecordformtooltransfer button[action=process]'] = {
+            //change: me.resetGrid
+            click: function (el) {
+                me.toolTransfer().processOnClick();
+            }
+
+        };
+
+        newEvs['absentrecordformtoolprocesslate button[action=process]'] = {
+            click: function (el) {
+                me.toolProcessLate().processOnClick();
+            }
+
+        };
+
+        newEvs['absentrecordformtoolprocesshourandlost button[action=process]'] = {
+            click: function (el) {
+                me.toolTotalHourandLost().processOnClick();
+            }
+
+        };
+
+        newEvs['absentrecordformtoolfileinput #fd_file'] = {
+            change: function (fld, a) {
+                me.toolExcel().fileOnChange();
+            }
+
+        };
+        newEvs['absentrecordformreason checkbox[name=is_cuti]'] = {
+            change: me.isCutiChange
+        };
+
+        newEvs['absentrecordformreason button[action=process]'] = {
+            click: function (el) {
+                console.log(el);
+                me.reasonProcessOnClick();
+            }
+        };
+
+        newEvs['absentrecordformtlk button[action=process]'] = {
+            click: function () {
+                me.tlkProcessOnClick();
+            }
+        };
+
+        newEvs['absentrecordformtime button[action=process]'] = {
+            click: function () {
+                me.timeProcessOnClickAbsRec();
+            }
+        };
+
+        newEvs['absentrecordgrid toolbar button[action=fixdate]'] = {
+            click: function (el) {
+                me.fixDate();
+            }
+        };
+        newEvs['absentrecordformsetupshift button[action=shiftexcel]'] = {
+            click: function () {
+                me.showShifExcelForm();
+            }
+        };
+
+        newEvs['absentrecordformshiftexcel #file_shiftexcel'] = {
+            change: function (fld, a) {
+                me.formShiftExcelUpload(fld, a, 'mode');
+            }
+        };
+
+        newEvs['absentrecordformtooltransfer #file_csvabsent'] = {
+            change: function (fld, a) {
+                me.formAbsentCsvUpload(fld, a, 'mode');
+            }
+        };
+
+        newEvs['absentrecordformtooltransfer #modeTransferID'] = {
+            change: function (fld, a) {
+                me.modeTransferOnSelect();
+            }
+        };
+
+
+        newEvs['absentrecordgrid toolbar button[action=cutibersama]'] = {
+            click: function (el) {
+                me.toolCutiBersama().showForm();
+            }
+        };
+        newEvs['absentrecordformcutibersama [action=process]'] = {
+            click: function (el) {
+                me.toolCutiBersama().proses();
+            }
+        };
+        newEvs['absentrecordemployeecutibersamagrid toolbar [action=destroy]'] = {
+            click: function (el) {
+                me.toolCutiBersama().removeEmployee();
+            }
+        };
+        newEvs['absentrecordformsetupshift  button[action=clear_selection]'] = {
+            click: function (el) {
+                me.setupShiftClearSelection();
+            }
+        };
+
+        ///////// setuh shift check box
+        newEvs['absentrecordformsetupshift  [name=day_101]'] = {
+            change: function (el) {
+                me.setupShiftCheckAll(1);
+            }
+        };
+        newEvs['absentrecordformsetupshift  [name=day_102]'] = {
+            change: function (el) {
+                me.setupShiftCheckAll(2);
+            }
+        };
+        newEvs['absentrecordformsetupshift  [name=day_103]'] = {
+            change: function (el) {
+                me.setupShiftCheckAll(3);
+            }
+        };
+        newEvs['absentrecordformsetupshift  [name=day_104]'] = {
+            change: function (el) {
+                me.setupShiftCheckAll(4);
+            }
+        };
+        newEvs['absentrecordformsetupshift  [name=day_105]'] = {
+            change: function (el) {
+                me.setupShiftCheckAll(5);
+            }
+        };
+        newEvs['absentrecordformsetupshift  [name=day_106]'] = {
+            change: function (el) {
+                me.setupShiftCheckAll(6);
+            }
+        };
+        newEvs['absentrecordformsetupshift  [name=day_107]'] = {
+            change: function (el) {
+                me.setupShiftCheckAll(7);
+            }
+        };
+
+        newEvs['absentrecordformreason button[action=deletereason]'] = {
+            click: function () {
+                me.reasonDeleteOnClick();
+            }
+        };
+
+        newEvs['absentrecordgrid button[action=invalidabsent]'] = {
+            click: function () {
+                me.invalidabsentOnClick();
+            }
+        };
+
+        newEvs['absentrecordforminvalidabsent button[action=cari]'] = {
+            click: function () {
+                me.cariInvalidObjectOnClick();
+            }
+        };
+        newEvs['absentrecordforminvalidabsent [name=select_all]'] = {
+            change: function () {
+                me.invalidAbsentPilihSemuaOnCheck();
+            }
+        };
+        newEvs['absentrecordforminvalidabsent button[action=send_mail]'] = {
+            click: function () {
+                me.invalidAbsentSendMailOnClick();
+            }
+        };
+        newEvs['absentrecordforminvalidabsent [name=department_id]'] = {
+            blur: function () {
+                me.invalidAbsentDptOnBlur();
+            }
+        };
+        newEvs['absentrecordformcutibersama [name=start_date]'] = {
+            change: function () {
+                me.fcbStartDateOnBlur();
+            }
+        };
+        newEvs['absentrecordformcutibersama [name=end_date]'] = {
+            change: function () {
+                me.fcbEndDateOnBlur();
+            }
+        };
+        /* start added by ahmad riadi 06-04-2017 */
+        newEvs['absentrecordgrid toolbar button[action=transferbyintranet]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.showFormOptionintranet();
+            }
+
+
+        };
+        newEvs['absentrecordgrid toolbar button[action=viewlog]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.Formviewlogshow();
+            }
+        };
+        newEvs['absentrecordgridbrowseintranetcuti actioncolumn'] = {
+            click: this.gridIntranetCutiActionColumnClick
+        }
+        newEvs['absentrecordgridbrowseintranetijin actioncolumn'] = {
+            click: this.gridIntranetIjinActionColumnClick
+        }
+        newEvs['absentrecordgridbrowseintranetdinas actioncolumn'] = {
+            click: this.gridIntranetDinasActionColumnClick
+        }
+        newEvs['absentrecordformoptionscuti button[action=getdata]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.getFilterdatacuti();
+            }
+        };
+        newEvs['absentrecordformoptionscuti button[action=cleardata]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.getFormoptioncuti().getForm().reset();
+                me.getDatacutiintranet();
+            }
+
+        };
+
+        newEvs['absentrecordformoptionsijin button[action=getdata]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.getFilterdataijin();
+            }
+        };
+        newEvs['absentrecordformoptionsijin button[action=cleardata]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.getFormoptionijin().getForm().reset();
+                me.getDataijinintranet();
+            }
+
+        };
+        newEvs['absentrecordformoptionsdinas button[action=getdata]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.getFilterdatadinas();
+            }
+        };
+        newEvs['absentrecordformoptionsdinas button[action=cleardata]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.getFormoptiondinas().getForm().reset();
+                me.getDatadinasintranet();
+            }
+
+        };
+        newEvs['absentrecordformtransferbyintranet button[action=process]'] = {
+            click: function () {
+                me.routeGrid();
+            }
+        };
+        newEvs['absentrecordformoptionscuti'] = {
+            afterrender: function () {
+                var me;
+                me = this;
+                me.formOptionsCutiAfterrender();
+            },
+            boxready: function () {
+                var me, form;
+                me = this;
+                me.getDatacutiintranet();
+            }
+        };
+        newEvs['absentrecordformoptionsijin'] = {
+            afterrender: function () {
+                var me;
+                me = this;
+                me.formOptionsIjinAfterrender();
+            },
+            boxready: function () {
+                var me;
+                me = this;
+                me.getDataijinintranet();
+            }
+        };
+        newEvs['absentrecordformoptionsdinas'] = {
+            afterrender: function () {
+                var me;
+                me = this;
+                me.formOptionsDinasAfterrender();
+            },
+            boxready: function () {
+                var me;
+                me = this;
+                me.getDatadinasintranet();
+            }
+        };
+
+        newEvs['absentrecordformdataintranetcuti'] = {
+            afterrender: function () {
+                var me, form;
+                me = this;
+                me.formDataCutiAfterrender();
+            },
+        };
+        newEvs['absentrecordformdataintranetcuti [name=absenttype_id]'] = {
+            change: function (that, newValue, oldValue, eOpt) {
+                var me, form;
+                me = this;
+                form = me.getFormdataintranetcuti();
+                if (me.hrd_check_cuti !== 'YES') {
+                    if (newValue !== me.absenttype_id_default) {
+                        form.down("[name=sendmail]").setValue(true);
+                    } else {
+                        form.down("[name=sendmail]").setValue(false);
+                    }
+                }
+
+            },
+        };
+        newEvs['absentrecordformdataintranetcuti [name=hrd_comment]'] = {
+            blur: function (that, The, eOpts) {
+                var me, form, hrd_comment, counter_hrd_comment;
+                me = this;
+                form = me.getFormdataintranetcuti();
+                hrd_comment = form.down("[name=hrd_comment]").getValue();
+                counter_hrd_comment = hrd_comment.length;
+                if (me.hrd_check_ijin !== 'YES') {
+                    if (counter_hrd_comment > 0) {
+                        form.down("[name=sendmail]").setValue(true);
+                    } else {
+                        form.down("[name=sendmail]").setValue(false);
+                    }
+                }
+
+            },
+        };
+        newEvs['absentrecordformdataintranetijin'] = {
+            afterrender: function () {
+                var me, form;
+                me = this;
+                me.formDataIjinAfterrender();
+            },
+        };
+        newEvs['absentrecordformdataintranetijin [name=hrd_comment]'] = {
+            blur: function (that, The, eOpts) {
+                var me, form, hrd_comment, counter_hrd_comment;
+                me = this;
+                form = me.getFormdataintranetijin();
+                hrd_comment = form.down("[name=hrd_comment]").getValue();
+                counter_hrd_comment = hrd_comment.length;
+
+                if (me.hrd_check_ijin !== 'YES') {
+                    if (counter_hrd_comment > 0) {
+                        form.down("[name=sendmail]").setValue(true);
+                    } else {
+                        form.down("[name=sendmail]").setValue(false);
+                    }
+                }
+
+            },
+        };
+        newEvs['absentrecordformdataintranetdinas'] = {
+            afterrender: function () {
+                var me, form;
+                me = this;
+                me.formDataDinasAfterrender();
+            },
+        };
+        newEvs['absentrecordformdataintranetdinas [name=hrd_comment]'] = {
+            blur: function (that, The, eOpts) {
+                var me, form, hrd_comment, counter_hrd_comment;
+                me = this;
+                form = me.getFormdataintranetdinas();
+                hrd_comment = form.down("[name=hrd_comment]").getValue();
+                counter_hrd_comment = hrd_comment.length;
+
+                if (me.hrd_check_dinas !== 'YES') {
+                    if (counter_hrd_comment > 0) {
+                        form.down("[name=sendmail]").setValue(true);
+                    } else {
+                        form.down("[name=sendmail]").setValue(false);
+                    }
+                }
+
+            },
+        };
+        newEvs['absentrecordformdataintranetcuti button[action=save]'] = {
+            click: this.saveIntranetCutitoStore
+        };
+        newEvs['absentrecordformoptionscuti button[action=process]'] = {
+            click: this.SaveIntranetcutiToCES
+        };
+        newEvs['absentrecordformoptionsijin button[action=process]'] = {
+            click: this.SaveIntranetijinToCES
+        };
+        newEvs['absentrecordformdataintranetijin button[action=save]'] = {
+            click: this.saveIntranetIjintoStore
+        };
+        newEvs['absentrecordformoptionsdinas button[action=process]'] = {
+            click: this.SaveIntranetdinasToCES
+        };
+        newEvs['absentrecordformdataintranetdinas button[action=save]'] = {
+            click: this.saveIntranetDinastoStore
+        };
+        newEvs['absentrecordformviewlog'] = {
+            afterrender: function () {
+                var me;
+                me = this;
+                me.FromviewLogAfterrender();
+            },
+            boxready: function () {
+                var me;
+                me = this;
+                me.getDataviewlog();
+            }
+        };
+        newEvs['absentrecordformviewlog button[action=getdata]'] = {
+            click: function () {
+                var me;
+                me = this;
+                me.getDataviewlog();
+            }
+        };
+        newEvs['absentrecordformviewlog button[action=cleardata]'] = {
+            click: function () {
+                var me, form, dates;
+                me = this;
+                form = me.getFormviewlog();
+                form.getForm().reset();
+                dates = me.getStartEnddatecurmonth();
+                form.down('[name=fromdate]').setValue(dates.fromdate);
+                form.down('[name=untildate]').setValue(dates.untildate);
+                me.getDataviewlog();
+            }
+
+        };
+
+        /* end added by ahmad riadi 06-04-2017 */
+        this.control(newEvs);
+        this.control(processAbsent.getEvents());
+
+    },
+    fcbStartDateOnBlur: function () {
+        var me = this;
+        var f = me.getFormcutiber();
+        var difDay = me.tools.getDiffDay(f.down("[name=start_date]").getValue(), f.down("[name=end_date]").getValue());
+        //  difDay = difDay+1;
+        difDay = difDay * -1;
+        difDay = difDay + 1;
+        f.down("[name=jml_hari_kepotong]").setValue(difDay);
+
+
+    },
+    fcbEndDateOnBlur: function () {
+        var me = this;
+        me.fcbStartDateOnBlur();
+
+    },
+    invalidAbsentDptOnBlur: function () {
+        var me = this;
+        var f = me.getForminvalidabsent();
+
+        var s = me.getGridinvalidabsent().getStore();
+
+        var ids = f.down("[name=department_id]").getValue();
+        s.clearFilter();
+        s.filterBy(function (rec, id) {
+
+            if (ids.indexOf(rec.raw.department.department_id) >= 0) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+    },
+    invalidAbsentSendMailOnClick: function () {
+        var me = this;
+        var f = me.getForminvalidabsent();
+        var g = me.getGridinvalidabsent();
+
+
+        var selects = g.getSelectionModel().getSelection();
+        console.log(selects);
+
+        if (selects.length == 0) {
+            me.tools.alert.warning("Tidak ada karyawan yang terpilih.");
+            return;
+        }
+
+        /// cek email
+        var noEmail = "";
+        var emails = [];
+        for (var i in selects) {
+            if (selects[i]['data']['employee_email_ciputra'] == "") {
+                noEmail += selects[i]['data']['employee_employee_name'] + ",";
+            } else {
+                emails.push(selects[i]['data']['employee_email_ciputra'] + "##" + selects[i]['data']['employee_employee_name']);
+            }
+        }
+
+        if (noEmail.length > 0) {
+            me.tools.alert.warning("Karyawan berikut tidak ada emailnya : " + noEmail + ". Silahkan mendaftarkan emailnya terlebih dahulu.");
+            return;
+        }
+
+        f.setLoading("Memproses email....");
+
+        me.tools.ajax({
+            params: {
+                emails: emails.join("~")
+            },
+            success: function (data, model) {
+                console.log(data);
+                var status = data.others[0][0]['HASIL'];
+                var msg = data.others[0][0]['MSG'];
+                if (!status) {
+                    me.tools.alert.warning(msg);
+                } else {
+                    me.tools.alert.info("Sukses!");
+                }
+                f.setLoading(false);
+
+            }
+        }).read('sendmailia');
+    },
+    invalidAbsentPilihSemuaOnCheck: function () {
+        var me = this;
+        var f = me.getForminvalidabsent();
+        var v = f.down("[name=select_all]").getValue();
+
+
+        if (v === false) {
+            me.getGridinvalidabsent().getSelectionModel().deselectAll();
+        } else {
+            me.getGridinvalidabsent().getSelectionModel().selectAll();
+        }
+
+    },
+    cariInvalidObjectOnClick: function () {
+        var me = this;
+        var g = me.getGridinvalidabsent();
+        var f = me.getForminvalidabsent();
+        var vs = f.getValues();
+        var ds = f.down("[name=department_id]").getStore();
+
+
+        /// durasi maksimal 30 hari
+        var start = moment(f.down("[name=start_date]").getValue()); //tgl klaim
+        var end = moment(f.down("[name=end_date]").getValue()); //tanggal terakhir klaim
+        var duration = moment.duration(end.diff(start));
+        var days = duration.asDays();
+
+        console.log(days);
+
+        if (days > 30) {
+            me.tools.alert.warning("Durasi tanggal maksimal 30 hari");
+            return;
+        }
+
+        g.doInit();
+        g.getStore().getProxy().extraParams.start_date = vs.start_date;
+        g.getStore().getProxy().extraParams.end_date = vs.end_date;
+
+        g.doLoad({}, function () {
+            /// refill combo departemen sesuai grid karyawan
+            var dftDepartemen = [];
+
+            //  ds.clearFilter();
+
+
+
+            ds.loadData([], false);
+
+            g.getStore().each(function (rec) {
+                var code = rec.get("department_code");
+
+                if (dftDepartemen.indexOf(code) < 0) {
+                    dftDepartemen.push(code);
+
+
+                    ds.add({
+                        'department_id': rec.get("department_department_id"),
+                        'code': code
+                    });
+
+                }
+
+            });
+
+
+
+
+
+
+
+
+
+
+
+            f.down("[name=select_all]").setValue(false);
+        });
+    },
+    invalidabsentOnClick: function () {
+        var me = this;
+
+        var w = me.instantWindow("FormInvalidabsent", 600, "Notifikasi Email", "create", "invalidabsent");
+        var f = me.getForminvalidabsent();
+        f.setLoading("Please wait...");
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.department, f.down("[name=department_id]")).comboBox();
+                f.setLoading(false);
+
+            }
+        }).read('invalidabsentinit');
+        //  var f = me.getFormcutiber();
+
+    },
+    loadPage: function (store) {
+        store.loadPage(1, {
+            callback: function (rec, operation, success) {
+                if (!me.getGrid().getStore().modelExist) {
+
+                    me.getGrid().attachModel(operation);
+                }
+
+
+
+            }
+        });
+        var me = this;
+        // me.getGrid().xLoad();
+    },
+    refreshGrid: function () {
+        var me = this;
+        if (me.getGridemployee().getStore().getCount() > 0) {
+            me.getGridemployee().getSelectionModel().select(0);
+        }
+
+    },
+    reasonDeleteOnClick: function () {
+        var me = this;
+
+        if (!me.reasonDeleteClick) { // mencegah duplikasi proses
+            var f = me.getFormreason();
+            console.log(f.getForm().getValues());
+            f.setLoading("Deleting data...");
+            me.tools.ajax({
+                params: {
+                    absentdetail_id: f.down("[name=absentdetail_id]").getValue()
+                },
+                fail: function (msg, data) {
+
+                    f.setLoading(false);
+                },
+                success: function (data) {
+                    f.setLoading(false);
+                    f.up("window").close();
+                    me.refreshGrid();
+                    me.tools.alert.info("Success!");
+                }
+            }).process('deletereason');
+
+            me.reasonDeleteClick = true;
+        }
+
+    },
+    setupShiftCheckAll: function (row) {
+        var me = this;
+        var f = me.getFormshift();
+
+        var val = f.down("[name=day_" + (100 + row) + "]").getValue();
+        row = row >= 7 ? 0 : row;
+        for (var i = 1; i <= 31; i++) {
+            if (i % 7 == row) {
+                f.down("[name=day_" + i + "]").setValue(val);
+            }
+
+        }
+    },
+    setupShiftClearSelection: function () {
+        //alert("Hello");
+        var me = this;
+        var f = me.getFormshift();
+
+
+        for (var i = 1; i <= 31; i++) {
+            f.down("[name=day_" + i + "]").setValue(0);
+            //cb.push({boxLabel: i, name: 'day_' + i, inputValue: i, margin: 5});
+        }
+        for (var i = 1; i <= 7; i++) {
+            f.down("[name=day_" + (i + 100) + "]").setValue(0);
+        }
+
+
+    },
+    toolCutiBersama: function () {
+        var me = this;
+        var x = {
+            showForm: function () {
+
+                var w = me.instantWindow("FormCutiBersama", 600, "Cuti Bersama", "create", "cutiberwindow");
+                var f = me.getFormcutiber();
+                var g = w.down("grid");
+                var that = this;
+                g.doInit();
+                g.doLoad({}, function (rec, operation, success) {
+                    that.updateJumlah();
+
+
+
+
+                });
+                // var g = f.down("grid");
+                // g.doInit();
+
+                /*
+                 
+                 */
+
+
+            },
+            proses: function () {
+                var f = me.getFormcutiber();
+                var vs = f.getForm().getValues();
+
+                var ids = "";
+
+                f.setLoading("Proses cuti bersama...");
+
+                me.getGridcutibersama().getStore().each(function (rec) {
+
+                    if (rec != null) {
+                        ids += rec.get("employee_id") + "~";
+                    }
+
+                });
+
+
+
+                vs["ids"] = ids;
+
+                me.tools.ajax({
+                    params: vs,
+                    fail: function (msg, data) {
+
+                        f.setLoading(false);
+                        /// tidak ada confirm lagi
+                        if (data["JENISERR"] == 99) {
+                            me.tools.alert.warning(data["MSG"]);
+                            return;
+                        }
+
+                        Ext.Msg.show({
+                            title: 'Confirm',
+                            msg: msg + '. Lanjut proses cuti bersama ?',
+                            buttons: Ext.Msg.YESNO,
+                            icon: Ext.Msg.QUESTION,
+                            fn: function (clicked) {
+
+                                /// jika yes maka mengirim ulang request 
+                                if (clicked === "yes") {
+                                    vs["confirmed"] = true;
+                                    me.tools.ajax({
+                                        params: vs,
+                                        fail: function (msg, data) {
+
+                                            f.setLoading(false);
+                                            me.tools.alert.warning(msg);
+
+                                        },
+                                        success: function (data) {
+                                            f.setLoading(false);
+                                            f.up("window").close();
+                                            me.tools.alert.info("Success!");
+                                        }
+                                    }).processNoWarningAlert('cutibersama');
+                                }
+
+                            }
+                        });
+
+                    },
+                    success: function (data) {
+                        f.setLoading(false);
+                        f.up("window").close();
+                        me.tools.alert.info("Success!");
+                    }
+                }).processNoWarningAlert('cutibersama');
+            },
+            removeEmployee: function () {
+
+                var g = me.getGridcutibersama();
+                var recs = g.getSelectionModel().getSelection();
+                var s = g.getStore();
+                var selectedCount = 0;
+                var cTotal = s.getCount();
+                if (recs.length > 0) {
+                    // var ids = "";
+                    for (var i in recs) {
+                        selectedCount++;
+                        s.remove(recs[i]);
+                        // ids +=recs[i].get("employee_id")+"~";
+                    }
+
+
+
+                    this.updateJumlah();
+
+                } else {
+                    me.tools.alert.warning("Tidak ada karyawan terpilih");
+                }
+
+                // console.log(recs);
+            },
+            updateJumlah: function () {
+
+                me.getGridcutibersama().up("form").down("#labelJumlah").setText("Jumlah karyawan terpilih: " + me.getGridcutibersama().getStore().getCount());
+            }
+        };
+        return x;
+    },
+    modeTransferOnSelect: function () {
+        var me = this;
+        var f = me.getFormtransfer();
+        var vs = f.getForm().getValues();
+        var m = vs['mode_transfer'];
+        console.log(vs['mode_transfer']);
+        f.down("#file_csvabsent").hide();
+        f.down("#transferDateID").hide();
+        f.down("[name=delete]").hide();
+        f.down("[action=process]").hide();
+        if (m === "C") {
+            f.down("#file_csvabsent").show();
+        } else if (m === "D") {
+            //  f.down("#file_csvabsent").show();
+            f.down("#transferDateID").show();
+            f.down("[name=delete]").show();
+            f.down("[action=process]").show();
+        }
+    },
+    formAbsentCsvUpload: function (fld, a, mode) {
+        var me = this;
+
+
+        var me = this;
+        var form = fld.up("form");
+        var p = me.getPanel();
+        me.uploadFile({
+            form: form,
+            showalert: false,
+            params: {'type': 'csv'},
+            callback: {
+                success: function (fn) {
+
+                    //form.up("window").close();
+
+
+                    form.setLoading("Transfering absent from csv...");
+
+                    me.tools.ajax({
+                        params: {
+                            file_name: fn,
+                            start_day: 0,
+                            end_day: 0,
+                            is_delete: 0
+                        },
+                        autoAbort: true,
+                        success: function (data, model) {
+
+                            if (data['others'][0][0]['STATUS']) {
+                                // me.tools.alert.info("Success transfer");
+                                me.fpnl = data['others'][0][0]['FPNUMBERLIST'];//FPNUMBERLIST
+                                p.setLoading(false);
+
+                                me.transferAjax(form, 1, me.fpnl.length);
+
+                            } else {
+                                me.tools.alert.warning(data['others'][0][0]['ERRORMSG']);
+                                form.setLoading(false);
+
+                            }
+
+                            //  f.setLoading(false);
+                            //f.up("window").close();
+                        }
+
+                    }).read('transferinfocsv');
+
+
+                },
+                failure: function () {
+                    p.setLoading(false);
+                }
+            }
+        });
+    },
+    showShifExcelForm: function () {
+        var me = this;
+        var w = me.instantWindow("FormShiftExcel", 400, "Shift from Excel", "processexcel", "toolShiftExcelWinId");
+        var f = w.down("form");
+
+    },
+    formShiftExcelUpload: function (fld, a, mode) {
+        var me = this;
+
+        /*  me.tools.ajax({
+         params: {
+         },
+         success: function(data, model) {
+         
+         
+         }
+         }).read('testexcel');
+         
+         
+         return;
+         */
+        var me = this;
+        var form = fld.up("form");
+        var p = me.getPanel();
+        me.uploadImage({
+            form: form,
+            showalert: false,
+            callback: {
+                success: function (fn) {
+                    //  me.refreshPhotoInfo(imageName);
+                    form.up("window").close();
+                    me.getFormshift().up("window").close();
+                    p.setLoading("Update tipe shift...");
+                    me.tools.ajax({
+                        params: {
+                            file_name: fn,
+                            month: me.getSelectedMonth(),
+                            year: me.getSelectedYear()
+                        },
+                        success: function (data, model) {
+                            p.setLoading(false);
+                            if (data['others'][0][0]['HASIL']) {
+                                me.tools.alert.info("Success");
+                            } else {
+                                me.tools.alert.warning(data['others'][0][0]['MSG']);
+                            }
+
+
+                        }
+                    }).read('shifttypeexcel');
+                },
+                failure: function () {
+                    p.setLoading(false);
+                }
+            }
+        });
+
+
+    },
+    fixDate: function () {
+        var me = this;
+        var p = me.getPanel();
+        p.setLoading(true);
+        me.tools.ajax({
+            params: {
+                month: me.getSelectedMonth(),
+                year: me.getSelectedYear()
+            },
+            success: function (data, model) {
+                if (data['others'][0][0]['HASIL']) {
+                    me.tools.alert.info("Success");
+                } else {
+                    me.tools.alert.error("Error.");
+                }
+                p.setLoading(false);
+            }
+        }).read('fixdate');
+    },
+    timeProcessOnClickAbsRecClicked: false,
+    timeProcessOnClickAbsRec: function () {
+
+        var me = this;
+        if (me.timeProcessOnClickAbsRecClicked) {
+            return;
+        }
+        var tools = new Hrd.library.absentrecord.Tools();
+        var f = me.getFormtime();
+
+        var rec = me.getGrid().getSelectedRecord();
+        var data = {};
+        var timeIn = f.down("[name=time_in]").getValue();
+        var timeOut = f.down("[name=time_out]").getValue();
+        var zoneIn = tools.getTimeZone(timeIn, true);
+        var zoneOut = tools.getTimeZone(timeOut, false);
+        if (zoneIn) {
+            data[zoneIn] = f.down("[name=time_in]").getValue();
+        } else {
+            console.log("Tidak ada data in");
+        }
+        if (zoneOut) {
+            data[zoneOut] = f.down("[name=time_out]").getValue();
+        } else {
+            console.log("gak ada data out");
+        }
+
+        if (rec) {
+            me.timeProcessOnClickAbsRecClicked = true;
+            //updatetime
+            f.setLoading("Updating...");
+            data = f.getForm().getValues();
+            data["employee_id"] = me.getSelectedEmployee().get("employee_employee_id");
+            data["month"] = me.getSelectedMonth();
+            data["year"] = me.getSelectedYear();
+            data["day"] = rec.get("day");
+
+            data['time_in'] = timeIn;
+            data['time_out'] = timeOut;
+            data['shifttype_shifttype_id'] = rec.get("shifttype_shifttype_id");
+
+            me.tools.ajax({
+                params: data,
+                success: function (data, model) {
+
+                    if (data['others'][0][0]['HASIL']) {
+                        me.tools.alert.info("Success");
+                    } else {
+                        me.tools.alert.warning(data['others'][0][0]['MSG']);
+                    }
+                    f.setLoading(false);
+                    f.up("window").close();
+                    me.emGrid().select();
+                    me.timeProcessOnClickAbsRecClicked = false;
+
+                }
+            }).read('updatetime');
+        } else {
+            console.log("gak ada data");
+        }
+
+    },
+    tlkProcessOnClicked: false,
+    tlkProcessOnClick: function () {
+        var me = this;
+        var f = me.getFormtlk();
+        // var g = f.down("grid");
+        // var rec = g.getSelectedRecord();
+
+
+
+        var data = f.getForm().getValues();
+        if (!data['parametertlk_id']) {
+            data['parametertlk_id'] = 0;
+        }
+        //data['parametertlk_id'] = rec ? rec.get('parametertlk_id') : 0;
+
+        // me.tools.hermes(f).save(data, 'createtlk');
+        if (me.tlkProcessOnClicked) {
+            return;
+        }
+
+        me.tlkProcessOnClicked = true;
+
+        me.tools.ajax({
+            params: data,
+            success: function (data, model) {
+
+                if (data['others'][0][0]['HASIL']) {
+                    me.tools.alert.info("Success");
+                } else {
+                    me.tools.alert.warning(data['others'][0][0]['MSG']);
+                }
+                f.setLoading(false);
+                f.up("window").close();
+                me.emGrid().select();
+                me.tlkProcessOnClicked = false;
+
+            }
+        }).read('createtlk');
+
+
+    },
+    reasonProcessOnClick: function () {
+        var me = this;
+
+        var emIndex = -1;
+        var ge = me.getGridemployee();
+        emIndex = ge.getStore().indexOf(ge.getSelectedRecord());
+
+        if (emIndex < 0) {
+            return;
+        }
+
+
+
+
+        var f = me.getFormreason();
+        var data = f.getForm().getValues();
+        var at = f.down("[name=absenttype_absenttype_id]");
+        var sat = at.getStore();
+        var sab = me.getGrid(); // grid absent record
+        var absenttypeId = me.tools.intval(sab.getSelectedRecord().get("absenttype_absenttype_id"));
+
+
+
+        /// jika tipe alasan tidak hadir termasuk tipe potong cuti
+        /// hanya berlaku untuk pembuatan absenttype yang baru.
+        if (at.getValue() > 0 && absenttypeId == 0) {
+            var index = sat.findExact('absenttype_id', at.getValue());
+
+            console.log(sat.getAt(index).get('is_cutleave'));
+
+            if (sat.getAt(index).get('is_cutleave') === 1) {
+                /// cek jika ada hak cuti yang terpilih
+                var gjc = me.getGridjatahcuti();
+                var row = gjc.getSelectedRow();
+
+                /*
+                 if (row < 0) {
+                 me.tools.alert.warning("Silahkan pilih salah satu hak cuti yang ingin dikurangi.");
+                 return;
+                 }
+                 
+                 
+                 
+                 
+                 
+                 
+                 hakCutiId = gjc.getStore().getAt(row).get("leaveentitlements_id");
+                 data["leaveentitlements_id"] = hakCutiId;
+                 
+                 */
+
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        if (at.getValue() > 0) {
+            var atg = sat.getAt(sat.findExact('absenttype_id', at.getValue())).get('absenttypegroup_absenttypegroup_id');
+            // console.log(atg);
+            //  console.log(at.getValue());
+            data["absenttypegroup_absenttypegroup_id"] = atg;
+            data["absenttype_code"] = sat.getAt(sat.findExact('absenttype_id', at.getValue())).get('code');
+        } else {
+            me.tools.alert.warning("Silahkan pilih alasan tidak hadir terlebih dahulu.");
+            return;
+        }
+
+        f.setLoading("Saving your data");
+
+        me.tools.ajax({
+            params: data,
+            success: function (data, model) {
+                console.log(data);
+                if (data['others'][0][0]['HASIL']) {
+                    me.tools.alert.info("Success");
+                    f.up("window").close();
+                    me.getGridemployee().getSelectionModel().select(emIndex);
+                } else {
+                    me.tools.alert.warning(data['others'][0][0]['MSG']);
+                }
+                f.setLoading(false);
+            }
+        }).read('createreason');
+
+    },
+    isCutiChange: function () {
+        var me = this;
+        var f = me.getFormreason();
+        var s = f.down("[name=absenttype_absenttype_id]").getStore();
+        // filter untuk tipe cuti saja
+
+        var idGroupLeave = me.globalParams['ABSENTTYPEGROUP_LEAVE'];
+        var v = f.down("[name=is_cuti]").getValue();
+        s.clearFilter();
+
+        if (v === false)
+            return false;
+
+        if (s.getCount() > 0 && idGroupLeave > 0) {
+
+            f.down("[name=absenttype_absenttype_id]").setValue(false);
+            me.tools.filter(s, 'absenttypegroup_absenttypegroup_id', idGroupLeave);
+
+            /*
+             s.filterBy(function(rec, id) {
+             
+             if (rec.raw.absenttypegroup_absenttypegroup_id === idGroupLeave) {
+             return true;
+             }
+             else {
+             return false;
+             }
+             });
+             
+             */
+        }
+    },
+    gridTimeItemClick: function (index) {
+        var me = this;
+        var rec = me.getGrid().getStore().getAt(index);
+
+
+        me.instantWindow("FormTime", 600, "Time", "processtime", "toolProcessTimeWinId");
+
+
+        var f = me.getFormtime();
+
+        console.log(rec);
+        if (!rec) {
+            console.log("Tidak ada absent sheet yang terpilih");
+            return;
+        }
+        f.down("[name=absentdetail_id]").setValue(rec.get("absentdetail_id"));
+
+        // set default time in dan time out
+
+        var timeIn = {}, timeOut = {};
+        timeIn['A'] = me.tools.dateFunc(rec.get('in_7_14')).toHIS();
+        timeIn['B'] = me.tools.dateFunc(rec.get('in_15_21')).toHIS();
+        timeIn['C'] = me.tools.dateFunc(rec.get('in_22_6')).toHIS();
+        timeOut['A'] = me.tools.dateFunc(rec.get('out_7_14')).toHIS();
+        timeOut['B'] = me.tools.dateFunc(rec.get('out_15_21')).toHIS();
+        timeOut['C'] = me.tools.dateFunc(rec.get('out_22_6')).toHIS();
+
+        /// check yang ada datannya
+        var fixTimeIn = false;
+        var fixTimeOut = false;
+
+
+        for (var i in timeIn) {
+            if (!fixTimeIn) {
+                if (me.tools.timeToDecimal(timeIn[i]) > 0) {
+                    fixTimeIn = timeIn[i];
+                }
+            }
+
+        }
+
+        for (var i in timeOut) {
+            if (!fixTimeOut) {
+                if (me.tools.timeToDecimal(timeOut[i]) > 0) {
+                    fixTimeOut = timeOut[i];
+                }
+            }
+
+        }
+
+        if (fixTimeIn) {
+            f.down("[name=time_in]").setValue(fixTimeIn);
+        }
+
+        if (fixTimeOut) {
+            f.down("[name=time_out]").setValue(fixTimeOut);
+        }
+
+
+        f.down("[name=description]").setValue(rec.get('description'));
+        f.down("[name=attendance_total]").setValue(rec.get('attendance_total'));
+
+
+    },
+    gridTlkItemClick: function (index) {
+        var me = this;
+
+        var rec = me.getGrid().getStore().getAt(index);
+
+        me.instantWindow("FormTlk", 600, "TLK", "processtlk", "toolProcessTlkWinId");
+
+        var f = me.getFormtlk();
+        // var sg = f.down("grid");
+        // sg.getSelectionModel().setSelectionMode('SINGLE');
+        var w = f.up("window");
+        f.setLoading("Please wait..");
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+
+
+                me.tools.wesea(data.parametertlk, f.down("[name=parametertlk_id]")).comboBox();
+
+                /*
+                 me.tools.wesea({
+                 data: data,
+                 model: model
+                 }, sg).grid();
+                 */
+
+                var recE = me.getSelectedEmployee();
+
+                if (recE) {
+                    f.down("[name=employee_employee_id]").setValue(recE.get("employee_employee_id"));
+                }
+
+
+                /// set default date
+                if (rec) {
+                    var date = new Date();
+                    date.setFullYear(me.getSelectedYear());
+                    date.setMonth(me.getSelectedMonth() - 1);
+                    date.setDate(rec.get('day'));
+                    f.down("[name=start_date]").setValue(date);
+                    f.down("[name=end_date]").setValue(date);
+
+
+                    /// jika sudah ada onduty
+                    console.log(rec);
+                    var onDutyId = rec.get('parametertlk_parametertlk_id');
+                    console.log("onduty id: " + onDutyId);
+                    f.down("[name=parametertlk_id]").setValue(onDutyId);
+                    f.down("[name=tlk_project_type]").setValue(rec.get('tlk_project_type'));
+                    // var index = sg.getStore().findExact('parametertlk_id', onDutyId);
+                    // if (index >= 0) {
+                    // sg.getSelectionModel().select(index);
+                    // }
+
+                    f.down("[name=tlk_other]").setValue(rec.get("tlk_other"));
+                }
+
+
+                f.setLoading(false);
+            }
+        }).read('tlklist');
+    },
+    gridReasonItemClick: function (index) {
+        var me = this;
+        //  console.log(me.getGrid().getColumnModel());
+        var rec = me.getGrid().getStore().getAt(index);
+        //Hrd.view.absentrecord.FormReason
+        me.instantWindow("FormReason", 600, "Alasan Tidak Hadir", "processreason", "toolProcessReasonWinId");
+
+        var f = me.getFormreason();
+        var w = f.up("window");
+        f.setLoading("Please wait..");
+        me.reasonDeleteClick = false;
+        me.tools.ajax({
+            params: {
+                leave_id: rec.get("leave_leave_id")
+            },
+            success: function (data, model) {
+                me.tools.wesea(data.absenttype, f.down("[name=absenttype_absenttype_id]")).comboBox();
+
+                me.globalParams['ABSENTTYPEGROUP_LEAVE'] = me.tools.intval(data.others[0][0]['ABSENTTYPEGROUP_LEAVE']);
+                me.globalParams['ABSENTTYPEGROUPCODE_LEAVE'] = data.others[0][0]['ABSENTTYPEGROUPCODE_LEAVE'];
+                /// set default date
+                if (rec) {
+                    var date = new Date();
+                    date.setFullYear(me.getSelectedYear());
+                    date.setMonth(me.getSelectedMonth() - 1);
+                    date.setDate(rec.get('day'));
+                    f.down("[name=start_date]").setValue(date);
+                    f.down("[name=end_date]").setValue(date);
+                    f.down("[name=absentdetail_id]").setValue(rec.get("absentdetail_id"));
+                    f.down("[name=absenttype_absenttype_id]").setValue(rec.get("absenttype_absenttype_id"));
+                    f.down("[name=note]").setValue(rec.get("description"));
+
+                    if (data.others[0][0]['CUTI']) {
+                        f.down("[name=is_halfday]").setValue(data.others[0][0]['CUTI']['is_halfday'] == 0 ? '0' : '1');
+                    }
+
+                    //  f.down("[name=is_halfday]").setValue(rec.get("is_halfday"));
+
+                }
+
+                var recE = me.getSelectedEmployee();
+
+                if (recE) {
+                    f.down("[name=employee_employee_id]").setValue(recE.get("employee_employee_id"));
+                }
+
+                /// jatah cuti
+                // f.setLoading("Mengambil informasi jatah cuti...");
+
+                var gjc = me.getGridjatahcuti();
+                gjc.getSelectionModel().setSelectionMode('SINGLE');
+                gjc.doInit();
+                gjc.doLoad({employee_employee_id: recE.get("employee_employee_id")}, function () {
+                    f.setLoading(false);
+                });
+
+                /// /jatah cuti
+
+
+            }
+        }).read('detailreason');
+
+    },
+    mainPanelBeforeRender: function (configs) {
+        this.callParent(arguments);
+        this.addCSSRule(document.styleSheets[0], "weekend-row", "background-color:red !important:");
+    },
+    addCSSRule: function (sheet, selector, rules, index) {
+        if ("insertRule" in sheet) {
+            sheet.insertRule(selector + "{" + rules + "}", index);
+        } else if ("addRule" in sheet) {
+            sheet.addRule(selector, rules, index);
+        }
+    },
+    toolExcel: function () {
+        var me = this;
+
+        var x = {
+            form: function () {
+
+                me.instantWindow("FormToolFileInput", 400, "Import from Excel", "processexcel", "toolProcessExcelWinId");
+
+            },
+            fileOnChange: function () {
+                var that = this;
+                var f = me.getFormexcel();
+                var vs = f.getValues();
+
+                that.uploadImage({
+                    form: f,
+                    callback: {
+                        success: function (imageName) {
+                            console.log(imageName);
+                        },
+                        failure: function () {
+
+                        }
+                    }
+                });
+
+            },
+            uploadImage: function (params) {
+
+                var form = params.form;
+                var callback = params.callback;
+
+                form.submit({
+                    url: 'hrd/' + me.controllerName + '/read',
+                    params: {
+                        mode_read: 'uploadexcel'
+                    },
+                    waitMsg: 'Uploading file...',
+                    success: function (f, a) {
+                        var respon = a.result.data.others[0][0];
+                        if (respon) {
+                            me.tools.alert.info(respon.MSG);
+                        }
+                    },
+                    failure: function (f, a) {
+                        //  me.dataSave(me,dataForm);
+
+                        callback.failure();
+                        var msg = "...";
+                        var respon = a.result.data.others[0][0];
+
+                        if (respon) {
+                            me.tools.alert.warning(respon.MSG);
+                        }
+
+                    }
+                });
+            }
+        };
+        return x;
+    },
+    toolTotalHourandLost: function () {
+        var me = this;
+
+        var x = {
+            form: function () {
+
+                me.instantWindow("FormToolProcessHourandLost", 400, "Process Hour and Lost Time", "processhal", "toolProcessHaLWinId");
+
+            },
+            processOnClick: function () {
+                var f = me.getFormhal();
+                var vs = f.getValues();
+                var opt = vs["option"];
+                var ajaxParams = {};
+                var isValid = false;
+                switch (opt) {
+                    case "employee":
+                        var emId = me.getSelectedEmployee();
+                        if (emId) {
+                            isValid = true;
+                            ajaxParams = {
+                                month: me.getSelectedMonth(),
+                                year: me.getSelectedYear(),
+                                process: 'employee',
+                                employee_id: emId.get("employee_employee_id")
+                            };
+                        } else {
+                            me.tools.alert.warning("Please select employee first");
+                        }
+
+                        break;
+                    case "division":
+                        var divId = me.getSelectedDepartment();
+                        if (divId === 0 || divId === 999) {
+                            me.tools.alert.warning("Please select department first");
+
+                        } else {
+                            isValid = true;
+                            ajaxParams = {
+                                month: me.getSelectedMonth(),
+                                year: me.getSelectedYear(),
+                                process: 'department',
+                                department_id: divId
+                            };
+                        }
+                        break;
+                    case "all":
+                        isValid = true;
+                        ajaxParams = {
+                            month: me.getSelectedMonth(),
+                            year: me.getSelectedYear(),
+                            process: 'all'
+                        };
+                        break;
+                }
+                if (isValid) {
+                    f.setLoading("Processing...");
+                    me.tools.ajax({
+                        params: ajaxParams,
+                        success: function (data, model) {
+
+                            if (data['others'][0][0]['STATUS']) {
+                                me.tools.alert.info("Success");
+
+                            } else {
+                                me.tools.alert.error("Something error when processing your request");
+                            }
+                            f.setLoading(false);
+                        }
+                    }).read('processhal');
+                }
+
+
+            }
+
+
+        };
+        return x;
+    },
+    toolProcessDay: function () {
+        var me = this;
+
+        var x = {
+            process: function () {
+                var p = me.getPanel();
+                p.setLoading("Processing Day..");
+                me.tools.ajax({
+                    params: {
+                        month: me.getSelectedMonth(),
+                        year: me.getSelectedYear()
+                    },
+                    success: function (data, model) {
+
+                        if (data['others'][0][0]['STATUS']) {
+                            me.tools.alert.info("Success");
+
+                        } else {
+                            me.tools.alert.error("Something error when processing your request");
+                        }
+                        p.setLoading(false);
+                    }
+                }).read('processday');
+            }
+        };
+        return x;
+    },
+    toolProcessLate: function () {
+        var me = this;
+
+        var x = {
+            form: function () {
+
+                me.instantWindow("FormToolProcessLate", 400, "Process Late", "processlate", "toolProcessLateWinId");
+
+            },
+            processOnClick: function () {
+                var f = me.getFormlate();
+                var vs = f.getValues();
+                var opt = vs["option"];
+                var ajaxParams = {};
+                var isValid = false;
+                switch (opt) {
+                    case "employee":
+                        var emId = me.getSelectedEmployee();
+                        if (emId) {
+                            isValid = true;
+                            ajaxParams = {
+                                month: me.getSelectedMonth(),
+                                year: me.getSelectedYear(),
+                                process: 'employee',
+                                employee_id: emId.get("employee_employee_id")
+                            };
+                        } else {
+                            me.tools.alert.warning("Please select employee first");
+                        }
+
+                        break;
+                    case "division":
+                        var divId = me.getSelectedDepartment();
+                        if (divId === 0 || divId === 999) {
+                            me.tools.alert.warning("Please select department first");
+
+                        } else {
+                            isValid = true;
+                            ajaxParams = {
+                                month: me.getSelectedMonth(),
+                                year: me.getSelectedYear(),
+                                process: 'department',
+                                department_id: divId
+                            };
+                        }
+                        break;
+                    case "all":
+                        isValid = true;
+                        ajaxParams = {
+                            month: me.getSelectedMonth(),
+                            year: me.getSelectedYear(),
+                            process: 'all'
+                        };
+                        break;
+                }
+                if (isValid) {
+                    f.setLoading("Processing...");
+                    me.tools.ajax({
+                        params: ajaxParams,
+                        success: function (data, model) {
+
+                            if (data['others'][0][0]['STATUS']) {
+                                me.tools.alert.info("Success");
+
+                            } else {
+                                me.tools.alert.warning(data['others'][0][0]['MSG']);
+                                // me.tools.alert.error("Something error when processing your request");
+                            }
+                            f.setLoading(false);
+                        }
+                    }).read('processlate');
+                }
+
+
+            }
+
+
+        };
+        return x;
+    },
+    transferAjax: function (form, current, all) {
+        var me = this;
+        form.setLoading("Progress : " + current + " of " + all);
+        me.tools.ajax({
+            params: {data: Ext.encode(me.fpnl[current - 1])},
+            autoAbort: true,
+            success: function (data, model) {
+
+                if (data['others'][0][0]['STATUS']) {
+
+                    if (current < all) {
+                        me.transferAjax(form, current + 1, all);
+                    } else {
+                        form.setLoading(false);
+                    }
+
+
+                } else {
+                    me.tools.alert.warning("Error");
+                    form.setLoading(false);
+
+                }
+
+
+            }
+
+        }).read('transfersave');
+    },
+    toolTransfer: function () {
+        var me = this;
+
+        var x = {
+            form: function () {
+
+                me.instantWindow("FormToolTransfer", 400, "Transfer", "transfer", "tooltransferWinId");
+                var date = new Date();
+                date.setFullYear(me.getSelectedYear());
+                date.setMonth(me.getSelectedMonth() - 1);
+                me.getFormtransfer().down("[name=start_day]").setValue(date);
+                me.getFormtransfer().down("[name=end_day]").setValue(date);
+
+            },
+            processOnClick: function () {
+                var f = me.getFormtransfer();
+                var vs = f.getValues();
+                f.setLoading("Request transfer...");
+
+
+
+                var fromDate = new Date(f.down("[name=start_day]").getValue());
+                var endDate = new Date(f.down("[name=end_day]").getValue());
+                var startDay = fromDate.getDate();
+
+                var endDay = endDate.getDate();
+
+
+
+
+
+
+                me.tools.ajax({
+                    params: {
+                        month: me.tools.intval(fromDate.getMonth()) + 1,
+                        year: fromDate.getFullYear(),
+                        start_day: startDay,
+                        end_day: endDay,
+                        is_delete: vs['delete']
+                    },
+                    autoAbort: true,
+                    success: function (data, model) {
+
+                        if (data['others'][0][0]['STATUS']) {
+                            // me.tools.alert.info("Success transfer");
+                            me.fpnl = data['others'][0][0]['FPNUMBERLIST'];//FPNUMBERLIST
+
+
+                            me.transferAjax(f, 1, me.fpnl.length);
+
+                        } else {
+                            me.tools.alert.warning(data['others'][0][0]['ERRORMSG']);
+
+                        }
+
+                        //  f.setLoading(false);
+                        //f.up("window").close();
+                    }
+
+                }).read('transferinfo');
+
+            }
+
+
+
+        };
+        return x;
+    },
+    toolDelete: function () {
+        var me = this;
+
+        var x = {
+            form: function () {
+
+                me.instantWindow("FormToolDelete", 400, "Delete Data", "delete", "tooldeleteWinId");
+
+            },
+            confirm: function (buttonForm) {
+                var that = this;
+                Ext.Msg.show({
+                    title: 'Confirm',
+                    msg: 'Do you want delete this data?',
+                    buttons: Ext.Msg.YESNO,
+                    icon: Ext.Msg.QUESTION,
+                    fn: function (clicked) {
+                        that.confirmClicked(clicked, buttonForm.up("form"));
+                        buttonForm.up("window").destroy();
+                    }
+                });
+            },
+            confirmClicked: function (clicked, form) {
+                var vs = form.getValues();
+                if (clicked === "yes") {
+
+                    var eg = me.getGridemployee();
+                    var g = me.getGrid();
+                    var receg = eg.getSelectedRecord();
+                    var rec = g.getSelectedRecord();
+
+
+                    if (vs["option"] === "employee") {
+                        if (receg) {
+                            var p = me.getPanel();
+                            p.setLoading("Please wait, deleting absent...");
+                            me.tools.ajax({
+                                params: {
+                                    absent_id: receg.get("absent_id")
+                                },
+                                success: function (data, model) {
+
+                                    if (data['others'][0][0]['STATUSDELETE']) {
+                                        me.tools.alert.info("Absent successful deleted");
+                                        me.emGrid().select();
+                                    } else {
+                                        me.tools.alert.error("Something error when processing your request");
+                                    }
+                                    p.setLoading(false);
+                                }
+                            }).read('deletemainabsent');
+                        }
+                    } else if (vs["option"] === "date") {
+                        if (rec) { // selected absent ?
+                            var p = me.getPanel();
+                            p.setLoading("Please wait, deleting absent record...");
+                            me.tools.ajax({
+                                params: {
+                                    absentdetail_id: rec.get("absentdetail_id")
+                                },
+                                success: function (data, model) {
+
+                                    if (data['others'][0][0]['STATUSDELETE']) {
+                                        me.tools.alert.info("Absent date successful deleted");
+                                        me.emGrid().select();
+                                    } else {
+                                        me.tools.alert.error("Something error when processing your request");
+                                    }
+                                    p.setLoading(false);
+                                }
+                            }).read('deleteabsentdate');
+                        }
+                    }
+                }
+            }
+
+        };
+        return x;
+    },
+    continueOnClick: function (el) {
+        var me = this;
+        var f = me.getFormgen();
+        var d = f.down("[name=date]").getValue();
+        var valid = me.tools.inputMonthYear(d);
+        if (valid.valid) {
+            var validDate = valid.date;
+            var g = me.getGridemployee();
+            f.setLoading("Please wait...");
+            var s = g.getStore();
+
+	    var res = d.split("/");
+            var monthdata = res[0];
+            var yeardata = res[1];	
+
+
+
+            s.load({
+                params: {
+                    mode_read: 'new',
+                    //month_pick: validDate.getMonth() + 1,
+                    //year_pick: validDate.getFullYear()
+                    month_pick: monthdata,
+                    year_pick: yeardata
+                },
+                callback: function () {
+                    f.setLoading(false);
+
+                    me.tools.alert.info("Updated", function () {
+                        f.up("window").close();
+                    });
+
+                    me.panelAfterRender(me.getPanel());
+
+
+                }
+            });
+        } else {
+            me.tools.alert.warning(valid.msg);
+        }
+
+    },
+    monthPickOnChange: function (el) {
+        var me = this;
+        var f = me.getFormsearch();
+        var vy = me.tools.intval(f.down("[name=year_pick]").getValue());
+        var vm = me.tools.intval(f.down("[name=month_pick]").getValue());
+
+        me.getGrid().getStore().loadData([], false);
+
+        if (vy > 0 && vm > 0) {
+            var kel = f.down("[name=search_department_id]");
+            kel.bindPrefixName = 'absentrecord';
+            kel.doInit(true, {
+                year: vy,
+                month: vm
+            }, function () {
+
+
+                /// set default department
+                if (me.currentFilter.dep > 0) {
+                    kel.setValue(me.currentFilter.dep);
+                }
+
+                me.filterEmployeeList();
+                //me.monthPickOnChange();
+
+            });
+        } else {
+            console.log("[ABSENTFILTER] tidak ada month atau year");
+        }
+
+    },
+    filterEmployeeList: function () {
+        var me = this;
+
+        me.getGrid().getStore().loadData([], false);
+
+        var g = me.getGridemployee();
+        var f = me.getFormsearch();
+        var vy = me.tools.intval(f.down("[name=year_pick]").getValue());
+        var vm = me.tools.intval(f.down("[name=month_pick]").getValue());
+        var vd = me.tools.intval(f.down("[name=search_department_id]").getValue());
+        g.doInit();
+        g.getStore().load({
+            params: {
+                year: vy, month: vm, department_id: vd
+            },
+            callback: function (rec, op) {
+                g.attachModel(op);
+
+
+                // select first value
+                if (g.getStore().getCount() > 0) {
+                    if (me.currentFilter.emId > 0) {
+                        var indexFound = g.getStore().findExact('employee_employee_id', me.currentFilter.emId);
+                        if (indexFound >= 0) {
+                            g.getSelectionModel().select(indexFound);
+                        } else {
+                            g.getSelectionModel().select(0);
+                        }
+                        // g.getSelectionModel().select(me.currentFilter.emIndex);
+                    } else {
+                        g.getSelectionModel().select(0);
+                    }
+                }
+
+
+
+
+                // me.myFilters().employee(0, 0, 0);
+
+
+
+            }
+        });
+
+        // var f = me.getFormsearch();
+        //  me.myFilters().employee(f.down("[name=year_pick]").getValue(), f.down('[name=month_pick]').getValue(), f.down('[name=search_department_id]').getValue());
+
+
+
+    },
+    yearPickOnChange: function (el) {
+        var me = this;
+        var f = me.getFormsearch();
+
+        me.getGrid().getStore().loadData([], false);
+
+        var val = me.tools.intval(f.down("[name=year_pick]").getValue());
+        if (val > 0) {
+            var kel = f.down("[name=month_pick]");
+            kel.bindPrefixName = 'absentrecord';
+            kel.doInit(true, {
+                year: val
+            }, function () {
+
+                me.monthPickOnChange();
+
+            });
+        }
+
+
+    },
+    resetGrid: function () {
+        var me = this;
+        var grid = me.getFormsearch().down("absentrecordemployeegrid");
+        if (grid) {
+            me.getFormsearch().down('absentrecordemployeegrid').getStore().loadData([], false);
+
+        }
+        me.getGrid().getStore().loadData([], false);
+
+    },
+    filterDepartment: function (el, val) {
+        var me = this;
+        var fs = me.getFormsearch();
+        var grid = fs.down("absentrecordemployeegrid");
+
+        if (grid) {
+            var s = fs.down("absentrecordemployeegrid").getStore();
+            s.clearFilter(true);
+            if (s.getCount() > 0 && val) {
+
+                s.filterBy(function (rec, id) {
+
+                    if (rec.raw.department.department_id === val) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            }
+        }
+
+    },
+    showFormReason: function () {
+        var me = this;
+        me.instantWindow("FormDataReason", 600, "Reason", "create", "reasonwindow");
+        /*
+         var f = me.getFormreason();
+         f.setLoading("Please wait...");
+         me.tools.ajax({
+         params: {},
+         success: function(data, model) {
+         //var status = data["others"][0][0]["STATUS"];
+         me.atgcLeave = data["others"][0][0]["ATGC_LEAVE"];
+         console.log(me.atgcLeave);
+         f.setLoading(false);
+         
+         }
+         }).read('parameter');
+         */
+
+    },
+    showFormOnduty: function () {
+        var me = this;
+        me.instantWindow("FormDataOnduty", 400, "On Duty Outside", "create", "ondutywindow");
+    },
+    /* employee Grid */
+    emGrid: function () {
+        var me = this;
+        var x = {
+            fdar: function () {
+
+            },
+            select: function () {
+                var g = me.getGridemployee();
+                var rec = g.getSelectedRecord();
+                if (rec) {
+                    var emId = rec.get("employee_employee_id");
+                    var gm = me.getGrid();
+                    var s = gm.getStore();
+                    s.getProxy().extraParams.month = me._getDate().getMonth();
+                    s.getProxy().extraParams.year = me._getDate().getYear();
+                    s.getProxy().extraParams.employee_id = emId;
+                    g.setLoading("Please wait...");
+                    s.load({
+                        callback: function () {
+                            g.setLoading(false);
+                        }
+                    });
+                }
+            }
+        };
+        return x
+    },
+    shift: function () {
+        var me = this;
+        var x = {
+            insertToSheet: function () {
+                var g = me.getGrid();
+                var f = me.getFormshift();
+                var s = g.getStore();
+                var selectedShift = f.down("[name=shifttype_id]").getSelectedRec();
+                if (selectedShift) {
+                    var pos = 0;
+                    var cbVal = false;
+                    var updatedDate = [];
+
+                    /// get selected day in form
+                    var vs = f.getValues();
+                    var currentDay = 0;
+                    var selectedDays = [];
+                    var dayDeli = "";
+                    for (var i = 1; i < 32; i++) {
+                        currentDay = vs['day_' + i];
+                        if (currentDay) {
+                            selectedDays.push(i);
+                            dayDeli += i + "~";
+                        }
+                    }
+
+
+                    if (selectedDays.length > 0) {
+                        var curIndex = -1;
+                        var curRec = null;
+                        for (var i = 0; i < selectedDays.length; i++) {
+                            curIndex = s.findExact('day', selectedDays[i]);
+                            if (curIndex > -1) {
+                                curRec = s.getAt(curIndex);
+                                if (curRec) {
+                                    updatedDate.push({
+                                        absentdetail_id: curRec.get("absentdetail_id"),
+                                        shifttype_shifttype_id: f.down("[name=shifttype_id]").getValue()
+                                    });
+                                    curRec.beginEdit();
+                                    curRec.set({
+                                        shifttype_code: selectedShift.get("code")
+                                    });
+                                    curRec.endEdit();
+                                }
+
+                            }
+                        }
+
+
+                    } else {
+                        me.tools.alert.warning("No day selected");
+                    }
+
+
+
+
+
+                    var params = {
+                        mode_create: "setupsheet",
+                        data: {
+                            month: me._getDate().getMonth(),
+                            detail: updatedDate,
+                        }
+                    };
+
+                    /*
+                     console.log(vs);
+                     console.log(selectedDays);
+                     return;
+                     */
+
+
+                    if (vs["pilihan_target"] === "employee") {
+                        Ext.Ajax.request({
+                            url: 'hrd/absentrecord/create',
+                            success: function (response) {
+                                var info = Ext.JSON.decode(response.responseText);
+                                Ext.Msg.alert('Status', info.msg);
+                                if (info.msg === "SUCCESS") {
+                                    f.up("window").close();
+                                }
+
+                            },
+                            params: {data: Ext.encode(params)}
+
+                        });
+                    } else if (vs["pilihan_target"] === "division" || vs["pilihan_target"] === "all") {
+                        me.tools.ajax({
+                            params: {
+                                department_id: me.getSelectedDepartment(),
+                                shifttype_id: vs["shifttype_id"],
+                                days: dayDeli,
+                                month: me.getSelectedMonth(),
+                                year: me.getSelectedYear(),
+                                update_type: vs["pilihan_target"]
+                            },
+                            success: function (data, model) {
+                                var status = data["others"][0][0]["STATUS"];
+                                if (!status) {
+                                    me.tools.alert.warning(data["others"][0][0]["MSG"]);
+                                } else {
+                                    me.tools.alert.info("Success");
+                                    f.up("window").close();
+                                }
+                                f.setLoading(false);
+
+                            }
+                        }).read('setupshift');
+                    }
+
+
+
+                } else {
+                    me.tools.alert.warning("Mohon cek pilihan tipe shift");
+                }
+
+            },
+            fdar: function (el) {
+                var cb = ["shifttype_id"];
+                var f = me.getFormshift();
+                for (var c in cb) {
+                    var cmp = f.down("[name=" + cb[c] + "]");
+                    if (cmp) {
+                        f.down("[name=" + cb[c] + "]").bindPrefixName = me.controllerName;
+                        f.down("[name=" + cb[c] + "]").doInit(true, function () {
+                            f.setLoading(false);
+                        });
+                    }
+
+                }
+                /// check for selected day
+                var g = me.getGrid();
+                var recs = g.getSelectionModel().selected.items;
+                if (recs.length > 0) {
+                    for (var i in recs) {
+                        f.down("[name=day_" + recs[i].get("day") + "]").setValue(1);
+                    }
+
+                }
+
+            },
+            winShow: function () {
+                /// check sheet
+                var c = me.getGrid().getStore().getCount();
+
+                if (c > 0) {
+                    me.instantWindow("FormSetupShift", 700, "Setup Shift", "create", "setupshiftwindow");
+                } else {
+                    Ext.Msg.alert('Alert', 'Please generate next periode first');
+                }
+
+            },
+            comboOnChange: function (el) {
+                var f = me.getFormshift();
+                f.loadRecord(el.getSelectedRec());
+
+            },
+            genHoliday: function (el) {
+                var f = me.getFormshift();
+                me.instantWindow("FormEmployeeOption", 400, "Generate From Holiday", "generate", "GenerateHolWinID");
+
+            },
+            genHolidayProcess: function (el) {
+                var f = me.getFormgenholiday();
+                var vs = f.getValues();
+                console.log(vs);
+                switch (vs["option"]) {
+                    case "employee":
+                        var emp = me.getGridemployee().getSelectedRecord();
+                        if (emp) {
+                            f.setLoading("Generate shift from holiday...");
+                            me.tools.ajax({
+                                params: {
+                                    month: me.getSelectedMonth(),
+                                    year: me.getSelectedYear(),
+                                    process_type: "employee",
+                                    employee_id: emp.get("employee_employee_id")
+                                },
+                                success: function (data, model) {
+                                    var status = data["others"][0][0]["STATUS"];
+                                    if (!status) {
+                                        me.tools.alert.warning(data["others"][0][0]["MSG"]);
+                                    } else {
+                                        me.tools.alert.info("Success");
+                                    }
+                                    f.setLoading(false);
+
+                                }
+                            }).read('genholiday');
+                        } else {
+                            me.tools.alert.warning("Please select employee first");
+                        }
+                        break;
+                    case "division":
+                        var d = me.getSelectedDepartment();
+                        if (d == 999) {
+                            me.tools.alert.warning("Please select department first");
+                        } else {
+                            f.setLoading("Generating from holiday...");
+                            me.tools.ajax({
+                                params: {
+                                    process_type: "department",
+                                    month: me.getSelectedMonth(),
+                                    year: me.getSelectedYear(),
+                                    department_id: me.getSelectedDepartment()
+                                },
+                                success: function (data, model) {
+                                    var status = data["others"][0][0]["STATUS"];
+                                    if (!status) {
+                                        me.tools.alert.warning(data["others"][0][0]["MSG"]);
+                                    } else {
+                                        me.tools.alert.info("Success");
+                                    }
+                                    f.setLoading(false);
+
+                                }
+                            }).read('genholiday');
+                        }
+
+                        break;
+                    case "all":
+                        f.setLoading("Generating from holiday...");
+                        me.tools.ajax({
+                            params: {
+                                process_type: "all",
+                                month: me.getSelectedMonth(),
+                                year: me.getSelectedYear()
+                            },
+                            success: function (data, model) {
+                                var status = data["others"][0][0]["STATUS"];
+                                if (!status) {
+                                    me.tools.alert.warning(data["others"][0][0]["MSG"]);
+                                } else {
+                                    me.tools.alert.info("Success");
+                                }
+                                f.setLoading(false);
+
+                            }
+                        }).read('genholiday');
+                        break;
+                }
+
+            }
+        };
+        return x;
+    },
+    _getDate: function () {
+        var me = this;
+        var fs = me.getFormsearch();
+
+        var x = {
+            getMonth: function () {
+                var m = parseInt(fs.down("[name=month_pick]").getValue());
+                m = isNaN(m) ? 0 : m;
+                return m;
+            },
+            getYear: function () {
+                var y = parseInt(fs.down("[name=year_pick]").getValue());
+                y = isNaN(y) ? 0 : y;
+                return y;
+            }
+        };
+        return x;
+    },
+    generateSheet: function () {
+        var me = this;
+        me.instantWindow("FormGenerateSheet", 400, "Generate New Period", "create", "generatesheetwindow");
+        var monthPickStore = me.getFormsearch().down("[name=month_pick]").getStore();
+
+
+        me.tools.ajax({
+            params: {
+            },
+            success: function (data, model) {
+                var f = me.getFormgen();
+
+                f.down("[name=date]").setValue(data["others"][0][0]["DATA"]);
+                //  p.setLoading(false);
+
+            }
+        }).read('periodeterakhir');
+
+
+
+    },
+    panelAfterRender: function (el) {
+        var me = this;
+        var f = me.getFormsearch();
+        el.up("window").maximize();
+
+        me.getGrid().getStore().loadData([], false);
+
+        var kel = f.down("[name=year_pick]");
+        kel.bindPrefixName = 'absentrecord';
+        kel.doInit(true, {}, function () {
+
+            me.yearPickOnChange();
+
+        });
+
+
+    },
+    myFilters: function () {
+        var me = this;
+        var x = {
+            month: function (year) {
+                var el = me.getFormsearch().down("[name=month_pick]");
+                var ms = el.getStore();
+                ms.clearFilter(true);
+                ms.filter([
+                    {filterFn: function (item) {
+                            return item.get("year") == year;
+                        }}
+                ]);
+                if (ms.getCount() > 0) {
+                    var highMonth = ms.getAt(ms.getCount() - 1).get('number');
+                    el.setValue(highMonth);
+                    return highMonth;
+                }
+                return 0;
+
+            },
+            department: function (year, month) {
+                var el = me.getFormsearch().down("[name=search_department_id]");
+                var ds = el.getStore();
+
+
+                ds.clearFilter(true);
+
+                ds.filter([
+                    {filterFn: function (item) {
+                            return item.get("year") == year && item.get("month") == month;
+                        }}
+                ]);
+                if (ds.getCount() > 0) {
+                    var highDepartment = ds.getAt(ds.getCount() - 1).get('department_id');
+                    el.setValue(highDepartment);
+                    return highDepartment;
+                }
+
+                return 0;
+
+            },
+            employee: function (year, month, department) {
+                var g = me.getGridemployee();
+                var es = g.getStore();
+                es.clearFilter(true);
+                es.filter([
+                    {filterFn: function (item) {
+                            return item.get("year") == year && item.get("month") == month && item.get("department_department_id") == department;
+                        }}
+                ]);
+                var f = me.getFormsearch();
+                var s = f.down('absentrecordemployeegrid').getStore();
+                if (s.getCount() > 0) {
+                    f.down('absentrecordemployeegrid').getSelectionModel().select(0);
+                }
+            }
+        };
+        return x;
+    },
+    viewOneEmployeAbsent: function () {
+        var me = this;
+        var g = me.getGridemployee();
+        var f = me.getFormsearch();
+        // jika filter department datanya telah keload..
+        if (me.filterLoaded.department && me.filterLoaded.employeeList) {
+            g.getStore().clearFilter();
+
+            // pilih salah satu department dari karyawan
+            if (g.getStore().getCount() > 0) {
+                var selectedEmp = g.getStore().getAt(0);
+                var idDept = selectedEmp.get("department_department_id");
+                f.down("[name=search_department_id]").setValue(idDept);
+            }
+        }
+    },
+    refreshFormFilter: function () {
+        var me = this;
+        var f = me.getFormsearch();
+        var g = me.getGridemployee();
+        g.doInit();
+        g.getStore().load({
+            callback: function (rec, op) {
+                g.attachModel(op);
+
+            }
+        });
+    },
+    mainDataSave: function () {
+        var me = this;
+
+        var f = me.getFormdata();
+        var g = me.getGrid();
+        var s = g.getStore();
+        var row = f.editedRow;
+        var selectedShift = f.down("[name=shifttype_shifttype_id]").getSelectedRec();
+        if (row < 0) {
+            return;
+        }
+        if (!selectedShift) {
+            Ext.Msg.alert('Alert', 'Please select shift type first.');
+            return;
+        }
+
+        var rec = s.getAt(row);
+
+        rec.beginEdit();
+        rec.set({
+            in_7_14: me._convertTime().formToGrid("timein"), // temporary store time in in timeA
+            out_7_14: me._convertTime().formToGrid("timeout"), /// temporary store time out in timeA
+            shifttype_code: selectedShift.get("code"),
+            shifttype_shifttype_id: selectedShift.get("shifttype_id")
+        });
+        rec.endEdit();
+
+
+        me.insSave({
+            form: me.getFormdata(),
+            grid: me.getGrid(),
+            // store: me.localStore["detail"].store,
+            finalData: function (data) {
+
+                data["unit_unit_id"] = data["unit_id"];
+
+                return data;
+            },
+            sync: true,
+            callback: {
+                create: function (store, form, grid) {
+
+                }
+            }
+        });
+
+
+
+
+
+    },
+    fdar: function () {
+
+
+
+        var me = this;
+        var f = me.getFormdata();
+
+        var g = me.getGrid();
+        me.setActiveForm(f);
+
+        var cb = ["shifttype_shifttype_id"];
+        var f = me.getFormdata();
+        for (var c in cb) {
+            var cmp = f.down("[name=" + cb[c] + "]");
+            if (cmp) {
+                f.down("[name=" + cb[c] + "]").bindPrefixName = me.controllerName;
+                f.down("[name=" + cb[c] + "]").doInit(true, function () {
+                    f.setLoading(false);
+                });
+            }
+
+        }
+
+
+
+        var x = {
+            init: function () {
+
+
+
+
+            },
+            create: function () {
+
+                me.unMask(1);
+            },
+            update: function () {
+                f.editedRow = g.getSelectedRow();
+                var rec = g.getSelectedRecord();
+
+                if (rec) {
+                    f.loadRecord(rec);
+                    me.getTimeAByShiftType(rec);
+                    me._convertTime().gridToForm("timein", rec.get("in_7_14"));
+                    me._convertTime().gridToForm("timeout", rec.get("out_7_14"));
+                }
+
+                //shifttype_shifttype_id
+
+                me.unMask(1);
+
+            }
+        };
+        return x;
+    },
+    insACC: function (view, action, row) {
+        var me = this;
+        var grid = view.up("grid");
+        switch (grid.itemId) {
+            case "AbsentrecordGridStore":
+                if (action == "destroy") {
+                    // me.deleteUnitFromGrid(row);
+                } else if (action == "update") {
+                    // me.editUnitFromGrid(row);
+                }
+                break;
+        }
+    },
+    _convertTime: function () {
+        var me = this;
+        var f = me.getFormdata();
+        var x = {
+            formToGrid: function (prefixField) {
+                var hourObj = new Hrd.library.box.tools.Hour(f.down("[name=" + prefixField + "]").getValue());
+
+
+
+                var time = new Date();
+
+                time.setHours(hourObj.getHour());
+                time.setMinutes(hourObj.getMinute());
+                return time;
+            },
+            gridToForm: function (prefixField, date) {
+
+                date = new Date(date);
+                var h = me.util.number(date.getHours()).addZero(2) + ":" + me.util.number(date.getMinutes()).addZero(2) + ":00";
+                f.down("[name=" + prefixField + "]").setValue(h);
+
+            }
+        };
+        return x;
+    },
+    getDefaultDate: function () {
+        var me = this;
+        var selectedDay = me.getGrid().getSelectedRecord();
+        selectedDay = selectedDay.get("day");
+        var sd = new Date(); // start date
+        var ed = new Date(); // end date
+        sd.setDate(selectedDay);
+        ed.setDate(selectedDay);
+        sd.setFullYear(me._getDate().getYear());
+        ed.setFullYear(me._getDate().getYear());
+
+        sd.setMonth(me._getDate().getMonth() - 1);
+        ed.setMonth(me._getDate().getMonth() - 1);
+        return {
+            sd: sd,
+            ed: ed
+        };
+    },
+    getTimeAByShiftType: function (rec) {
+        console.log(rec);
+    },
+    /* selected filter di form search*/
+    getSelectedEmployee: function () {
+        return this.getGridemployee().getSelectedRecord();
+    },
+    getSelectedDepartment: function () {
+
+        return this.getFormsearch().down("[name=search_department_id]").getValue();
+    },
+    getSelectedMonth: function () {
+        return this.getFormsearch().down("[name=month_pick]").getValue();
+    },
+    getSelectedYear: function () {
+        return this.getFormsearch().down("[name=year_pick]").getValue();
+    },
+    /*@storeFilter
+     * menyimpan state filter search sementara
+     * */
+    storeFilter: function () {
+        var me = this;
+        me.currentFilter.month = me.getSelectedMonth();
+        me.currentFilter.dep = me.getSelectedDepartment();
+        me.currentFilter.year = me.getSelectedYear();
+        // me.currentFilter.emIndex = me.getGridemployee().getStore().indexOf(me.getGridemployee().getSelectedRecord());
+        var rec = me.getGridemployee().getSelectedRecord();
+        if (rec) {
+            me.currentFilter.emId = rec.get("employee_employee_id");
+        }
+
+//  me.currentFilter.emRec = me.getGridemployee().getSelectedRecord();
+        console.log(me.currentFilter);
+
+    },
+    /* start added by ahmad riadi 06-04-2017 */
+    showFormOptionintranet: function () {
+        var me, record;
+        me = this;
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                if (data.others[1] == undefined) {
+                    Ext.Msg.show({
+                        title: 'WARNING',
+                        msg: "Data master project tidak ada",
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.WARNING
+                    });
+                } else {
+                    record = data.others[1];
+                    if (record.dbintranet_name == undefined && record.dbintranet_name !== null) {
+                        Ext.Msg.show({
+                            title: 'WARNING',
+                            msg: "Field config di master project belum ada...!",
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.Msg.WARNING
+                        });
+                    } else {
+                        if (record.dbintranet_name == null || record.dbintranet_name == '') {
+                            Ext.Msg.show({
+                                title: 'WARNING',
+                                msg: "Config di master project belum diisi...!",
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.Msg.WARNING
+                            });
+                        } else {
+                            me.configintranet = record.dbintranet_name;
+                            me.instantWindow("Formtransferbyintranet", 450, "Form Options Transfer Data", "options", "absentrecordformtransferbyintranet");
+                        }
+
+                    }
+
+                }
+            }
+        }).read('checkconfigintranet');
+    },
+    routeGrid: function () {
+        var me, form, formvalue, options;
+        me = this;
+        form = me.getFormtransferintranet();
+        formvalue = form.getForm().getValues();
+        options = formvalue.options;
+        if (options == 'cuti') {
+            me.instantWindow("Formoptionscuti", 920, "Browse Cuti", "options", "absentrecordformoptionscuti");
+        } else if (options == 'ijin') {
+            me.instantWindow("Formoptionsijin", 920, "Browse Ijin / Sakit", "options", "absentrecordformoptionsijin");
+        } else if (options == 'dinasluarkantor') {
+            me.instantWindow("Formoptionsdinas", 920, "Browse Dinas", "options", "absentrecordformoptionsdinas");
+        }
+    },
+    getDatacutiintranet: function () {
+        var me, form, formvalue, grid, store;
+        me = this;
+        form = me.getFormoptioncuti();
+        formvalue = form.getForm().getValues();
+        grid = me.getGridcutiintranet();
+        grid.doInit();
+        store = grid.getStore().load({
+            params: {
+                mode_read: 'getdatacutiintranet',
+                configintranet: me.configintranet,
+            },
+            callback: function (data, model) {
+                grid.attachModel(model);
+                grid.store.sort({property: 'approval_date', direction: 'DESC'});
+            }
+        });
+    },
+    getFilterdatacuti: function () {
+        var me, form, formvalue, grid, store, rawdept, rawemployee, rawcuti;
+        me = this;
+        form = me.getFormoptioncuti();
+        formvalue = form.getForm().getValues();
+
+        if (formvalue.department_id == undefined) {
+            formvalue['deptcode'] = '';
+        } else {
+            rawdept = form.down("[name=department_id]").valueModels[0].raw;
+            formvalue['deptcode'] = rawdept.code;
+        }
+
+        if (formvalue.employee_id == undefined) {
+            formvalue['employee_name'] = '';
+        } else {
+            rawemployee = form.down("[name=employee_id]").valueModels[0].raw;
+            formvalue['employee_name'] = rawemployee.employee_name;
+        }
+
+        if (formvalue.employee_id == undefined) {
+            formvalue['employee_name'] = '';
+        } else {
+            rawemployee = form.down("[name=employee_id]").valueModels[0].raw;
+            formvalue['employee_name'] = rawemployee.employee_name;
+        }
+
+        if (formvalue.absenttype_id == undefined) {
+            formvalue['cuti'] = '';
+        } else {
+            rawcuti = form.down("[name=absenttype_id]").valueModels[0].raw;
+            formvalue['cuti'] = rawcuti.absenttype;
+        }
+        if (formvalue.hrd_checked == undefined) {
+            formvalue['hrd_checked'] = 'NO';
+        } else {
+            formvalue['hrd_checked'] = formvalue.hrd_checked;
+        }
+
+        grid = me.getGridcutiintranet();
+        grid.doInit();
+        store = grid.getStore().load({
+            params: {
+                mode_read: 'filtercutiintranet',
+                configintranet: me.configintranet,
+                paramdata: Ext.JSON.encode(formvalue),
+            },
+            callback: function (data, model) {
+                grid.attachModel(model);
+                grid.store.sort({property: 'approval_date', direction: 'DESC'});
+            }
+        });
+    },
+    getDataijinintranet: function (flag) {
+        var me, form, formvalue, grid, store;
+        me = this;
+        form = me.getFormoptionijin();
+        formvalue = form.getForm().getValues();
+        grid = me.getGridijinintranet();
+        grid.doInit();
+        store = grid.getStore().load({
+            params: {
+                mode_read: 'getdataijinintranet',
+                configintranet: me.configintranet,
+                periode: formvalue.periode_bulan,
+            },
+            callback: function (data, model) {
+                grid.attachModel(model);
+                grid.store.sort({property: 'izin_date', direction: 'DESC'});
+            }
+        });
+    },
+    getFilterdataijin: function () {
+        var me, form, formvalue, grid, store, rawdept, rawemployee, rawcuti;
+        me = this;
+        form = me.getFormoptionijin();
+        formvalue = form.getForm().getValues();
+
+        if (formvalue.department_id == undefined) {
+            formvalue['deptcode'] = '';
+        } else {
+            rawdept = form.down("[name=department_id]").valueModels[0].raw;
+            formvalue['deptcode'] = rawdept.code;
+        }
+
+        if (formvalue.employee_id == undefined) {
+            formvalue['employee_name'] = '';
+        } else {
+            rawemployee = form.down("[name=employee_id]").valueModels[0].raw;
+            formvalue['employee_name'] = rawemployee.employee_name;
+        }
+
+        if (formvalue.absenttype_id == undefined) {
+            formvalue['ijin'] = '';
+        } else {
+            rawcuti = form.down("[name=absenttype_id]").valueModels[0].raw;
+            formvalue['ijin'] = rawcuti.absenttype;
+        }
+        if (formvalue.hrd_checked == undefined) {
+            formvalue['hrd_checked'] = 'NO';
+        } else {
+            formvalue['hrd_checked'] = formvalue.hrd_checked;
+        }
+
+        grid = me.getGridijinintranet();
+        grid.doInit();
+        store = grid.getStore().load({
+            params: {
+                mode_read: 'filterijinintranet',
+                configintranet: me.configintranet,
+                paramdata: Ext.JSON.encode(formvalue),
+            },
+            callback: function (data, model) {
+                grid.attachModel(model);
+                grid.store.sort({property: 'izin_date', direction: 'DESC'});
+            }
+        });
+    },
+    getFilterdatadinas: function () {
+        var me, form, formvalue, grid, store, rawdept, rawemployee, rawcuti;
+        me = this;
+        form = me.getFormoptiondinas();
+        formvalue = form.getForm().getValues();
+
+        if (formvalue.department_id == undefined) {
+            formvalue['deptcode'] = '';
+        } else {
+            rawdept = form.down("[name=department_id]").valueModels[0].raw;
+            formvalue['deptcode'] = rawdept.code;
+        }
+
+        if (formvalue.employee_id == undefined) {
+            formvalue['employee_name'] = '';
+        } else {
+            rawemployee = form.down("[name=employee_id]").valueModels[0].raw;
+            formvalue['employee_name'] = rawemployee.employee_name;
+        }
+
+        if (formvalue.hrd_checked == undefined) {
+            formvalue['hrd_checked'] = 'NO';
+        } else {
+            formvalue['hrd_checked'] = formvalue.hrd_checked;
+        }
+
+        grid = me.getGriddinasintranet();
+        grid.doInit();
+        store = grid.getStore().load({
+            params: {
+                mode_read: 'filterdinasintranet',
+                configintranet: me.configintranet,
+                paramdata: Ext.JSON.encode(formvalue),
+            },
+            callback: function (data, model) {
+                grid.attachModel(model);
+                grid.store.sort({property: 'start_date', direction: 'ASC'});
+
+            }
+        });
+    },
+    getDatadinasintranet: function (flag) {
+        var me, form, formvalue, grid, store;
+        me = this;
+        form = me.getFormoptiondinas();
+        formvalue = form.getForm().getValues();
+        grid = me.getGriddinasintranet();
+        grid.doInit();
+        store = grid.getStore().load({
+            params: {
+                mode_read: 'getdatadinasintranet',
+                configintranet: me.configintranet,
+            },
+            callback: function (data, model) {
+                grid.attachModel(model);
+                grid.store.sort({property: 'start_date', direction: 'ASC'});
+            }
+        });
+    },
+    gridIntranetCutiActionColumnClick: function (view, cell, row, col, e) {
+        var me, grid, record, row, action;
+        me = this;
+        grid = me.getGridcutiintranet();
+        record = grid.getStore().getAt(row);
+        action = e.getTarget().className.match(/\bact-(\w+)\b/);
+        grid.getSelectionModel().select(row);
+
+        if (action) {
+            switch (action[1]) {
+                case 'update':
+                    me.rowintranetcuti = record;
+                    me.instantWindow("FormDataIntranetCuti", 900, "FORM DATA CUTI", "options", "absentrecordformdataintranetcuti");
+                    break;
+            }
+        }
+    },
+    gridIntranetIjinActionColumnClick: function (view, cell, row, col, e) {
+        var me, grid, record, row, action;
+        me = this;
+        grid = me.getGridijinintranet();
+        record = grid.getStore().getAt(row);
+        action = e.getTarget().className.match(/\bact-(\w+)\b/);
+        grid.getSelectionModel().select(row);
+        if (action) {
+            switch (action[1]) {
+                case 'update':
+                    me.rowintranetijin = record;
+                    me.instantWindow("FormDataIntranetIjin", 900, "FORM DATA IJIN", "options", "absentrecordformdataintranetijin");
+                    break;
+            }
+        }
+    },
+    gridIntranetDinasActionColumnClick: function (view, cell, row, col, e) {
+        var me, grid, record, row, action;
+        me = this;
+        grid = me.getGriddinasintranet();
+        record = grid.getStore().getAt(row);
+        action = e.getTarget().className.match(/\bact-(\w+)\b/);
+        grid.getSelectionModel().select(row);
+        if (action) {
+            switch (action[1]) {
+                case 'update':
+                    me.rowintranetdinas = record;
+                    me.instantWindow("FormDataIntranetDinas", 900, "FORM DATA DINAS", "options", "absentrecordformdataintranetdinas");
+                    break;
+            }
+        }
+    },
+    saveIntranetCutitoStore: function () {
+        var me, form, formdata, grid, store, record, row, cutitype, counterupdatemysql;
+
+        me = this;
+        form = me.getFormdataintranetcuti();
+        formdata = form.getForm();
+        if (formdata.isValid()) {
+            grid = me.getGridcutiintranet();
+            grid.doInit();
+            store = grid.getStore();
+            row = formdata.getValues();
+            cutitype = form.down("[name=absenttype_id]").getRawValue();
+            row['absenttype_id_default'] = parseInt(row['absenttype_id_default']);
+            row['cutitype'] = cutitype;
+            record = store.getAt(store.indexOf(grid.getSelectionModel().getSelection()[0]));
+            record.beginEdit();
+            record.set(row);
+            record.endEdit();
+            store.commitChanges();
+
+            counterupdatemysql = 0;
+            if (row['absenttype_id_default'] !== row['absenttype_id']) {
+                //kondisi update ke intranet mysql
+                counterupdatemysql = 1;
+            }
+            if (row['hrd_comment_default'] !== row['hrd_comment']) {
+                //kondisi update ke intranet mysql
+                counterupdatemysql = 1;
+            }
+            if (counterupdatemysql > 0) {
+                me.getFormdataintranetcuti().el.mask('Data in Intranet will be update, please wait...', 'x-mask-loading');
+                me.tools.ajax({
+                    params: {"paramdata": Ext.JSON.encode(row), configintranet: me.configintranet},
+                    success: function (data, model) {
+                        me.getFormdataintranetcuti().el.unmask();
+                        form.up('window').close();
+                    }
+                }).read('updatecutiintranetinchange');
+            } else {
+                form.up('window').close();
+            }
+
+        }
+    },
+    SaveIntranetcutiToCES: function () {
+        var me, form, grid, store, rows, arraydata, record, indexcuti, msg, status, dataarraycuti, checkcuti,
+                countererror, msgrerror;
+        me = this;
+        grid = me.getGridcutiintranet();
+        rows = grid.getSelectionModel().getSelection();
+        if (rows.length < 1) {
+            Ext.Msg.alert('Info', 'No record selected..!');
+            return;
+        } else {
+            arraydata = [];
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i]['data'].hrd_check == 'NO') {
+                    arraydata.push(rows[i]['data']);
+                }
+            }
+            if (arraydata.length) {
+                me.getFormoptioncuti().el.mask('Please wait', 'x-mask-loading');
+                me.tools.ajax({
+                    params: {"paramdata": Ext.JSON.encode(arraydata), configintranet: me.configintranet},
+                    success: function (data, model) {
+                        record = data.others[1];
+                        checkcuti = me.Checkcutinotvalid(record);
+                        countererror = checkcuti['counter'];
+                        msgrerror = checkcuti['message'];
+                        if (countererror > 0) {
+                            me.getFormoptioncuti().el.unmask();
+                            Ext.Msg.alert('WARNING', msgrerror);
+                        } else {
+                            indexcuti;
+                            for (indexcuti = 0; indexcuti < record.length; ++indexcuti) {
+                                dataarraycuti = record[indexcuti];
+                                dataarraycuti['basedata'] = 'intranet';
+
+
+                                me.tools.ajax({
+                                    params: dataarraycuti,
+                                    success: function (datacuti, model) {
+                                        status = datacuti.others[0][0].HASIL;
+                                        msg = datacuti.others[0][0].MSG;
+                                    }
+                                }).read('createreason');
+                            }
+                            me.getDatacutiintranet();
+                            me.getFormoptioncuti().el.unmask();
+                            Ext.Msg.alert('Info', 'Process finish');
+                        }
+                    }
+                }).read('cutidetailintranet');
+            } else {
+                Ext.Msg.alert('Info', 'Only HRD Check is No will be processed..!');
+            }
+        }
+    },
+    Checkcutinotvalid: function (array) {
+        var count = 0;
+        var msg = [];
+        for (var i = 0; i < array.length; ++i) {
+            if (array[i].absentdetail_id == 0) {
+                count++;
+                msg.push(
+                        "periode absent not yet formed  for  nik : " + array[i].nik
+                        + " , name : " + array[i].name
+                        + ", cuti type : " + array[i].cutitype_intranet
+                        + ", fromdate : " + array[i].start_date
+                        + ", untildate : " + array[i].end_date
+                        + ", note : " + array[i].note + "<br/><br/>"
+                        );
+            }
+        }
+        return {"counter": count, "message": msg};
+    },
+    saveIntranetIjintoStore: function () {
+        var me, form, formdata, grid, store, record, row, msg;
+        me = this;
+        form = me.getFormdataintranetijin();
+        formdata = form.getForm();
+        if (formdata.isValid()) {
+            grid = me.getGridijinintranet();
+            grid.doInit();
+            store = grid.getStore();
+            row = formdata.getValues();
+            record = store.getAt(store.indexOf(grid.getSelectionModel().getSelection()[0]));
+            record.beginEdit();
+            record.set(row);
+            record.endEdit();
+            store.commitChanges();
+            if (row.absenttype_id > 0) {
+                me.getFormdataintranetijin().el.mask('Data in Intranet will be update, please wait...', 'x-mask-loading');
+                me.tools.ajax({
+                    params: {"paramdata": Ext.JSON.encode(row), configintranet: me.configintranet},
+                    success: function (data, model) {
+                        me.getFormdataintranetijin().el.unmask();
+                        form.up('window').close();
+                    }
+                }).read('updateijinintranetinchange');
+
+            } else {
+                msg = "Periode absent not yet formed Name : " + row.name
+                        + ", Date : " + row.izin_date
+                        + ", Note : " + row.description;
+                Ext.Msg.alert('WARNING', msg);
+                form.up('window').close();
+            }
+
+        }
+    },
+    SaveIntranetijinToCES: function () {
+        var me, form, grid, store, rows, arraydata, status, msg, indexijin, dataarrayijin;
+        me = this;
+        grid = me.getGridijinintranet();
+        rows = grid.getSelectionModel().getSelection();
+        if (rows.length < 1) {
+            Ext.Msg.alert('Info', 'No record selected..!');
+            return;
+        } else {
+            arraydata = [];
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i]['data'].hrd_check == 'NO') {
+                    arraydata.push(rows[i]['data']);
+                }
+            }
+            if (arraydata.length) {
+                arraydata['is_halfday'] = 0;
+                me.getFormoptionijin().el.mask('Please wait', 'x-mask-loading');
+                indexijin;
+                for (indexijin = 0; indexijin < arraydata.length; ++indexijin) {
+                    dataarrayijin = arraydata[indexijin];
+                    if (dataarrayijin.absentdetail_id == undefined) {
+                        dataarrayijin['absentdetail_id'] = 0;
+                    }
+
+                    dataarrayijin['basedata'] = 'intranet';
+
+
+
+                    me.tools.ajax({
+                        params: dataarrayijin,
+                        success: function (dataijin, model) {
+                            status = dataijin.others[0][0].HASIL;
+                            msg = dataijin.others[0][0].MSG;
+                        }
+                    }).read('createreason');
+
+                }
+
+                me.getFormoptionijin().el.unmask();
+                Ext.Msg.alert('Info', 'Process finish');
+                me.getDataijinintranet();
+            } else {
+                Ext.Msg.alert('Info', 'Only HRD Check is No will be processed..!');
+            }
+        }
+    },
+    saveIntranetDinastoStore: function () {
+        var me, form, formdata, grid, store, record, row;
+        me = this;
+        form = me.getFormdataintranetdinas();
+        formdata = form.getForm();
+        if (formdata.isValid()) {
+            grid = me.getGriddinasintranet();
+            grid.doInit();
+            store = grid.getStore();
+            row = formdata.getValues();
+            record = store.getAt(store.indexOf(grid.getSelectionModel().getSelection()[0]));
+            record.beginEdit();
+            record.set(row);
+            record.endEdit();
+            store.commitChanges();
+            me.getFormdataintranetdinas().el.mask('Data in Intranet will be update, please wait...', 'x-mask-loading');
+            me.tools.ajax({
+                params: {"paramdata": Ext.JSON.encode(row), configintranet: me.configintranet},
+                success: function (data, model) {
+                    me.getFormdataintranetdinas().el.unmask();
+                    form.up('window').close();
+                }
+            }).read('updatedinasintranetinchange');
+        }
+    },
+    SaveIntranetdinasToCES: function () {
+        var me, form, grid, store, rows, arraydata, status, msg, indexdinas, dataarraydinas;
+        me = this;
+        grid = me.getGriddinasintranet();
+        rows = grid.getSelectionModel().getSelection();
+        if (rows.length < 1) {
+            Ext.Msg.alert('Info', 'No record selected..!');
+            return;
+        } else {
+            arraydata = [];
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i]['data'].hrd_check == 'NO') {
+                    arraydata.push(rows[i]['data']);
+                }
+            }
+            if (arraydata.length) {
+                me.getFormoptiondinas().el.mask('Please wait', 'x-mask-loading');
+                indexdinas;
+                for (indexdinas = 0; indexdinas < arraydata.length; ++indexdinas) {
+                    dataarraydinas = arraydata[indexdinas];
+                    if (dataarraydinas.parametertlk_id == undefined) {
+                        dataarraydinas['parametertlk_id'] = 0;
+                    }
+                    dataarraydinas['basedata'] = 'intranet';
+
+                    me.tools.ajax({
+                        params: dataarraydinas,
+                        success: function (datadinas, model) {
+                            status = datadinas.others[0][0].HASIL;
+                            msg = datadinas.others[0][0].MSG;
+                        }
+                    }).read('createtlk');
+
+                }
+                me.getFormoptiondinas().el.unmask();
+                Ext.Msg.alert('Info', 'Process finish');
+                me.getDatadinasintranet();
+            } else {
+                Ext.Msg.alert('Info', 'Only HRD Check is No will be processed..!');
+            }
+        }
+    },
+    formOptionsCutiAfterrender: function () {
+        var me, form, curdate;
+        me = this;
+        curdate = new Date();
+        form = me.getFormoptioncuti();
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.employeeb, form.down("[name=employee_id]")).comboBox();
+            }
+        }).read('employeeprojectpt');
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.department, form.down("[name=department_id]")).comboBox();
+            }
+        }).read('invalidabsentinit');
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                var filterdata = me.filterAbsenttypecuti(data.absenttype);
+                me.tools.wesea(filterdata, form.down("[name=absenttype_id]")).comboBox();
+            }
+        }).read('absenttype');
+    },
+    formOptionsIjinAfterrender: function () {
+        var me, form, curdate;
+        me = this;
+        curdate = new Date();
+        form = me.getFormoptionijin();
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.employeeb, form.down("[name=employee_id]")).comboBox();
+            }
+        }).read('employeeprojectpt');
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.department, form.down("[name=department_id]")).comboBox();
+            }
+        }).read('invalidabsentinit');
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                var filterdata = me.filterAbsenttypeijin(data.absenttype);
+                me.tools.wesea(filterdata, form.down("[name=absenttype_id]")).comboBox();
+            }
+        }).read('absenttype');
+    },
+    formOptionsDinasAfterrender: function () {
+        var me, form, curdate;
+        me = this;
+        curdate = new Date();
+        form = me.getFormoptiondinas();
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.employeeb, form.down("[name=employee_id]")).comboBox();
+            }
+        }).read('employeeprojectpt');
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.department, form.down("[name=department_id]")).comboBox();
+            }
+        }).read('invalidabsentinit');
+
+    },
+    filterAbsenttypecuti: function (param) {
+        var data = [];
+        Ext.each(param.data, function (value) {
+            if (value.absenttypegroup_absenttypegroup_id == 2) {
+                data.push(value);
+            }
+        });
+        return {'data': data, 'model': param.model};
+    },
+    filterAbsenttypeijin: function (param) {
+        var data = [];
+        Ext.each(param.data, function (value) {
+            if (value.absenttypegroup_absenttypegroup_id == 3) {
+                data.push(value);
+            }
+        });
+        return {'data': data, 'model': param.model};
+    },
+    formDataCutiAfterrender: function () {
+        var me, form, griddetail, storedetail;
+        me = this;
+        form = me.getFormdataintranetcuti();
+        form.loadRecord(me.rowintranetcuti);
+        me.absenttype_id_default = me.rowintranetcuti.data.absenttype_id;
+        me.hrd_check_cuti = me.rowintranetcuti.data.hrd_check;
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.department, form.down("[name=department_id]")).comboBox();
+                form.down("[name=department_id]").setValue(me.rowintranetcuti.data.department_id);
+            }
+        }).read('invalidabsentinit');
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.position, form.down("[name=position_id]")).comboBox();
+                form.down("[name=position_id]").setValue(me.rowintranetcuti.data.position_id);
+            }
+        }).read('position');
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                var filterdata = me.filterAbsenttypecuti(data.absenttype);
+                me.tools.wesea(filterdata, form.down("[name=absenttype_id]")).comboBox();
+                form.down("[name=absenttype_id]").setValue(me.rowintranetcuti.data.absenttype_id);
+            }
+        }).read('absenttype');
+
+        griddetail = me.getGridcutidetailintranet();
+        griddetail.doInit();
+        storedetail = griddetail.getStore().load({
+            params: {
+                mode_read: 'getdatacutidetailintranet',
+                configintranet: me.configintranet,
+                cuti_id: me.rowintranetcuti.data.cuti_id,
+            },
+            callback: function (data, model) {
+                griddetail.attachModel(model);
+            }
+        });
+    },
+    formDataIjinAfterrender: function () {
+        var me, form, griddetail, storedetail;
+        me = this;
+        form = me.getFormdataintranetijin();
+        form.loadRecord(me.rowintranetijin);
+        me.hrd_check_ijin = me.rowintranetijin.data.hrd_check;
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.department, form.down("[name=department_id]")).comboBox();
+                form.down("[name=department_id]").setValue(me.rowintranetijin.data.department_id);
+            }
+        }).read('invalidabsentinit');
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.position, form.down("[name=position_id]")).comboBox();
+                form.down("[name=position_id]").setValue(me.rowintranetijin.data.position_id);
+            }
+        }).read('position');
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                var filterdata = me.filterAbsenttypeijin(data.absenttype);
+                me.tools.wesea(filterdata, form.down("[name=absenttype_id]")).comboBox();
+                form.down("[name=absenttype_id]").setValue(me.rowintranetijin.data.absenttype_id);
+            }
+        }).read('absenttype');
+
+    },
+    formDataDinasAfterrender: function () {
+        var me, form, griddetail, storedetail;
+        me = this;
+        form = me.getFormdataintranetdinas();
+        form.loadRecord(me.rowintranetdinas);
+        me.hrd_check_dinas = me.rowintranetdinas.data.hrd_check;
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.department, form.down("[name=department_id]")).comboBox();
+                form.down("[name=department_id]").setValue(me.rowintranetdinas.data.department_id);
+            }
+        }).read('invalidabsentinit');
+
+        me.tools.ajax({
+            params: {},
+            success: function (data, model) {
+                me.tools.wesea(data.position, form.down("[name=position_id]")).comboBox();
+                form.down("[name=position_id]").setValue(me.rowintranetdinas.data.position_id);
+            }
+        }).read('position');
+
+    },
+    /* start added by ahmad riadi 06-06-2017 */
+    Formviewlogshow: function () {
+        var me;
+        me = this;
+        me.instantWindow("FormViewLog", 800, "View Log Absent Fingerprint", "view log", "absentrecordformviewlog");
+    },
+    getStartEnddatecurmonth: function () {
+        var date, firstdate, lastdate, fromdate, fdate, frommnth, fromday,
+                udate, untilmnth, untilday, untildate;
+
+        date = new Date();
+        firstdate = new Date(date.getFullYear(), date.getMonth(), 1);
+        lastdate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+        fdate = new Date(firstdate),
+                frommnth = ("0" + (fdate.getMonth() + 1)).slice(-2),
+                fromday = ("0" + fdate.getDate()).slice(-2);
+        fromdate = [fromday, frommnth, fdate.getFullYear()].join("-");
+
+        udate = new Date(lastdate),
+                untilmnth = ("0" + (udate.getMonth() + 1)).slice(-2),
+                untilday = ("0" + udate.getDate()).slice(-2);
+        untildate = [untilday, untilmnth, udate.getFullYear()].join("-");
+        return {'fromdate': fromdate, 'untildate': untildate}
+    },
+    FromviewLogAfterrender: function () {
+        var me, form, dates, fromdate, untildate;
+        me = this;
+        form = me.getFormviewlog();
+        dates = me.getStartEnddatecurmonth();
+        form.down('[name=fromdate]').setValue(dates.fromdate);
+        form.down('[name=untildate]').setValue(dates.untildate);
+    },
+    getDataviewlog: function (flag) {
+        var me, form, formvalue, grid, store, gridabsent, storeabsent, record, row;
+        me = this;
+        form = me.getFormviewlog();
+        formvalue = form.getForm().getValues();
+        grid = me.getGridlog();
+        gridabsent = me.getGridabsentrecord();
+        storeabsent = gridabsent.getStore();
+        record = storeabsent.getAt(storeabsent.indexOf(gridabsent.getSelectionModel().getSelection()[0]));
+        row = record.raw.employee;
+
+        grid.doInit();
+        store = grid.getStore().load({
+            params: {
+                mode_read: 'getdatalogfingerprint',
+                employee_id: row.employee_id,
+                fromdate: form.down('[name=fromdate]').getRawValue(),
+                untildate: form.down('[name=untildate]').getRawValue(),
+            },
+            callback: function (data, model) {
+                grid.attachModel(model);
+                grid.store.sort({property: 'date', direction: 'ASC'});
+            }
+        });
+    },
+    /* end added by ahmad riadi 06-06-2017 */
+
+
+    /* end added by ahmad riadi 06-04-2017 */
+
+
+
+
+
+
+});

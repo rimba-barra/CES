@@ -1,0 +1,27 @@
+Ext.define('Hrd.model.Generalparameter', {
+    extend: 'Ext.data.Model',
+    alias: 'model.generalparametermodel',
+    idProperty: 'generalparameter_id',
+    fields: [
+        {name: 'generalparameter_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'projectname', type: 'string'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'ptname', type: 'string'},
+        {name: 'name', type: 'string'},
+        {name: 'module_name', type: 'string'},
+        {name: 'value', type: 'string'},
+        {name: 'data_type', type: 'string'},
+        {name: 'has_module', type: 'boolean'},
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'modion', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'modiby', type: 'string'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'hideparam', type: 'string'},
+        {name: 'mode_read', type: 'string'},
+        {name: 'employee_id', type: 'int'},
+        {name: 'employee_name', type: 'string'},
+        {name: 'email_ciputra', type: 'string'},
+    ]
+});

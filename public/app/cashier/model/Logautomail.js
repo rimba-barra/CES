@@ -1,0 +1,25 @@
+Ext.define('Cashier.model.Logautomail', {
+    extend: 'Ext.data.Model',
+    alias: 'model.logautomailmodel',
+    idProperty: 'automaillog_id',
+    fields: [
+        {name: 'automaillog_id', type: 'int'},
+        {name: 'type_code', type: 'string'},
+        {name: 'module_code', type: 'string'},
+        {name: 'type_description', type: 'string'},
+        {name: 'module_description', type: 'string'},
+        {name: 'process_date', type: 'date', dateFormat: 'Y-m-d'},
+        {name: 'name', type: 'string'}, 
+        {name: 'send_to', type : 'string'},
+        {name: 'send_cc', type: 'string'},
+        {name: 'send_date', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'status', type: 'string'},
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'deleteon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'deleteby', type: 'string'},
+        {name: 'hideparam', type: 'string'},
+        {name: 'hover_detail_log', type: 'string'},
+    ]
+});

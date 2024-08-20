@@ -1,0 +1,220 @@
+Ext.define('Hrd.controller.Rotasi', {
+    extend: 'Hrd.library.box.controller.ControllerByData',
+    alias: 'controller.Rotasi',
+    requires: ['Hrd.library.box.tools.DefaultConfig', 'Hrd.library.box.tools.EventSelector',
+        'Hrd.minic.lookup.Employee', 'Hrd.library.box.tools.ComboLoader', 'Hrd.library.box.tools.InstaView',
+        'Hrd.library.box.tools.Hour'],
+    views: [],
+    comboBoxIdEl: [],
+    controllerName: 'rotasi',
+    formWidth: 600,
+    refs: [
+        {
+            ref: 'gridlookuppromosi',
+            selector: 'lookupemployeegrid'
+        }
+    ],
+    //unitFormula: null,
+    //storeProcess: 'Otherspaymentdatadetail',
+    bindPrefixName: 'Rotasi',
+    browseHandler: null,
+    localStore: {
+        selectedUnit: null,
+    },
+    textCombos: [],
+    comboLoader: null,
+    fieldName: 'changestatus_id',
+    myParams: null,
+    constructor: function(configs) {
+        var me = this;
+        var config = new Hrd.library.box.tools.DefaultConfig({
+            moduleName: me.controllerName
+        });
+        config.run(this);
+
+
+
+        this.callParent(arguments);
+    },
+    init: function() {
+        var me = this;
+        this.callParent(arguments);
+        var newEvs = {};
+        var events = new Hrd.library.box.tools.EventSelector();
+
+        //lookup_employee
+        newEvs['rotasiformdata button[action=lookup_employee]'] = {
+            click: function() {
+                me.lookupEmployee();
+            }
+
+        };
+
+
+
+
+        newEvs['#employeeTRotasiwindow lookupemployeegrid button[action=select]'] = {
+            click: function() {
+                me.selectEmployee();
+            }
+
+        };
+        newEvs['rotasiformdata checkbox[name=is_atasan_karyawan]'] = {
+            change: function() {
+                me.isDataKaryawanOnChange();
+            }
+
+        };
+
+
+
+        this.control(newEvs);
+
+    },
+    isDataKaryawanOnChange: function() {
+        var me = this;
+        
+      
+        
+        
+        var f = me.getFormdata();
+        var val = f.down("[name=is_atasan_karyawan]").getValue();
+       
+        //f.down("[name=new_atasan_id]").setValue("");
+        //f.down("[name=new_atasan_nama]").setValue("");
+        
+        
+      
+        if (val) {
+            
+            f.down("[name=new_atasan_id]").show();
+            f.down("[name=new_atasan_nama]").hide();
+        } else {
+            
+            f.down("[name=new_atasan_id]").hide();
+            f.down("[name=new_atasan_nama]").show();
+        }
+
+
+    },
+    selectEmployee: function() {
+        var me = this;
+        var f = me.getFormdata();
+        var g = me.getGridlookuppromosi();
+        var rec = g.getSelectedRecord();
+        if (rec) {
+            me.tools.fillEmployeeInfo(rec, f);
+            g.up("window").close();
+        }
+
+    },
+    lookupEmployee: function() {
+        var me = this;
+
+        var window = me.instantWindow("Panel", 600, "Employe List", "create", "employeeTRotasiwindow", "lookup.employee", {
+            itemId: me.controllerName + 'employee'
+        });
+
+
+        var g = window.down("grid");
+
+
+        var p = window.down("panel");
+
+        g.bindPrefixName = me.controllerName;
+        g.doInit();
+        g.doLoad({}, function() {
+            //p.setLoading(false);
+            var pt = g.down("pagingtoolbar");
+            if (pt) {
+                pt.getStore().loadPage(1);
+            }
+        });
+
+
+
+    },
+    
+    panelAfterRender: function(el) {
+        var me = this;
+
+        if (me.isMaximize) {
+            el.up("window").maximize();
+        }
+        me.getGrid().getSelectionModel().setSelectionMode('SINGLE');
+
+        var f = me.getFormdata();
+        me.tools.ajax({
+            params: {},
+            success: function(data, model) {
+                me.tools.wesea(data.employeeb, f.down("[name=new_atasan_id]")).comboBox();
+                me.tools.wesea(data.division, f.down("[name=new_division_id]")).comboBox();
+                me.tools.wesea(data.department, f.down("[name=new_department_id]")).comboBox();
+                me.tools.wesea(data.position, f.down("[name=new_position_id]")).comboBox();
+            }
+        }).read('parameter');
+
+        me.getPanel().setLoading(false);
+        
+        me.disableMyForm(true);
+
+
+        // maximize panel window
+
+    },
+    validateData: function() {
+        var me = this;
+        var data = {"status": true, "msg": "Sedang diproses..."};
+
+        return data;
+    },
+    disableMyForm:function(readOnly){
+        var me = this;
+        var f = me.getFormdata();
+        f.down("[action=lookup_employee]").setDisabled(readOnly);
+        f.down("[name=new_department_id]").setReadOnly(readOnly);
+        f.down("[name=new_division_id]").setReadOnly(readOnly);
+        f.down("[name=new_position_id]").setReadOnly(readOnly);
+        f.down("[name=is_atasan_karyawan]").setReadOnly(readOnly);
+        f.down("[name=new_atasan_id]").setReadOnly(readOnly);
+        f.down("[name=new_atasan_nama]").setReadOnly(readOnly);
+        f.down("[name=effective_date]").setReadOnly(readOnly);
+        f.down("[name=is_approve]").setReadOnly(readOnly);
+        f.down("[name=sk_number]").setReadOnly(readOnly);
+    },
+    afterClick: function() {
+        var me = this;
+        var f = me.getFormdata();
+        var x = {
+            cancel: function() {
+                me.disableMyForm(true);
+              
+                //  me.mainGridCheckRecord();
+                // var rec = me.getGrid().getSelectedRecord();
+                // if (rec) {
+                //    f.loadRecord(rec);
+                //}
+            },
+            save: function() {
+
+            },
+            edit: function() {
+            
+                 me.disableMyForm(false);
+            },
+            delete: function() {
+               
+            },
+            new : function() {
+             
+                me.disableMyForm(false);
+                // me.validShift = false;
+                f.getForm().reset();
+                //  f.down("[name=date]").setValue(new Date());
+            }
+        }
+        return x;
+    }
+
+
+});

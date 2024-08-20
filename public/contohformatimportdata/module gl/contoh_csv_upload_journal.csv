@@ -1,0 +1,28 @@
+kode acc;keterangan;D/C;amount;kel sub;sub gl ID;keterangan;amount
+11.10.217;titipan mkt 1;D;10000;;;;
+24.20.000;titipan mkt 2;C;10000;;;;
+11.10.217;titipan mkt 3;D;10000;;;;
+11.30.200;titipan mkt sub;C;;A;002;A;1000
+11.30.200;titipan mkt sub;C;;A;003;B;1200
+11.30.200;titipan mkt sub;C;;A;004;C;1000
+11.30.200;titipan mkt sub;C;;A;002;D;1000
+11.30.200;titipan mkt sub;C;;A;003;E;1000
+11.30.200;titipan mkt sub;C;;A;004;F;1000
+11.30.200;titipan mkt sub;C;;A;002;G;1000
+11.30.200;titipan mkt sub;C;;A;003;H;1000
+11.30.200;titipan mkt sub;C;;A;004;I;1000
+11.30.200;titipan mkt sub;C;;A;005;J;1000
+11.10.217;titipan mkt 5;D;10000;;;;
+24.20.000;titipan mkt 6;C;10000;;;;
+11.10.217;titipan mkt 7;D;10000;;;;
+51.00.104;titipan mkt sub dua;C;;A;004;A1;1300
+51.00.104;titipan mkt sub dua;C;;A;004;A2;1000
+51.00.104;titipan mkt sub dua;C;;A;004;A3;1000
+51.00.104;titipan mkt sub dua;C;;A;004;A4;1000
+51.00.104;titipan mkt sub dua;C;;A;004;A5;1000
+51.00.104;titipan mkt sub dua;C;;A;005;A6;1000
+51.00.104;titipan mkt sub dua;C;;A;005;A7;1000
+51.00.104;titipan mkt sub dua;C;;A;005;A8;1000
+51.00.104;titipan mkt sub dua;C;;A;005;A9;1000
+51.00.104;titipan mkt sub dua;C;;A;005;A10;1000
+11.30.110;unit;D;;B;A0101   AC;TEST;2000

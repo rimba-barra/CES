@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.komponenlembur.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.komponenlembur.Grid','Hrd.view.komponenlembur.FormSearch','Hrd.view.komponenlembur.FormData'],
+    alias:'widget.komponenlemburpanel',
+    itemId:'KomponenlemburPanel',
+    gridPanelName:'komponenlemburgrid',
+    formSearchPanelName:'komponenlemburformsearch',
+    formDataName:'komponenlemburformdata',
+});

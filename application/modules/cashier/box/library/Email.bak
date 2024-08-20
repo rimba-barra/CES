@@ -1,0 +1,42 @@
+<?php
+
+class Erems_Box_Library_Email {
+	
+	private $zendSmpt;
+	private $status;
+	private $error;
+	private $zendMail;
+	
+	public function __construct(){
+		$this->zendSmpt = new Zend_Mail_Transport_Smtp('mail.ciputra.co.id', array(
+			'auth' => 'login',
+			'username' => 'ces@ciputra.co.id',
+			'password' => 'c3s4ho01!',
+			)
+		);
+		/*
+		$this->zendSmpt = new Zend_Mail_Transport_Smtp('mail.ciputra.co.id', array(
+			'auth' => 'login',
+			'username' => 'mis.kpjkt@ciputra.co.id',
+			'password' => 'sun641r4y4',
+			)
+		);
+		*/
+		Zend_Mail::setDefaultTransport($this->zendSmpt);
+		$this->zendMail = new Zend_Mail();
+	}
+	
+	public function getStatus(){
+		return $this->status;
+	}
+	
+	public function getError(){
+		return $this->error;
+	}
+	
+	public function getMail(){
+		return $this->zendMail;
+	}
+}
+
+?>

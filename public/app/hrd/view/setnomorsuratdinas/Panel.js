@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.setnomorsuratdinas.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.setnomorsuratdinas.Grid','Hrd.view.setnomorsuratdinas.FormSearch','Hrd.view.setnomorsuratdinas.FormData'],
+    alias:'widget.setnomorsuratdinaspanel',
+    itemId:'SetnomorsuratdinasPanel',
+    gridPanelName:'setnomorsuratdinasgrid',
+    formSearchPanelName:'setnomorsuratdinasformsearch',
+    formDataName:'setnomorsuratdinasformdata',
+});

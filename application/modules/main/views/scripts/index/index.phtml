@@ -1,0 +1,109 @@
+<html>
+    <head>
+        <title><?php echo $this->apps_title, ' - ', $this->apps_company; ?></title>
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0" />
+        <meta name="robots" content="noindex,nofollow" />
+        <meta name="http_equiv" content="text/html; charset=utf-8;" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8;" />
+        <meta http-equiv="imagetoolbar" content="no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="baseUrl" content="<?php echo $this->appBaseUrl; ?>" />
+        <link rel="icon" type="image/x-icon" href="<?php echo $this->baseUrl(); ?>/app/main/images/icons/Ciputra.ico" />
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->baseUrl(); ?>/app/main/images/icons/Ciputra.ico" />
+        <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/app/main/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/app/main/bootstrap/css/datepicker.css" />
+        
+        <!--<<link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/resources/jquery-ui-1.12.1/jquery-ui.min.css" />
+        <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/resources/jquery-ui-1.12.1/jquery-ui.structure.min.css" />
+        <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/resources/jquery-ui-1.12.1/jquery-ui.theme.min.css" />-->
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl(); ?>/app/main/js-css/style.css" /><?php if (!$this->validuseragent): ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl(); ?>/resources/jquery-toastmessage/jquery.toastmessage.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl(); ?>/app/main/js-css/aplijs-style.css" />
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/resources/jquery/jquery.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/resources/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/resources/jquery-toastmessage/jquery.toastmessage.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/resources/jquery-ui-1.12.1/jquery-ui.min.js"></script>        
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/resources/extjs/ext-all.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/app/main/js-css/script.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/app/main/bootstrap/js/popper.min.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/app/main/bootstrap/js/bootstrap.min.js"></script>    
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/app/main/bootstrap/js/datepicker.min.js"></script>
+       
+        <?php endif; ?></head>
+    <body>
+        <div id="wrapper">
+            <table id="wrapper-front">
+                <tr><td id="wrapper-front-header"></td></tr>
+                <tr><td id="wrapper-front-content">
+                        <table id="front-content-wrapper">
+                            <tr>
+                                <td id="front-content"><?php if ($this->validuseragent): ?>
+                                        <div class="info info-warning">
+                                            The browser you are currently using is not supported.
+                                            <?php if (is_array($this->validuseragent)) { ?>
+                                                We recommend using a most recent version of one of these supported browsers: 
+                                                <ul type="square">
+                                                    <?php
+                                                    foreach ($this->validuseragent as $browser) {
+                                                        echo '<li>', $browser['name'], ' ', $browser['minver'], '+</li>';
+                                                    }
+                                                    ?></ul><?php } ?>
+                                        </div>
+
+                                    <?php else: ?>
+                                        <noscript>
+                                        <div class="info info-error">
+                                            JavaScript is either disabled or not supported by your browser !
+                                        </div>
+                                        </noscript>
+                                    <?php endif; ?></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="wrapper-front-footer">
+                        <div><?php echo $this->apps_version, '<br />', $this->apps_copyright; ?>
+                        </div><?php if (!$this->isChrome): ?>
+                            <div id="browser-info">
+                                <?php
+                                echo '<strong>'.$this->globalparam['value'].'</strong>';
+                                ?>
+                                <br/>
+                                <br/>
+                                <img src="<?php echo $this->baseUrl(); ?>/app/main/images/icons/chrome.gif" title="Google Chrome" alt="Google Chrome" id="browser-icon" align="absmiddle" /> Google Chrome is the most recommended browser. Get the latest version <span class="link" onclick="window.open('https://www.google.com/intl/en/chrome/')"><u>here</u></span>.</div><?php endif; ?></td></tr></table><div id="content"></div></div><div id="wrapper-mask"></div><div id="cookie-info">
+            <div class="info info-error">
+                Your browser's cookie functionality is turned off. Please turn it on and reload the page !
+            </div>
+             <script src="<?php echo $this->baseUrl(); ?>/app/main/bootstrap/js/popper.min.js"></script>               
+             <script src="<?php echo $this->baseUrl(); ?>/app/main/bootstrap/js/bootstrap.min.js"></script>
+             
+        </div>
+    </body>
+</html>
+
+<!-- Jerry Peter : 06/12/2018 - Tambah script Google Analytics untuk tracking --->
+
+<!-- Global site tag (gtag.js) - Google Analytics 
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-130584824-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-130584824-1');
+</script>
+-->
+
+<!-- David Prasetyo : 05/03/2020 - Tambah script Google Analytics untuk tracking --->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147212443-7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-147212443-7');
+</script>

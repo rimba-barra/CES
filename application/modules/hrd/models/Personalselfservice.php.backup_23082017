@@ -1,0 +1,1219 @@
+<?php
+
+ini_set("memory_limit", "-1");
+ini_set('max_execution_time', 0);
+
+class Hrd_Models_Personalselfservice extends Zend_Db_Table_Abstract {
+
+    private $setting = null;
+    private $dao_emp = null;
+    private $t_relationtype = null;
+    private $t_relation = null;
+    private $ps_relation = null;
+    private $log_m_employee = null;
+    private $log_t_relation = null;
+    private $t_organization = null;
+    private $ps_organization = null;
+    private $log_t_organization = null;
+    private $t_education = null;
+    private $log_t_education = null;
+    private $ps_education = null;
+    private $t_traininghistory = null;
+    private $ps_traininghistory = null;
+    private $log_t_traininghistory = null;
+    private $t_potency = null;
+    private $ps_potency = null;
+    private $log_t_potency = null;
+    private $t_jobhistory = null;
+    private $ps_jobhistory = null;
+    private $log_t_jobhistory = null;
+    		
+ 
+
+    function init() {
+        $this->setting = new Hrd_Models_General_Setup();
+        $this->dao_emp = new Hrd_Models_Master_EmployeeDao();
+        $this->setting->_storeprocedure = 'sp_personalselfservice';
+        $this->t_relationtype = 't_relationtype';
+        $this->t_relation = 't_relation';
+        $this->ps_relation = 'ps_relation';
+        $this->ps_employee = 'ps_employee';
+        $this->m_employee = 'm_employee';
+        $this->log_m_employee = 'log_m_employee';
+        $this->log_t_relation = 'log_t_relation';
+        $this->t_organization = 't_organization';
+        $this->ps_organization = 'ps_organization';
+        $this->log_t_organization = 'log_t_organization';
+        $this->t_education = 't_educationhistory';
+        $this->ps_education = 'ps_educationhistory';
+        $this->log_t_education = 'log_t_educationhistory';
+        $this->t_traininghistory = 't_traininghistory';
+        $this->ps_traininghistory = 'ps_traininghistory';
+        $this->log_t_traininghistory = 'log_t_traininghistory';
+        $this->t_potency = 't_employeepotency';
+        $this->ps_potency = 'ps_employeepotency';
+        $this->log_t_potency = 'log_t_employeepotency';
+        $this->t_jobhistory = 't_jobhistory';
+        $this->ps_jobhistory = 'ps_jobhistory';
+        $this->log_t_jobhistory = 'log_t_jobhistory';
+	$this->ps_document = 'ps_dokumen';
+	$this->log_document = 'log_dokumen';
+    }
+
+    function RoutesAllActions($param) {
+        $return['success'] = false;
+        if (is_array($param) && count($param)) {
+            try {                
+                
+               
+                $this->setting->_param = $param;
+                switch ($this->setting->_param['mode_read']) {
+                    case 'searching':
+                        if(!is_numeric($this->setting->_param['employee_id'])){
+                            $this->setting->_param['employee_name'] =$this->setting->_param['employee_id'];
+                            $this->setting->_param['employee_id'] =0;
+                        }
+
+			$implode_employee_id = $this->getdataInps();
+                        $this->setting->_param['implodedata_employee'] = $implode_employee_id; 
+                        
+                        if ($param['status'] == 1) {
+                            $this->setting->_paramsql = 'read_updatedata';
+                        } else if ($param['status'] == 2) {
+                            $this->setting->_paramsql = 'read_valid';
+                        } else if ($param['status'] == 3) {
+                            $this->setting->_paramsql = 'read_notupdateandvalid';
+                        }
+                        $result = $this->setting->executeSP();
+                        //print_r($this->setting->_dataexec);
+                        $counter = $result[0][0]['RECORD_TOTAL'];
+                        $data = $result[1];
+                        $message = null;
+                        $valid = true;
+                        break;
+                    case 'getdefaultdepartment':
+                        $result = $this->setting->get_defaultdepartment();
+                        //print_r($this->setting->_dataexec);
+                        $counter = $result[1][0]['RECORD_TOTAL'];
+                        $data = $result[2];
+                        $message = null;
+                        $valid = true;
+                        break;
+                    case 'getdefaultemployee':
+                        $result = $this->setting->get_defaultemployee();
+                        //print_r($this->setting->_dataexec);
+                        $counter = $result[1][0]['RECORD_TOTAL'];
+                        $data = $result[2];
+                        $message = null;
+                        $valid = true;
+                        break;
+                    case 'getdata_approve_spouse':
+                        $this->setting->_paramsql = $this->setting->_param['mode_read'];
+                        $this->setting->_param = array(
+                            'employee_id' => $param['employee_id'],
+                            'relationtype_id' => 3,
+                        );
+                        $result = $this->setting->executeSP();
+                        if (!empty($result[0])) {
+                            $data = $result[0][0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data spouse';
+                        break;
+                    case 'getdatachield':
+                        $this->setting->_paramsql = 'getdata_approve_spouse';
+                        $this->setting->_param = array(
+                            'employee_id' => $param['employee_id'],
+                            'relationtype_id' => 4,
+                        );
+                        $result = $this->setting->executeSP();
+                        //print_r($this->setting->_dataexec);
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data chield';
+                        break;
+                    case 'getdatasibling':
+                        $this->setting->_paramsql = 'getdata_approve_spouse';
+                        $this->setting->_param = array(
+                            'employee_id' => $param['employee_id'],
+                            'relationtype_id' => 5,
+                        );
+                        $result = $this->setting->executeSP();
+                        //print_r($this->setting->_dataexec);
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data sibling';
+                        break;
+                    case 'getdata_approve_father':
+                        $this->setting->_paramsql = 'getdata_approve_spouse';
+                        $this->setting->_param = array(
+                            'employee_id' => $param['employee_id'],
+                            'relationtype_id' => 1,
+                        );
+                        $result = $this->setting->executeSP();
+                        if (!empty($result[0])) {
+                            $data = $result[0][0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data father';
+                        break;
+                    case 'getdata_approve_mother':
+                        $this->setting->_paramsql = 'getdata_approve_spouse';
+                        $this->setting->_param = array(
+                            'employee_id' => $param['employee_id'],
+                            'relationtype_id' => 2,
+                        );
+                        $result = $this->setting->executeSP();
+                        if (!empty($result[0])) {
+                            $data = $result[0][0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data mother';
+                        break;
+                    case 'getdatacontactemergency':
+                        $this->setting->_paramsql = 'getdata_approve_spouse';
+                        $this->setting->_param = array(
+                            'employee_id' => $param['employee_id'],
+                            'relationtype_id' => 7,
+                        );
+                        $result = $this->setting->executeSP();
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data contact emergency';
+                        break;
+                    case 'getdataorganization':
+                        $paramdata = array(
+                            'employee_id' => $param['employee_id'],
+                        );
+                        $result = $this->getdata_in_transaction_table($this->ps_organization, $paramdata);
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data organization';
+                        break;
+                    case 'getdataeducationformal':
+                        $paramdata = array(
+                            'employee_id' => $param['employee_id'],
+                        );
+                        $result = $this->getdata_in_transaction_table($this->ps_education, $paramdata);
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data education formal';
+                        break;
+                    case 'getdataeducationnonformal':
+                        $paramdata = array(
+                            'employee_id' => $param['employee_id'],
+                        );
+                        $result = $this->getdata_in_transaction_table($this->ps_traininghistory, $paramdata);
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data education formal';
+                        break;
+                    case 'getdata_approve_potency':
+                        $paramdata = array(
+                            'employee_id' => $param['employee_id'],
+                        );
+                        $result = $this->getdata_in_transaction_table($this->ps_potency, $paramdata);
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data potency';
+                        break;
+                    case 'getdatajobhistory':
+                        $paramdata = array(
+                            'employee_id' => $param['employee_id'],
+                        );
+                        $result = $this->getdata_in_transaction_table($this->ps_jobhistory, $paramdata);
+                        if (!empty($result[0])) {
+                            $data = $result[0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data job history';
+                        break;
+                    case 'getdata_approve_employee':
+                        $paramdata = array(
+                            'employee_id' => $param['employee_id'],
+                        );
+                        $result = $this->getdata_in_transaction_table($this->ps_employee, $paramdata);
+                        if (!empty($result[0])) {
+                            $data = $result[0][0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data employee in temporary';
+                        break;
+
+		     case 'getdatadocument':
+                        $paramdata = array(
+                            'employee_id' => $param['employee_id'],
+                        );
+                        $result = $this->getdata_in_transaction_table($this->ps_document, $paramdata);
+                        if (!empty($result[0])) {
+                            $data = $result[0][0];
+                            $valid = true;
+                            $counter = 1;
+                        } else {
+                            $data = null;
+                            $valid = false;
+                            $counter = 0;
+                        }
+                        $message = 'get data document in temporary';
+                     break; 
+
+                    case 'approve':
+                        $msg = $this->Approvedata($param);
+                        $result = null;
+                        $data = null;
+                        $valid = true;
+                        $counter = 0;
+                        $message = $msg;
+                        break;
+                    default:
+                        $result = null;
+                        $data = null;
+                        $valid = true;
+                        $counter = 0;
+                        $message = 'no action';
+                }
+
+                $return = array(
+                    "success" => $valid,
+                    "data" => $data,
+                    "msg" => $message,
+                    "total" => $counter,
+                    "counter" => $counter,
+                    "parameter" => $param['mode_read'],
+                );
+            } catch (Exception $e) {
+                
+            }
+        }
+        return $return;
+    }
+
+    public function getdataInps() {
+        $paramdata = array();
+        $ids = array();       
+        $resultemp = $this->setting->getdata($this->ps_employee);
+        $resultedu = $this->setting->getdata($this->ps_education);
+        $resultptc = $this->setting->getdata($this->ps_potency);
+        $resultjobhis = $this->setting->getdata($this->ps_jobhistory);
+        $resultorg = $this->setting->getdata($this->ps_organization);
+        $resultrelation = $this->setting->getdata($this->ps_relation);
+        $resulttraining = $this->setting->getdata($this->ps_traininghistory);
+        $resultdoc = $this->setting->getdata($this->ps_document);
+         
+        if (!empty($resultemp[0])) {
+            foreach ($resultemp[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+        if (!empty($resultedu[0])) {
+            foreach ($resultedu[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+         if (!empty($resultptc[0])) {
+            foreach ($resultptc[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+        if (!empty($resultjobhis[0])) {
+            foreach ($resultjobhis[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+        if (!empty($resultorg[0])) {
+            foreach ($resultorg[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+        if (!empty($resultrelation[0])) {
+            foreach ($resultrelation[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+        if (!empty($resulttraining[0])) {
+            foreach ($resulttraining[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+        if (!empty($resultdoc[0])) {
+            foreach ($resultdoc[0] as $row) {
+                $ids[] = $row['employee_id'];
+            }
+        }        
+       $employee_id = implode(',', $ids);       
+       return $employee_id;
+    }
+
+
+
+    public function Approvedata($param) {
+        $employee_id = $param['employee_id'];
+        /* nilai 2 terjadi error, 1 berhasil di approve, 0 tidak terjadi apa-apa 
+         * default bernilai 2
+         */
+        $valid_log_emp = 2;
+        $valid_log_relation_spouse = 2;
+        $valid_log_relation_chield = 2;
+        $valid_log_relation_parent = 2;
+        $valid_log_relation_sibling = 2;
+        $valid_log_relation_contact_emergency = 2;
+        $valid_log_organization = 2;
+        $valid_log_educationformal = 2;
+        $valid_log_educationunformal = 2;
+        $valid_log_potency = 2;
+        $valid_log_workhistory = 2;
+	$valid_log_document = 2;
+
+        $valid_log_emp = $this->create_originaldata_to_employee_log($employee_id);
+        $valid_log_relation_spouse = $this->create_originaldata_to_relation_log_spouse($employee_id);
+        $valid_log_relation_chield = $this->create_originaldata_to_relation_log_chield($employee_id);
+        $valid_log_relation_parent = $this->create_originaldata_to_relation_log_parent($employee_id);
+        $valid_log_relation_sibling = $this->create_originaldata_to_relation_log_sibling($employee_id);
+        $valid_log_relation_contact_emergency = $this->create_originaldata_to_relation_log_contact_emergency($employee_id);
+        $valid_log_organization = $this->create_originaldata_to_organization_log($employee_id);
+        $valid_log_educationformal = $this->create_originaldata_to_educationformal_log($employee_id);
+        $valid_log_educationunformal = $this->create_originaldata_to_educationunformal_log($employee_id);
+        $valid_log_potency = $this->create_originaldata_to_potency_log($employee_id);
+        $valid_log_workhistory = $this->create_originaldata_to_workhistory_log($employee_id);
+	$valid_log_document = $this->update_document($employee_id);
+
+        $arraycheck = array($valid_log_emp, $valid_log_relation_spouse, $valid_log_relation_chield,
+            $valid_log_relation_parent, $valid_log_relation_sibling, $valid_log_relation_contact_emergency,
+            $valid_log_educationformal, $valid_log_organization, $valid_log_educationunformal,
+            $valid_log_potency, $valid_log_workhistory,$valid_log_document
+        );
+
+        if (!in_array(2, $arraycheck)) {
+            $data = array("employee_id" => $employee_id, 'is_valid_personal' => 1);
+            $wheredata = array("employee_id" => $employee_id);
+            $this->update_transaction_table($this->m_employee, 'employee_id', $data, $wheredata);
+            $msg = 'Process Update data from Personal Self Service, Finish';
+        } else {
+            $msg = 'Process Update data from Personal Self Service, Failed';
+        }
+        
+        $datareturn = ' <strong> Status  = ' . $msg . '</strong> <br/>';
+        $datareturn .= 'valid_employee = ' . $valid_log_emp . '<br/>';
+        $datareturn .= 'valid_relation_spouse = ' . $valid_log_relation_spouse . '<br/>';
+        $datareturn .= 'valid_relation_chield = ' . $valid_log_relation_chield . '<br/>';
+        $datareturn .= 'valid_relation_parent = ' . $valid_log_relation_parent . '<br/>';
+        $datareturn .= 'valid_relation_sibling = ' . $valid_log_relation_sibling . '<br/>';
+        $datareturn .= 'valid_relation_contact_emergency = ' . $valid_log_relation_contact_emergency . '<br/>';
+        $datareturn .= 'valid_organization = ' . $valid_log_organization . '<br/>';
+        $datareturn .= 'valid_educationformal = ' . $valid_log_educationformal . '<br/>';
+        $datareturn .= 'valid_educationunformal = ' . $valid_log_educationunformal . '<br/>';
+        $datareturn .= 'valid_potency = ' . $valid_log_potency . '<br/>';
+        $datareturn .= 'valid_workhistory = ' . $valid_log_workhistory . '<br/>';
+	$datareturn .= 'valid_document = ' . $valid_log_document . '<br/>';
+       
+
+
+        return $datareturn;
+    }
+
+    public function create_originaldata_to_employee_log($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_emp_by_id';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $this->dao_emp->getAllByIds($employee_id);
+            $counter = $result[0][0]['totalRow'];
+            if ($counter > 0) {
+                $data = $result[1][0];
+                //create data log                
+                $return = $this->create_log_table($this->log_m_employee, $data);
+                if (is_array($return)) {
+                    if (!empty($return[0])) {
+                        //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                        if ($return[0]) {
+                            //update data
+                            $data_tmp = $result_tmp[0][0];
+                            unset($data_tmp['active']); //tidak ada fieldnya                          
+                            $validdata = $this->update_transaction_table($this->m_employee, 'employee_id', $data_tmp, $data);
+                        }
+                    }
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->delete_temporary_table($this->ps_employee, 'employee_id', $employee_id);
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_relation_log_spouse($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_relation_spouse_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $record_tmp = $result_tmp[0][0];
+            $param_tmp = $result_tmp[0][0];
+            $this->setting->_tabledata = $this->t_relation;
+            $param = array(
+                'deleted' => 0,
+                'employee_id' => $employee_id,
+                'relationtype_id' => $record_tmp['relationtype_id'],
+            );
+            $result = $this->setting->getdata_standard($param);
+            if (!empty($result[0])) {
+                /* for update data with step :
+                 * 1. create log
+                 * 2. update data
+                 */
+                //create data log                
+                $return = $this->create_log_table($this->log_t_relation, $result[0][0]);
+                if (is_array($return)) {
+                    if (!empty($return[0])) {
+                        //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                        if ($return[0]) {
+                            //update data  
+                            $validdata = $this->update_transaction_table($this->t_relation, 'relation_id', $record_tmp, $result[0][0]);
+                        }
+                    }
+                }
+            } else {
+                /* for create data with step :
+                 * 1. create data in original table
+                 */
+                $validdata = $this->insert_transaction_table($this->t_relation, 'relation_id', $record_tmp);
+            }
+        }
+
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->setting->_tabledata = $this->ps_relation;
+            $this->setting->deletedata(array(
+                'employee_id' => $employee_id,
+                'relationtype_id' => 3, //Child
+                    )
+            );
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_relation_log_chield($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_relation_chield_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                $this->setting->_paramsql = 'getdata_relation';
+                $this->setting->_param = array(
+                    'employee_id' => $employee_id,
+                    'name' => $row['name'],
+                    'relationtype_id' => $row['relationtype_id'],
+                );
+                $result_relation = $this->setting->executeSP();
+                if (!empty($result_relation[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log                   
+                    $return = $this->create_log_table($this->log_t_relation, $result_relation[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data   
+                                $validdata = $this->update_transaction_table($this->t_relation, 'relation_id', $row, $result_relation[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_relation, 'relation_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->setting->_tabledata = $this->ps_relation;
+            $this->setting->deletedata(array(
+                'employee_id' => $employee_id,
+                'relationtype_id' => 4, //Child
+                    )
+            );
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_relation_log_parent($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_relation_parent_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                $this->setting->_paramsql = 'getdata_relation';
+                $this->setting->_param = array(
+                    'employee_id' => $employee_id,
+                    'name' => $row['name'],
+                    'relationtype_id' => $row['relationtype_id'],
+                );
+                $result_relation = $this->setting->executeSP();
+
+                if (!empty($result_relation[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log                   
+                    $return = $this->create_log_table($this->log_t_relation, $result_relation[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data   
+                                $validdata = $this->update_transaction_table($this->t_relation, 'relation_id', $row, $result_relation[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_relation, 'relation_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->setting->_tabledata = $this->ps_relation;
+            $this->setting->deletedata(array(
+                'employee_id' => $employee_id,
+                'relationtype_id' => 1, //Ayah
+                    )
+            );
+            $this->setting->deletedata(array(
+                'employee_id' => $employee_id,
+                'relationtype_id' => 2, //Ibu
+                    )
+            );
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_relation_log_sibling($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_relation_sibling_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                $this->setting->_paramsql = 'getdata_relation';
+                $this->setting->_param = array(
+                    'employee_id' => $employee_id,
+                    'name' => $row['name'],
+                    'relationtype_id' => $row['relationtype_id'],
+                );
+                $result_relation = $this->setting->executeSP();
+                if (!empty($result_relation[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log
+                    $return = $this->create_log_table($this->log_t_relation, $result_relation[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data                                
+                                $validdata = $this->update_transaction_table($this->t_relation, 'relation_id', $row, $result_relation[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_relation, 'relation_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->setting->_tabledata = $this->ps_relation;
+            $this->setting->deletedata(array(
+                'employee_id' => $employee_id,
+                'relationtype_id' => 5, //Saudara
+                    )
+            );
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_relation_log_contact_emergency($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_relation_contactemergency_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                $this->setting->_paramsql = 'getdata_relation';
+                $this->setting->_param = array(
+                    'employee_id' => $employee_id,
+                    'name' => $row['name'],
+                    'relationtype_id' => $row['relationtype_id'],
+                );
+                $result_relation = $this->setting->executeSP();
+                if (!empty($result_relation[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log                    
+                    $return = $this->create_log_table($this->log_t_relation, $result_relation[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data                                
+                                $validdata = $this->update_transaction_table($this->t_relation, 'relation_id', $row, $result_relation[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_relation, 'relation_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->setting->_tabledata = $this->ps_relation;
+            $this->setting->deletedata(array(
+                'employee_id' => $employee_id,
+                'relationtype_id' => 7, //Emergency
+                    )
+            );
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_organization_log($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_organization_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                // get data in transaction table
+                $param = array(
+                    'deleted' => 0,
+                    'employee_id' => $employee_id,
+                    'organization' => $row['organization'],
+                );
+                $result = $this->getdata_in_transaction_table($this->t_organization, $param);
+                if (!empty($result[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log                    
+                    $return = $this->create_log_table($this->log_t_organization, $result[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data                              
+                                $validdata = $this->update_transaction_table($this->t_organization, 'organization_id', $row, $result[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_organization, 'organization_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->delete_temporary_table($this->ps_organization, 'employee_id', $employee_id);
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_educationformal_log($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_eduformal_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                // get data in transaction table
+                $param = array(
+                    'deleted' => 0,
+                    'employee_id' => $employee_id,
+                    'stage' => $row['stage'],
+                    'school' => $row['school'],
+                );
+                $result = $this->getdata_in_transaction_table($this->t_education, $param);
+                if (!empty($result[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log                    
+                    $return = $this->create_log_table($this->log_t_education, $result[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data                                
+                                $validdata = $this->update_transaction_table($this->t_education, 'educationhistory_id', $row, $result[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_education, 'educationhistory_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->delete_temporary_table($this->ps_education, 'employee_id', $employee_id);
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_educationunformal_log($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_eduunformal_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                // get data in transaction table
+                $param = array(
+                    'deleted' => 0,
+                    'employee_id' => $employee_id,
+                    'training' => $row['training'],
+                    'organizer' => $row['organizer'],
+                    'city_name' => $row['city_name'],
+                    'years' => $row['years'],
+                );
+                $result = $this->getdata_in_transaction_table($this->t_traininghistory, $param);
+                if (!empty($result[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log                  
+                    $return = $this->create_log_table($this->log_t_traininghistory, $result[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data                                
+                                $validdata = $this->update_transaction_table($this->t_traininghistory, 'traininghistory_id', $row, $result[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_traininghistory, 'traininghistory_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->delete_temporary_table($this->ps_traininghistory, 'employee_id', $employee_id);
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_potency_log($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_potency_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                // get data in transaction table
+                $param = array(
+                    'deleted' => 0,
+                    'employee_id' => $employee_id,
+                    'potency_id' => $row['potency_id']
+                );
+                $result = $this->getdata_in_transaction_table($this->t_potency, $param);
+                if (!empty($result[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log
+                    $return = $this->create_log_table($this->log_t_potency, $result[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data                               
+                                $validdata = $this->update_transaction_table($this->t_potency, 'employeepotency_id', $row, $result[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_potency, 'employeepotency_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->delete_temporary_table($this->ps_potency, 'employee_id', $employee_id);
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function create_originaldata_to_workhistory_log($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_workhistory_by_empid';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                // get data in transaction table
+                $param = array(
+                    'deleted' => 0,
+                    'employee_id' => $employee_id,
+                    'company_name' => $row['company_name'],
+                    'division' => $row['division'],
+                    'position' => $row['position']
+                );
+                $result = $this->getdata_in_transaction_table($this->t_jobhistory, $param);
+                if (!empty($result[0])) {
+                    /* for update data with step :
+                     * 1. create log
+                     * 2. update data
+                     */
+                    //create data log                    
+                    $return = $this->create_log_table($this->log_t_jobhistory, $result[0][0]);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data                                
+                                $validdata = $this->update_transaction_table($this->t_jobhistory, 'jobhistory_id', $row, $result[0][0]);
+                            }
+                        }
+                    }
+                } else {
+                    /* for create data with step :
+                     * 1. create data in original table
+                     */
+                    $validdata = $this->insert_transaction_table($this->t_jobhistory, 'jobhistory_id', $row);
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->delete_temporary_table($this->ps_jobhistory, 'employee_id', $employee_id);
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+    public function update_document($employee_id) {
+        $this->setting->_paramsql = 'getdata_forapprove_document';
+        $this->setting->_param = array('employee_id' => $employee_id);
+        $result_tmp = $this->setting->executeSP();
+        $validdata = 0;
+        if (!empty($result_tmp[0])) {
+            $basesource = getcwd() . '/app/hrd/uploads_tmp/personal_system/' . $employee_id . '/';
+            $basedestination = getcwd() . '/app/hrd/uploads/personal/' . $employee_id . '/';
+            
+            if (!file_exists($basedestination)) {
+                mkdir($basedestination, 0777, true);
+            }
+            
+            $result = $result_tmp[0];
+            foreach ($result as $row) {
+                // get data in transaction table
+                $param = array(
+                    'deleted' => 0,
+                    'employee_id' => $employee_id,                   
+                );
+                $result = $this->getdata_in_transaction_table($this->m_employee, $param);
+                if (!empty($result[0])) {
+                    $docempbackup = array(
+                        'employee_id' => $result[0][0]['employee_id'],
+                        'dokumen_kk' => $result[0][0]['dokumen_kk'],
+                        'dokumen_npwp' => $result[0][0]['dokumen_npwp'],
+                        'dokumen_ktp' => $result[0][0]['dokumen_ktp'],
+                        'dokumen_jamsostek' => $result[0][0]['dokumen_jamsostek'],
+                        'dokumen_bpjs_pp' => $result[0][0]['dokumen_bpjs_pp'],
+                        'dokumen_bpjs_k' => $result[0][0]['dokumen_bpjs_k'],
+                        'dokumen_bpjs_kk' => $result[0][0]['dokumen_bpjs_kk'],
+                        'dokumen_ijazah' => $result[0][0]['dokumen_ijazah'],
+                        'dokumen_manulife_p' => $result[0][0]['dokumen_manulife_p'],
+                        'dokumen_rekening' => $result[0][0]['dokumen_rekening'],
+                        'addon' => $result[0][0]['addon'],
+                        'addby' => $result[0][0]['addby'],
+                        'modion' => $result[0][0]['modion'],
+                        'modiby' => $result[0][0]['modiby'],
+                        'inactiveon' => $result[0][0]['inactiveon'],
+                        'inactiveby' => $result[0][0]['inactiveby'],
+                        'deleteby' => $result[0][0]['deleteby'],
+                        'deleteon' => $result[0][0]['deleteon'],
+                        'deleted' => $result[0][0]['deleted']
+                    );
+                    $return = $this->create_log_table($this->log_document,$docempbackup);
+                    if (is_array($return)) {
+                        if (!empty($return[0])) {
+                            //pengecekan seperti ini, pasti bernilai true, akan di proses untuk update
+                            if ($return[0]) {
+                                //update data  
+                                $kk = $this->checkdataexist($employee_id, $row['dokumen_kk'], 'kk');                         
+                                $npwp = $this->checkdataexist($employee_id, $row['dokumen_npwp'], 'npwp');                         
+                                $ktp = $this->checkdataexist($employee_id, $row['dokumen_ktp'], 'ktp');                         
+                                $jamsostek = $this->checkdataexist($employee_id, $row['dokumen_jamsostek'], 'jamsostek');                         
+                                $bpjs_pp = $this->checkdataexist($employee_id, $row['dokumen_bpjs_pp'], 'bpjs_pp');                         
+                                $bpjs_k = $this->checkdataexist($employee_id, $row['dokumen_bpjs_k'], 'bpjs_k');                         
+                                $bpjs_kk = $this->checkdataexist($employee_id, $row['dokumen_bpjs_kk'], 'bpjs_kk');                         
+                                $ijazah = $this->checkdataexist($employee_id, $row['dokumen_ijazah'], 'ijazah');                         
+                                $manulife_p = $this->checkdataexist($employee_id, $row['dokumen_manulife_p'], 'manulife_p');                         
+                                $rekening = $this->checkdataexist($employee_id, $row['dokumen_rekening'], 'rekening');                         
+                                                                                            
+                                $docupdate = array(
+                                    'employee_id' => $row['employee_id'],
+                                    'dokumen_kk' => $kk,
+                                    'dokumen_npwp' => $npwp,
+                                    'dokumen_ktp' => $ktp,
+                                    'dokumen_jamsostek' => $jamsostek,
+                                    'dokumen_bpjs_pp' => $bpjs_pp,
+                                    'dokumen_bpjs_k' => $bpjs_k,
+                                    'dokumen_bpjs_kk' => $bpjs_kk,
+                                    'dokumen_ijazah' => $ijazah,
+                                    'dokumen_manulife_p' => $manulife_p,
+                                    'dokumen_rekening' => $rekening,
+                                );                                
+                                $validdata = $this->update_transaction_table($this->m_employee, 'employee_id', $docupdate, $param);
+                                if($validdata){
+                                    $this->beliefmedia_recurse_copy($basesource, $basedestination);
+                                }
+                            } 
+                        }
+                    }
+                }
+            }
+        }
+        if ($validdata == 0) {
+            $msg = 'No data in temporary';
+        } else {
+            $this->delete_temporary_table($this->ps_document, 'employee_id', $employee_id);
+            $msg = 'Success update data from temporary';
+        }
+        return $msg;
+    }
+
+
+    public function checkdataexist($employee_id, $data, $prefix) {
+        $format = "personal/" . $employee_id;
+        $return = NULL;
+        if (!empty($data)) {
+            $return = $format . "/$prefix/" . $data;
+        }
+        return $return;
+    }
+
+    public function beliefmedia_recurse_copy($src, $dst) {
+        /* Returns false if src doesn't exist */
+        $dir = @opendir($src);
+
+        /* Make destination directory. False on failure */
+        if (!file_exists($dst))
+            @mkdir($dst);
+
+        /* Recursively copy */
+        while (false !== ($file = readdir($dir))) {
+
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if (is_dir($src . '/' . $file))
+                    $this->beliefmedia_recurse_copy($src . '/' . $file, $dst . '/' . $file);
+                else
+                    copy($src . '/' . $file, $dst . '/' . $file);
+            }
+        }
+        closedir($dir);
+    }
+
+
+    public function getdata_in_transaction_table($table, $param) {
+        $this->setting->_tabledata = $table;
+        $result = $this->setting->getdata_standard($param);
+        return $result;
+    }
+
+    public function create_log_table($table, $data) {
+        $data['log_basedata'] = 'personalselfservice';
+        $data['log_user_id_approve'] = $this->setting->_user_id;
+        $this->setting->_tabledata = $table;
+        $return = $this->setting->insertdata($data);
+        return $return;
+    }
+
+    public function insert_transaction_table($table, $prefix, $row) {
+        $validdata = 0;
+        $this->setting->_tabledata = $table;
+        unset($row[$prefix]); //tidak boleh di insert
+        $returninsert = $this->setting->insertdata($row);
+        if (is_array($returninsert)) {
+            if (!empty($returninsert[0])) {
+                $validdata = $returninsert[0];
+            }
+        }
+        return $validdata;
+    }
+
+    public function update_transaction_table($table, $prefix, $data_tmp, $data_original) {
+        $validdata = 0;
+        unset($data_tmp[$prefix]);  //tidak boleh di update
+        $this->setting->_tabledata = $table;
+        $returnupdate = $this->setting->updatedata($data_tmp, array($prefix => $data_original[$prefix]));
+        if (is_array($returnupdate)) {
+            if (!empty($returnupdate[0])) {
+                $validdata = $returnupdate[0];
+            }
+        }
+        return $validdata;
+    }
+
+    public function delete_temporary_table($table, $prefix, $id) {
+        $validdata = 0;
+        $this->setting->_tabledata = $table;
+        $returndelete = $this->setting->deletedata(array($prefix => $id));
+        if (is_array($returndelete)) {
+            if (!empty($returndelete[0])) {
+                $validdata = $returndelete[0];
+            }
+        }
+        return $validdata;
+    }
+
+}
+
+?>

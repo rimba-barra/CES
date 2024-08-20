@@ -1,0 +1,3415 @@
+<?php
+
+/**
+ * Description of AbsentrecordController
+ *
+ * @author MIS
+ */
+require_once dirname(__DIR__) . '../library/phpexcel/PHPExcel/IOFactory.php';
+
+
+ini_set("memory_limit", "-1");
+ini_set('max_execution_time', 0);
+
+class Hrd_AbsentrecordController extends Box_Models_App_Hermes_AbstractController {
+
+    public function invalidabsentinitRead() {
+        $ma = new Hrd_Models_App_Mastertable_Department();
+        $aa = $ma->prosesDataWithSession($this->getAppSession(), TRUE);
+
+
+
+
+        return Box_Tools::instantRead(array(
+                    "HASIL" => 1,
+                        ), array($aa));
+    }
+
+    public function sendmailiaRead() {
+        $hasil = FALSE;
+        $params = $this->getAppData();
+        $msg = "proses...";
+        $emails = $params["emails"];
+        $employeeDatas = explode("~", $emails);
+        $suksesCount = 0;
+        $msgErrmail = array();
+
+
+
+        if (count($employeeDatas) > 0) {
+
+
+
+
+
+            foreach ($employeeDatas as $employeeData) {
+                $employeeData = explode("##", $employeeData);
+                $email = $employeeData[0];
+                $nama = $employeeData[1];
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    try {
+                        $message = '<html><body>';
+                        $message .= '<p>Dear Bapak / Ibu, ' . $nama . '</p>';
+                        $message .= "<p>Email: </p>";
+
+                        $message .= "</body></html>";
+
+
+
+
+                        $mail = new Erems_Box_Library_Email();
+                        $mail->getMail()->setFrom('mis.kpjkt@ciputra.co.id', "HRIS System");
+
+                        $mail->getMail()->setBodyHtml(nl2br($message));
+                        $mail->getMail()->addTo($email, $nama);
+                        $mail->getMail()->addCc("hr.admin@ciputra.co.id", "hr.admin");
+                        //$mail->addCc('emailAddress', 'nameUser');
+                        $mail->getMail()->setSubject('Pemberitahuan Absent');
+                        $mail->getMail()->send();
+
+                        $suksesCount ++;
+
+                        // $statusSentMail = TRUE;
+                    } catch (Zend_Mail_Exception $e) {
+                        //  $statusSentMail = FALSE;
+                        $msgErrmail[] = $email;
+                    }
+                }
+            }
+        }
+
+        $hasil = $suksesCount > 0 ? TRUE : FALSE;
+
+        if (count($msgErrmail) > 0) {
+            $msg = "Error email ke : ";
+            $msg .= implode(",", $msgErrmail);
+        }
+
+
+
+        $arrayRespon = array("HASIL" => $hasil, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function employeeiaRead() {
+        $data = $this->getAppData();
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'date', array('employee', 'department'), array());
+        $dao = new Hrd_Models_AbsentDao();
+        $startDate = $data["start_date"];
+        $endDate = $data["end_date"];
+
+
+
+
+        $dg = new Hrd_Models_App_DayGenerator(1, 2016);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($dao->getInvalidAbsent($this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId(), $startDate, $endDate));
+        $dm->setStoredObject(array("dayGenerator" => $dg));
+        return $dm;
+    }
+
+    public function jatahcutiRead() {
+
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'leaveentitlement', array('employee'), array());
+        $dao = new Hrd_Models_Leave_LeaveEntitlementDao();
+        $enti = new Hrd_Models_Leave_LeaveEntitlement();
+
+        $enti->setArrayTable($this->getAppData());
+        $enti->setProject($this->getAppSession()->getProject());
+        $enti->setPt($this->getAppSession()->getPt());
+
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($dao->getAllByEmployeeWOPL($enti));
+        return $dm;
+    }
+
+    public function deletereasonRead() {
+        $hasil = FALSE;
+        $params = $this->getAppData();
+        $msg = "proses...";
+        $dao = new Hrd_Models_AbsentDao();
+        $date = new Hrd_Models_Master_General_Date();
+        $date->setId(intval($params["absentdetail_id"]));
+        $hasil = $dao->deleteReason($this->getAppSession()->getProject()->getId(),$this->getAppSession()->getPt()->getId(),$date, $this->getAppSession()->getUser()->getId());
+
+        $arrayRespon = array("HASIL" => $hasil, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function yearfilterRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'absent', array(), array());
+        $dao = new Hrd_Models_AbsentDao();
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($dao->getYears($this->getAppSession()));
+        return $dm;
+    }
+
+    public function monthfilterRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'absent', array(), array());
+        $data = $this->getAppData();
+        $dao = new Hrd_Models_AbsentDao();
+        $absent = new Hrd_Models_Absent();
+        $absent->setYear($data["year"]);
+        $absent->setProject($this->getAppSession()->getProject());
+        $absent->setPt($this->getAppSession()->getPt());
+        $dm->setDataList($dataList);
+        $dm->setHasil($dao->getMonths($absent));
+        return $dm;
+    }
+
+    public function departmentfilterRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'department', array(), array());
+        $data = $this->getAppData();
+        $dao = new Hrd_Models_AbsentDao();
+        $absent = new Hrd_Models_Absent();
+        $absent->setYear($data["year"]);
+        $absent->setMonth($data["month"]);
+        $absent->setProject($this->getAppSession()->getProject());
+        $absent->setPt($this->getAppSession()->getPt());
+        $dm->setDataList($dataList);
+        $dm->setHasil($dao->getDepartments($absent));
+        return $dm;
+    }
+
+    public function periodeterakhirRead() {
+        $hasil = FALSE;
+
+
+        $data = array();
+        $dao = new Hrd_Models_AbsentDao();
+        $hasil = $dao->getLastPeriod($this->getAppSession());
+        $str = "";
+        $month = 0;
+        $year = 0;
+        if (Box_Tools::adaRecordSimple($hasil)) {
+            $month = $hasil[0][0]["month"];
+            $year = $hasil[0][0]["year"];
+        } else {
+            $month = Date("m");
+            $year = Date("Y");
+        }
+
+
+        $date = new DateTime($year . '-' . $month . '-01');
+        $date->add(new DateInterval('P1M'));
+
+
+        $msg = "";
+        $data = $date->format('m/Y');
+
+
+        $arrayRespon = array("HASIL" => "", "MSG" => $msg, "DATA" => $data);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function cutibersamaRead() {
+
+
+
+
+        $hasil = FALSE;
+        $params = $this->getAppData();
+        $dao = new Hrd_Models_AbsentDao();
+        $ses = $this->getAppSession();
+        $msg = "...";
+        $jenisError = 0;
+        $confirmed = FALSE; // sudah yakin untuk memproses cuti bersama
+
+
+        $data = $this->getAppData();
+
+        $confirmed = array_key_exists("confirmed", $data);
+
+
+
+
+
+        $leave = new Hrd_Models_Leave_Leave();
+        $leave->setArrayTable($data);
+        $leave->setAddBy($this->getAppSession()->getUser()->getId());
+        $leave->setProject($this->getAppSession()->getProject());
+        $leave->setPt($this->getAppSession()->getPt());
+
+
+        /// get id absenttype
+        $absentTypeCode = Box_Config::ABSENTTYPE_CODE_TAHUNAN;
+        $mdDao = new Hrd_Models_General_Dao();
+        $hasilmd = $mdDao->getMasterDataId("ABSENTTYPE", $absentTypeCode, $this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId());
+        $absentType = Box_Tools::toObjectRow($hasilmd, new Hrd_Models_Master_AbsentType());
+
+
+
+
+        $isValid = false;
+        /// validasi 
+        if (!$leave->getStartDate()) {
+            $msg = "Tanggal awal tidak valid.";
+        } else if (!$leave->getEndDate()) {
+            $msg = "Tanggal akhir tidak valid.";
+        } else if (strlen($leave->getNote()) < 3) {
+            $msg = "Keterangan minimal 3 karakter.";
+        } else if ($absentType->getId() == 0) {
+            $msg = "Master data " . $absentTypeCode . " tidak terdaftar";
+        } else {
+            $isValid = true;
+        }
+        /// end validasi
+
+        if ($isValid) {
+
+
+            $leave->getAbsentType()->setId($absentType->getId());
+            $cb = new Hrd_Models_Leave_CutiBersama($leave, $this->getAppSession());
+            $cb->setListKaryawan($data["ids"]);
+            $cb->confirmed = $confirmed;
+            $cb->jumlahHakCutiKepotong = $params["jml_hari_kepotong"];
+
+
+
+            $decan = $cb->process();
+            $listHakCuti = $cb->getListHakCuti();
+
+
+
+            // var_dump($cb->getMsg());
+            // die();
+            // var_dump($listHakCuti);
+
+            if (!$cb->getStatus()) {
+                $msg = $cb->getMsg();
+                $jenisError = $cb->getJenisError();
+            } else {
+
+                $employeeIds = explode("~", $data["ids"]);
+
+                $allLeave = array();
+
+                $validatorErrorMSg = "";
+                $jumlahTidahLolosValidasi = 0;
+                $karyawanTidakLolosValidasi = array();
+                $karyawanTidakLolosValidasiData = array();
+                $dataCutiSetelahValidasi = array();
+                $count = 0;
+                foreach ($employeeIds as $id) {
+                    $employeeId = intval($id);
+                    if ($employeeId > 0) {
+                        $newLeave = new Hrd_Models_Leave_Leave();
+                        $newLeave = clone $leave;
+                        $newLeave->getEmployee()->setId($employeeId);
+
+                        $validator = new Hrd_Models_Leave_Validator();
+                        $validator->run($newLeave);
+                        
+                    //    var_dump($newLeave->getEmployee()->getId());
+
+                        if (!$validator->getStatus()) {
+                            // $validatorErrorMSg .= $validator->getMsg()." | ";
+                            // $jumlahTidahLolosValidasi++;
+                            $karyawanTidakLolosValidasi[] = $employeeId;
+                            $karyawanTidakLolosValidasiData[] = array(
+                                "em" => $employeeId,
+                                "msg_error" => $validator->getMsg()
+                            );
+                        } else {
+
+                            $dataCutiSetelahValidasi[] = array(
+                                "em" => $employeeId,
+                                "leave" => $leave,
+                                "storage" => $validator->getStorage()
+                            );
+                          //  var_dump($dataCutiSetelahValidasi[$count]["leave"]->getEmployee()->getId());
+                            $count++;
+                             
+                        }
+                        unset($newLeave);
+                    }
+                }
+                
+                 
+
+
+                if (count($karyawanTidakLolosValidasi) > 0) {
+                    $karyawanTidakLolosValidasi = implode("~", $karyawanTidakLolosValidasi);
+                    /// ambil nama karyawan
+                    $eDao = new Hrd_Models_Master_EmployeeDao();
+                    $listEm = $eDao->getAllByIds($karyawanTidakLolosValidasi);
+                    $listEm = Box_Tools::toObjectResult($listEm, new Hrd_Models_Master_Employee());
+                    $tempEr = array();
+                    foreach ($karyawanTidakLolosValidasiData as $k => $val) {
+                        foreach ($listEm as $liste) {
+                            if ($liste->getId() == $val["em"]) {
+                                $tempEr[] = $liste->getName() . " " . $karyawanTidakLolosValidasiData[$k]["msg_error"] . " <br/>";
+                            }
+                        }
+                    }
+                    $msg = "Proses tidak dapat dilanjutkan karena : <br/>";
+                    $msg .= implode(" ", $tempEr);
+                    $jenisError = 99;
+                } else {
+                    // semua karyawan lolos validasi 
+                    $dao = new Hrd_Models_Leave_Dao();
+                    foreach ($dataCutiSetelahValidasi as $k => $dataCutiSv) {
+
+                        $dataCutiSv["leave"]->getEmployee()->setId($dataCutiSv["em"]);
+                        $processor = new Hrd_Models_App_Box_LeaveSubmissionProcessor();
+                        $processor->setSession($this->getAppSession());
+                        $leaveAfterProcess = $processor->proses($dataCutiSv["leave"], $dataCutiSv["storage"]);
+                        //  $dataCutiSetelahValidasi[$k]["processor"] = $processor;
+                        // var_dump($dataCutiSv["em"]);
+                      
+                        $hasilSave = $dao->save($leaveAfterProcess,$processor->getDates(), $processor->getHasilJatahCuti(),$processor->getJatahCutiKaryawan());
+                    }
+                    
+                    $hasil = TRUE;
+                    $msg = "Sukses";
+                }
+            }
+        }
+
+        $arrayRespon = array("HASIL" => $hasil, "JENISERR" => $jenisError, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    /* mark on 20170505
+      public function cutibersamaRead() {
+
+
+
+
+      $hasil = FALSE;
+      $params = $this->getAppData();
+      $dao = new Hrd_Models_AbsentDao();
+      $ses = $this->getAppSession();
+      $msg = "...";
+      $jenisError = 0;
+      $confirmed = FALSE; // sudah yakin untuk memproses cuti bersama
+
+
+      $data = $this->getAppData();
+
+      $confirmed = array_key_exists("confirmed", $data);
+
+
+
+
+
+      $leave = new Hrd_Models_Leave_Leave();
+      $leave->setArrayTable($data);
+      $leave->setAddBy($this->getAppSession()->getUser()->getId());
+      $leave->setProject($this->getAppSession()->getProject());
+      $leave->setPt($this->getAppSession()->getPt());
+
+
+      /// get id absenttype
+      $absentTypeCode = Box_Config::ABSENTTYPE_CODE_TAHUNAN;
+      $mdDao = new Hrd_Models_General_Dao();
+      $hasilmd = $mdDao->getMasterDataId("ABSENTTYPE", $absentTypeCode, $this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId());
+      $absentType = Box_Tools::toObjectRow($hasilmd, new Hrd_Models_Master_AbsentType());
+
+
+
+
+      $isValid = false;
+      /// validasi
+      if (!$leave->getStartDate()) {
+      $msg = "Tanggal awal tidak valid.";
+      } else if (!$leave->getEndDate()) {
+      $msg = "Tanggal akhir tidak valid.";
+      } else if (strlen($leave->getNote()) < 3) {
+      $msg = "Keterangan minimal 3 karakter.";
+      } else if ($absentType->getId() == 0) {
+      $msg = "Master data " . $absentTypeCode . " tidak terdaftar";
+      } else {
+      $isValid = true;
+      }
+
+
+
+        /// end validasi
+
+        if ($isValid) {
+
+
+
+
+
+
+
+            $leave->getAbsentType()->setId($absentType->getId());
+            $cb = new Hrd_Models_Leave_CutiBersama($leave, $this->getAppSession());
+            $cb->setListKaryawan($data["ids"]);
+            $cb->confirmed = $confirmed;
+            $cb->jumlahHakCutiKepotong = $params["jml_hari_kepotong"];
+
+
+
+            $decan = $cb->process();
+            $listHakCuti = $cb->getListHakCuti();
+
+
+
+            // var_dump($cb->getMsg());
+            // die();
+            // var_dump($listHakCuti);
+
+            if (!$cb->getStatus()) {
+                $msg = $cb->getMsg();
+                $jenisError = $cb->getJenisError();
+            } else {
+
+                $dao = new Hrd_Models_General_Dao();
+                $absentSheet = $dao->getAbsentSheetByListKaryawan($data["ids"], $this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId(), $leave->getStartDate(), $leave->getEndDate());
+
+
+
+                $absentSheet = $absentSheet[0];
+                $absentSheet = Ruangkoding_Cuti_Main::dataGrouping($absentSheet);
+
+
+                $daftarHakCuti = $dao->getHakCutiByListKaryawan($data["ids"], $this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId(), Box_Config::LEAVE_GROUP_TAHUNAN);
+
+
+                $daftarHakCuti = $daftarHakCuti[0];
+                $daftarHakCuti = Ruangkoding_Cuti_Main::dataGrouping($daftarHakCuti);
+
+
+                
+
+
+
+
+
+                $arKaryawan = explode("~", $data["ids"]);
+
+                $dataSaveAbsentRecord = array();
+                $dataSaveHakCuti = array();
+                $dataSaveTransaksiCuti = array();
+
+
+                if (count($arKaryawan) > 0) {
+                    foreach ($arKaryawan as $karyawan) {
+                        $karyawan = intval($karyawan);
+                        if ($karyawan > 0) {
+                            $prosesCuti = new Ruangkoding_Cuti_Main($karyawan, $leave->getStartDate(), $leave->getEndDate());
+                            $prosesCuti->setAbsentSheet($absentSheet[$karyawan]);
+                            $prosesCuti->setDaftarHakCuti($daftarHakCuti[$karyawan]);
+                            $prosesCuti->setIsSetengahHari(intval($data["is_halfday"]) == 1 ? TRUE : FALSE);
+                            $prosesCuti->setDurasi($data["jml_hari_kepotong"]); /// jika durasi diinput dari user
+                            $prosesCuti->proses();
+
+                            /// pembuatan data untuk simpan ke absent record
+                            $has = $prosesCuti->getHasilAbsentSheet();
+                            foreach ($has as $row) {
+                                $absent = new Hrd_Models_Master_General_Date();
+                                $absent->setDate($row);
+                                $absent->getAbsent()->getEmployee()->setId($karyawan);
+                                $absent->getAbsentType()->setCode(Box_Config::ABSENTTYPE_CODE_TAHUNAN);
+                                $absent->setNote($leave->getNote());
+                                $dataSaveAbsentRecord[] = $absent;
+                            }
+
+                            // pembuatan data untuk simpan ke hak cuti
+                            $hhc = $prosesCuti->getHasilHakCuti();
+
+                            $hakCuti = new Hrd_Models_Leave_LeaveEntitlement();
+                            $hakCuti->getEmployee()->setId($karyawan);
+                            $hakCuti->setStartUse($hhc["tahun"]);
+                            $hakCuti->setRest($hhc["sisa"]);
+                            $dataSaveHakCuti[] = $hakCuti;
+
+                            // var_dump($prosesCuti->getDurasi());
+                            // pembuatan data untuk simpan ke transaksi cuti
+                            $transaksiCuti = new Hrd_Models_Leave_Leave();
+                            $transaksiCuti->setStartDate($leave->getStartDate());
+                            $transaksiCuti->setEndDate($leave->getEndDate());
+                            $transaksiCuti->getEmployee()->setId($karyawan);
+                            $transaksiCuti->getAbsentType()->setCode(Box_Config::ABSENTTYPE_CODE_TAHUNAN);
+                            $transaksiCuti->setDuration($prosesCuti->getDurasi());
+                            $transaksiCuti->setIsHalfDay(intval($data["is_halfday"]) == 1 ? TRUE : FALSE);
+                            $transaksiCuti->setNote($leave->getNote());
+                            $dataSaveTransaksiCuti[] = $transaksiCuti;
+
+
+                            //var_dump($prosesCuti->getHasilHakCuti());
+                            echo $prosesCuti->getPesanError();
+                        }
+                    }
+                }
+
+
+                $decan = Box_Tools::toDecan($dataSaveAbsentRecord);
+                $decanHakCuti = Box_Tools::toDecan($dataSaveHakCuti);
+                $decanTransaksiCuti = Box_Tools::toDecan($dataSaveTransaksiCuti);
+
+
+
+
+
+
+                $dao = new Hrd_Models_Leave_Dao();
+                $hasil = $dao->saveCutiBersama($this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId(), Box_Config::LEAVE_GROUP_TAHUNAN, $leave, $decan->getDCResult(), $decanHakCuti->getDCResult(), $decanTransaksiCuti->getDCResult());
+
+
+
+                //   
+                //   
+                //  $dao = new Hrd_Models_Leave_Dao();
+                //  $hasil = $dao->saveCutiBersama($leave, $decan, $listHakCuti);
+
+
+
+                if (!$hasil) {
+                    $msg = "Terjadi kesalahan ketika memproses di database";
+                    $jenisError = 99;
+                }
+            }
+        }
+
+
+
+
+
+
+        $arrayRespon = array("HASIL" => $hasil, "JENISERR" => $jenisError, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+     */
+
+    /*
+      public function cutibersamaRead() {
+
+
+      $absentSheet = array(
+      array("tgl" => "2016-07-10", "ada_tipeabsen" => TRUE),
+      array("tgl" => "2016-07-11", "ada_tipeabsen" => FALSE),
+      // array("tgl" => "2016-07-12", "ada_tipeabsen" => FALSE),
+      // array("tgl" => "2016-07-13", "ada_tipeabsen" => TRUE),
+      // array("tgl" => "2016-07-14", "ada_tipeabsen" => FALSE),
+      // array("tgl" => "2016-07-15", "ada_tipeabsen" => FALSE)
+
+      );
+
+      /// daftar hak cuti by tipe hak cuti
+      $daftarHakCuti = array(
+      array("tahun"=>"2015","sisa"=>12),
+      array("tahun"=>"2014","sisa"=>6),
+      array("tahun"=>"2015","sisa"=>7)
+      );
+
+      $prosesCuti = new Ruangkoding_Cuti_Main("2016-07-10","2016-07-11");
+      $prosesCuti->setAbsentSheet($absentSheet);
+      $prosesCuti->setDaftarHakCuti($daftarHakCuti);
+      //  $prosesCuti->setDurasi(7); /// jika durasi diinput dari user
+      $prosesCuti->proses();
+
+      var_dump($prosesCuti->getHasilAbsentSheet());
+
+      echo $prosesCuti->getPesanError();
+
+
+      die();
+
+      $hasil = FALSE;
+      $params = $this->getAppData();
+      $dao = new Hrd_Models_AbsentDao();
+      $ses = $this->getAppSession();
+      $msg = "...";
+      $jenisError = 0;
+      $confirmed = FALSE; // sudah yakin untuk memproses cuti bersama
+
+
+      $data = $this->getAppData();
+
+      $confirmed = array_key_exists("confirmed", $data);
+
+
+
+
+
+      $leave = new Hrd_Models_Leave_Leave();
+      $leave->setArrayTable($data);
+      $leave->setAddBy($this->getAppSession()->getUser()->getId());
+      $leave->setProject($this->getAppSession()->getProject());
+      $leave->setPt($this->getAppSession()->getPt());
+
+
+      /// get id absenttype
+      $absentTypeCode = Box_Config::ABSENTTYPE_CODE_TAHUNAN;
+      $mdDao = new Hrd_Models_General_Dao();
+      $hasilmd = $mdDao->getMasterDataId("ABSENTTYPE", $absentTypeCode, $this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId());
+      $absentType = Box_Tools::toObjectRow($hasilmd, new Hrd_Models_Master_AbsentType());
+
+
+
+
+      $isValid = false;
+      /// validasi
+      if (!$leave->getStartDate()) {
+      $msg = "Tanggal awal tidak valid.";
+      } else if (!$leave->getEndDate()) {
+      $msg = "Tanggal akhir tidak valid.";
+      } else if (strlen($leave->getNote()) < 3) {
+      $msg = "Keterangan minimal 3 karakter.";
+      } else if ($absentType->getId() == 0) {
+      $msg = "Master data " . $absentTypeCode . " tidak terdaftar";
+      } else {
+      $isValid = true;
+      }
+
+
+
+      /// end validasi
+
+      if ($isValid) {
+      $leave->getAbsentType()->setId($absentType->getId());
+      $cb = new Hrd_Models_Leave_CutiBersama($leave, $this->getAppSession());
+      $cb->setListKaryawan($data["ids"]);
+      $cb->confirmed = $confirmed;
+      $cb->jumlahHakCutiKepotong = $params["jml_hari_kepotong"];
+
+
+
+      $decan = $cb->process();
+      $listHakCuti = $cb->getListHakCuti();
+
+
+
+      // var_dump($cb->getMsg());
+      // die();
+      // var_dump($listHakCuti);
+
+      if (!$cb->getStatus()) {
+      $msg = $cb->getMsg();
+      $jenisError = $cb->getJenisError();
+      } else {
+
+
+
+
+
+      $dao = new Hrd_Models_Leave_Dao();
+      $hasil = $dao->saveCutiBersama($leave, $decan, $listHakCuti);
+
+
+
+      if (!$hasil) {
+      $msg = "Terjadi kesalahan ketika memproses di database";
+      $jenisError = 99;
+      }
+      }
+      }
+
+
+
+
+
+
+      $arrayRespon = array("HASIL" => $hasil, "JENISERR" => $jenisError, "MSG" => $msg);
+      return Box_Tools::instantRead($arrayRespon);
+      }
+     */
+
+    public function employeecutibersamaRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'employee', array(), array());
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $em = new Hrd_Models_Master_EmployeePersonal();
+        $em->setProject($this->getAppSession()->getProject());
+        $em->setPt($this->getAppSession()->getPt());
+        $hasil = $dao->getAllEPJustActiveWOPL($em);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function setupshiftRead() {
+        $hasil = FALSE;
+        $params = $this->getAppData();
+        $dao = new Hrd_Models_AbsentDao();
+        $ses = $this->getAppSession();
+        $msg = "...";
+
+
+        //  var_dump($params);
+        $updateType = "";
+        if ($params["update_type"] == "division")
+            $updateType = "DEPARTMENT";
+        else if ($params["update_type"] == "all")
+            $updateType = "ALL";
+
+        $hasil = $dao->updateShiftType($this->getAppSession(), $updateType, $params["month"], $params["year"], $params["days"], $params["shifttype_id"], $params["department_id"]);
+        $arrayRespon = array("STATUS" => $hasil, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function fixdateRead() {
+        $hasil = FALSE;
+        $params = $this->getAppData();
+        $dao = new Hrd_Models_AbsentDao();
+        $ses = $this->getAppSession();
+        $hasil = $dao->fixdate($ses->getUser()->getId(), $params["month"], $params["year"]);
+        $arrayRespon = array("HASIL" => $hasil);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function tlklistRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $dao = new Hrd_Models_Parameters_Tlk_Dao();
+        $tlk = new Hrd_Models_Parameters_Tlk_Tlk();
+        $tlk->setProject($this->getAppSession()->getProject());
+        $tlk->setPt($this->getAppSession()->getPt());
+
+        $allTlk = $dao->getAllWOPL($tlk);
+
+        $allTlk = Box_Tools::toObjectResult($allTlk, new Hrd_Models_Parameters_Tlk_Tlk());
+
+
+        $otherAT = array(array(
+                "HASIL" => TRUE
+        ));
+
+
+        $dm->setHasil(array($allTlk, $otherAT));
+
+
+        return $dm;
+    }
+
+    /*
+      public function tlklistRead() {
+      $dm = new Box_Models_App_Hermes_DataModel();
+
+      $dao = new Hrd_Models_Parameters_Tlk_Dao();
+      $tlk = new Hrd_Models_Parameters_Tlk_Tlk();
+      $tlk->setProject($this->getAppSession()->getProject());
+      $tlk->setPt($this->getAppSession()->getPt());
+      $dm->setDataList(new Box_Models_App_DataListCreator('', 'parametertlk', array(), array()));
+      $dm->setHasil($dao->getAllWOPL($tlk));
+      return $dm;
+      }
+     */
+
+    public function detailreasonRead() {
+        $ma = new Hrd_Models_App_Mastertable_AbsentType();
+        $aa = $ma->prosesDataWithSession($this->getAppSession(), TRUE);
+        
+   
+        $params = $this->getAppData();
+        $leaveId = intval($params["leave_id"]);
+        
+        $leaveDao = new Hrd_Models_Leave_Dao();
+        $leave = new Hrd_Models_Leave_Leave();
+       
+        $leave->setId($leaveId);
+        
+        $leaveDb = $leaveDao->getDetail($leave);
+    
+        $leave = count($leaveDb[0]) > 0 ?$leaveDb[0][0] : null;
+       
+        
+        $hasil = FALSE;
+        $arrayRespon = array(
+            "HASIL" => $hasil,
+            "CUTI"=>$leave,
+            "ABSENTTYPEGROUP_LEAVE" => Box_Config::ABSENTTYPEGROUP_LEAVE,
+            "ABSENTTYPEGROUPCODE_LEAVE" => Box_Config::ABSENTTYPEGROUP_CODE_LEAVE);
+        return Box_Tools::instantRead($arrayRespon, array($aa));
+    }
+
+    public function updatetimeRead() {
+
+        $hasil = FALSE;
+        $msg = "Proses...";
+
+        $data = $this->getAppData();
+        $dao = new Hrd_Models_AbsentDao();
+
+
+
+        $absentDetail = new Hrd_Models_Master_General_Date();
+
+        $absentDetail->setArrayTable($data);
+
+        //var_dump($absentDetail->getArrayTable());
+
+        $dao = new Hrd_Models_AbsentDao();
+
+        $absentHeader = new Hrd_Models_Absent();
+        $absentHeader->setProject($this->getAppSession()->getProject());
+        $absentHeader->setPt($this->getAppSession()->getPt());
+        $absentHeader->setMonth($data["month"]);
+        $absentHeader->setYear($data["year"]);
+        $absentHeader->getEmployee()->setId($data["employee_id"]);
+
+        $date = $data["year"] . "-" . $data["month"] . "-" . $data["day"];
+
+        $absentExist = $dao->getAbsentSheetWOPL($absentHeader, $date, $date);
+
+
+        // var_dump($absentDetail->getArrayTable());
+        //var_dump($absentExist);
+        /// cek data dari database
+        $absentDetail->setAddBy($this->getAppSession()->getUser()->getId());
+        $mp = new Hrd_Models_Absent_MasterProcess($this->getAppSession());
+        $mp->process($absentDetail);
+
+        // add on 20161202
+        // bisa update attendance total, karena permintaan ibu Linda
+        $absentDetail->setTotalAttendance($data["attendance_total"]);
+
+
+
+
+        $hasil = $dao->updateTime($absentDetail);
+
+
+
+        $arrayRespon = array(
+            "HASIL" => $hasil,
+            "MSG" => $msg
+        );
+        return Box_Tools::instantRead($arrayRespon, array());
+    }
+
+    public function createreasonRead() {
+
+        $hasil = FALSE;
+        $msg = "Proses...";
+
+        $data = $this->getAppData();
+        $rawData = $data;
+        $hakCutiId = array_key_exists("leaveentitlements_id", $rawData) ? $rawData["leaveentitlements_id"] : 0;
+
+        $data = array("", array($data));
+        $leave = Box_Tools::toObjectsb("leave", $data, TRUE, array('absenttype_'));
+        $leave->setProject($this->getAppSession()->getProject());
+        $leave->setPt($this->getAppSession()->getPt());
+        $leave->setAddBy($this->getAppSession()->getUser()->getId());
+        $leave->getAbsentType()->setCode($rawData["absenttype_code"]);
+        // var_dump($leave->getArrayTable());
+
+        $validator = new Hrd_Models_Leave_Validator();
+        $validator->run($leave);
+
+
+        /// ambil detail tipe alasan tidak hadir
+        $alasanDao = new Hrd_Models_Master_AbsentTypeDao();
+        $alasans = $alasanDao->getAllSimple();
+        $alasans = Box_Tools::toObjectResult($alasans, new Hrd_Models_Master_AbsentType());
+        foreach ($alasans as $a) {
+            /// set alasan di transaksi cuti
+            if ($a->getCode() == $leave->getAbsentType()->getCode()) {
+                $leave->setAbsentType($a);
+            }
+        }
+
+
+
+        if ($validator->getStatus()) {
+
+            /// cek group alasan tidak hadir
+            /// jika tergolong cuti maka masukkan ke dalam tabel cuti
+            
+             if (intval($leave->getAbsentType()->getIsCutLeave())==1) {
+           // if ($leave->getAbsentType()->getGroup()->getId() == Box_Config::ABSENTTYPEGROUP_LEAVE) {
+
+
+                $processor = new Hrd_Models_App_Box_LeaveSubmissionProcessor();
+                $processor->setSession($this->getAppSession());
+                $leave = $processor->proses($leave, $validator->getStorage());
+
+
+
+                $jumlahHari = 0;
+                $dates = $processor->getDates();
+                $dates = explode("~", $dates);
+                $jumlahHari = count($dates);
+
+                $hakCutiAmount = $leave->getIsHalfDay() ? 0.5 : $jumlahHari;
+
+
+                /// daftar hak cuti
+                $allHc = array();
+                $daoHc = new Hrd_Models_Leave_LeaveEntitlementDao();
+                $hcFilter = new Hrd_Models_Leave_LeaveEntitlement();
+                $hcFilter->getEmployee()->setId($leave->getEmployee()->getId());
+                $hcFilter->setProject($this->getAppSession()->getProject());
+                $hcFilter->setPt($this->getAppSession()->getPt());
+                $allHc = $daoHc->getAllByEmployeeWOPL($hcFilter);
+                $allHc = Box_Tools::toObjectResult($allHc, new Hrd_Models_Leave_LeaveEntitlement());
+
+
+
+
+
+
+
+                if (count($allHc) > 0) {
+
+                    /// proses cuti 
+                    $leaveAfterProcess = $leave;
+                    $lDao = new Hrd_Models_Leave_Dao();
+                    $hasilSave = $lDao->save($leaveAfterProcess, $processor->getDates(), $processor->getHasilJatahCuti(), $processor->getJatahCutiKaryawan());
+
+
+                    /// proses absent detail
+
+                    $daoAbsent = new Hrd_Models_AbsentDao();
+                   
+                    $hasil = $daoAbsent->updateDescCuti($this->getAppSession()->getUser()->getId(), $leave);
+
+
+                    /// mark on 2017 05 10
+                    /// update description di absent record;
+
+                    /*
+
+                      $leaveGroup = $leave->getAbsentType()->getCode() == Box_Config::ABSENTTYPE_CODE_BESAR5TAHUN ? Box_Config::LEAVE_GROUP_BESAR : Box_Config::LEAVE_GROUP_TAHUNAN;
+
+                      $hakCutiBerkurang = array(
+                      "id" => "",
+                      "rest" => ""
+                      );
+
+                      $jumlahPotongCuti = 0;
+
+                      if (intval($leave->getAbsentType()->getIsCutLeave()) > 0) {
+                      $tempFound = FALSE;
+                      $sisaCuti = $hakCutiAmount; /// variabel untuk menampung pengurangan cuti dan hak cuti per tahun
+
+
+
+                      foreach ($allHc as $k => $hc) {
+
+                      if ($hc->getLeaveGroup() == $leaveGroup) {
+
+
+                      if (!$hc->getIsLeaveEnd() && $sisaCuti > 0) {
+                      //$hakCutiId = $hc->getId();
+
+                      $tempSisa = $hc->getRest() - $sisaCuti;
+                      /// cek jika masih ada jatah cuti tahun berikutnya
+                      if ($tempSisa < 0) {
+                      if (array_key_exists($k + 1, $allHc)) {
+                      if ($allHc[$k + 1]->getRest() > 0 && !$allHc[$k + 1]->getIsLeaveEnd() && ($sisaCuti - $hc->getRest()) > 0) {
+                      $tempSisa = 0;
+                      }
+                      }
+                      }
+
+
+                      $hakCutiBerkurang["id"] .=$hc->getId() . "~";
+                      $hakCutiBerkurang["rest"] .=$tempSisa . "~";
+                      $sisaCuti = $hc->getRest() - $sisaCuti;
+                      }
+                      }
+                      }
+
+
+
+                      $jumlahPotongCuti = $leave->getAbsentType()->getIsCutLeave() ? $hakCutiAmount : 0;
+                      }
+
+
+                      $daoAbsent = new Hrd_Models_AbsentDao();
+                      $hasil = $daoAbsent->updateDescCuti($this->getAppSession()->getUser()->getId(), $leave);
+
+                      $lDao = new Hrd_Models_Leave_Dao();
+                      $hasil = $lDao->saveWithDefinedLeaveEnt($leave, $processor->getDates(), $hakCutiBerkurang, $jumlahPotongCuti);
+                     */
+                } else {
+                    $msg = "Tidak ada hak cuti. Silahkan membuat hak cuti terlebih dahulu.";
+                }
+            } else {
+
+
+                /// hanya update absent record karyawan
+
+                $fixDates = $validator->getStorage();
+
+                $fixDates = Box_Tools::toDecan($fixDates[0]);
+                $dcResult = $fixDates->getDCResult();
+                $dates = $dcResult['date'];
+                $dao = new Hrd_Models_AbsentDao();
+
+
+                // check jika absenttype termasuk izin
+
+                $jatahCutiKepotong = Hrd_Models_Absent_Tools::procesPotongCutiByIzin($leave, $this->getAppSession());
+
+
+
+
+
+                if (intval($jatahCutiKepotong->getId()) > 0) {
+                    $hasil = $dao->updateByIzin($leave, $dates, $jatahCutiKepotong);
+                } else {
+
+
+
+                    if ($leave->getAbsentType()->getCode() == "I-ML") {
+                        $hasil = $dao->updateByRangeDateAbsentTypeIzinMasukLambat($leave, $dates);
+                    } else {
+
+
+                        $hakCutiAmount = Hrd_Models_App_Box_LeaveSubmissionProcessor::getDurasi($dates, $leave->getIsHalfDay());
+
+
+                        $hasil = $dao->updateByRangeDateAbsentTypeC($leave, $dates, $hakCutiId, $hakCutiAmount);
+                    }
+                }
+            }
+
+            if (!$hasil) {
+                //  $msg = "Something happened when processing your request ";
+            } else {
+                $hasil = TRUE;
+                $msg = "Success";
+            }
+        } else {
+            $msg = $validator->getMsg();
+        }
+
+        $arrayRespon = array(
+            "HASIL" => $hasil,
+            "MSG" => $msg
+        );
+		
+		/* start added by ahmad riadi 18-04-2017 */
+        if($hasil==true){            
+            if(isset($rawData['cuti_id_intranet'])){
+                //echo 'ada';
+                $this->updatestatuscutiintranet($rawData['configintranet'], $rawData['cuti_id_intranet'],$rawData['cutitype_id_intranet'],$rawData['hrd_check_intranet'],$rawData['hrd_comment_intranet']);
+            }
+            if(isset($rawData['izin_id'])){
+                //echo 'ada';
+                $this->updatestatusijinintranet($rawData['configintranet'], $rawData['izin_id'], $rawData['hrd_comment']);
+            }
+        }
+        /* end added by ahmad riadi 18-04-2017 */
+		
+		
+        return Box_Tools::instantRead($arrayRespon, array());
+    }
+
+    public function createtlkRead() {
+
+        $hasil = FALSE;
+        $msg = "Proses...";
+
+        $data = $this->getAppData();
+
+        /// ambil data shift
+        $shiftFilter = new Hrd_Models_Master_ShiftType();
+        $shiftFilter->setProject($this->getAppSession()->getProject());
+        $shiftFilter->setPt($this->getAppSession()->getPt());
+        $daoShift = new Hrd_Models_Master_ShiftTypeDao();
+        $hasilShift = $daoShift->getAllWOPL($shiftFilter);
+        $hasilShift = Box_Tools::toObjectResult($hasilShift, new Hrd_Models_Master_ShiftType());
+
+
+
+        $validDates = Hrd_Models_Absent_Tools::getNonHariOff($data["start_date"], $data["end_date"], $data["employee_employee_id"]);
+
+        $onDutyId = $data["parametertlk_id"];
+        $tlkOther = trim($data["tlk_other"]);
+        $tlkProjectType = intval($data["tlk_project_type"]);
+        if (count($validDates) > 0) {
+
+            $mp = new Hrd_Models_Absent_MasterProcess($this->getAppSession());
+
+            foreach ($validDates as $date) {
+                if ($date instanceof Hrd_Models_Master_General_Date) {
+
+                    $date->setTlkProjectType($tlkProjectType);
+                    $date->setTotalAttendance(1);
+
+
+
+
+                    if ($tlkProjectType == 2 && strlen($tlkOther) > 3) {
+                        $date->getParameterTlk()->setId(0);
+                        $date->setTlkOther($tlkOther);
+                    } else {
+                        $date->getParameterTlk()->setId($onDutyId);
+                        $date->setTlkOther("");
+                    }
+
+
+                    /// ambil time in dan time out di shift
+                    foreach ($hasilShift as $shift) {
+                        if ($shift->getId() == $date->getShiftType()->getId()) {
+
+                            if ($shift instanceof Hrd_Models_Master_ShiftType) {
+
+                                $date->setTimeIn($shift->getInTime());
+                                $date->setTimeOut($shift->getOutTime());
+                                $mp->process($date);
+                            }
+                        }
+                    }
+
+                    // var_dump($date->getArrayTable());
+                }
+            }
+
+
+
+
+
+
+            $decan = Box_Tools::toDecan($validDates);
+            $dao = new Hrd_Models_AbsentDao();
+	    $rowdatapost = $decan->getDCResult();
+	
+	     /* start edited by ahmad riadi 02-06-2017 */	
+	    if (isset($data['basedata'])) {
+                if ($data['basedata'] == 'intranet') {
+                    $this->updatetimebyTLK($rowdatapost, $data);
+                }
+                $hasil = 1;
+            } else {               
+                $hasil = $dao->updateTlk2($this->getAppSession(), $decan);
+            }
+	     /* end edited by ahmad riadi 02-06-2017 */	
+
+          
+
+
+	    //$hasil = $dao->updateTlk2($this->getAppSession(), $decan);
+	
+
+            if (!$hasil) {
+                $msg = "Something error when processing your request.";
+            }
+        } else {
+            $msg = "Hari bukan termasuk hari kerja";
+        }
+
+
+
+        $arrayRespon = array(
+            "HASIL" => $hasil,
+            "MSG" => $msg
+        );
+		 /* start added by ahmad riadi 18-04-2017 */
+        if ($hasil > 0) {
+            if (isset($data['tugas_id'])) {
+                //echo 'ada';
+                $this->updatestatusdinasintranet($data['configintranet'], $data['tugas_id'], $data['hrd_comment']);
+            }
+        }
+        /* end added by ahmad riadi 18-04-2017 */
+		
+		
+        return Box_Tools::instantRead($arrayRespon, array());
+    }
+
+    public function uploadexcelRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+
+
+
+        $creator = new Box_Models_App_Creator();
+
+        $hasil = FALSE;
+
+
+
+        $success = FALSE;
+
+        $rawAbsent = array(
+            array("date" => "2014-11-18", "time" => "08:30:00", "id" => "ExampleName"),
+            array("date" => "2014-11-18", "time" => "22:30:00", "id" => "ExampleName"),
+            array("date" => "2014-11-19", "time" => "09:30:00", "id" => "ExampleName"),
+            array("date" => "2014-11-19", "time" => "21:30:00", "id" => "ExampleName")
+        );
+
+        foreach ($rawAbsent as $row) {
+            
+        }
+
+
+
+        $msg = "uploading...";
+        $time = "20:30:00";
+        $time2 = "08:30:00";
+        $date = "2014-11-18";
+        $date2 = "2014-11-18";
+        $shiftType = new Hrd_Models_Master_ShiftType();
+        $shiftType->setInTime("22:30:00");
+        $shiftType->setOutTime("08:30:00");
+        $absentDetail = new Hrd_Models_Master_General_Date();
+        $timeIdentifier = new Hrd_Models_Absent_TimeIdentifier($time, $date, $shiftType, $absentDetail);
+        $timeIdentifier->run();
+        $timeIdentifier = new Hrd_Models_Absent_TimeIdentifier($time2, $date2, $shiftType, $absentDetail);
+        $timeIdentifier->run();
+
+
+        die();
+
+
+
+
+
+        $ep = new Hrd_Models_Absent_ExcelProcessor();
+        $ep->run(11, 2014, $creator, $this->getAppSession(), $this->getAppRequest());
+        $success = $ep->getStatus();
+        $msg = $ep->getMessage();
+
+
+        die();
+
+
+        $imageUpload = new Box_Models_App_ImageUpload("/public/app/hrd/uploads/absent/excel/", "excel_", "xls");
+        $imageUpload->setDirectUpload(TRUE, $this->getAppSession()->getProject()->getId() . '_' . $this->getAppSession()->getPt()->getId() . '' . Box_Config::ABSENT_EXCEL_FILENAME);
+        $imageUpload->run();
+
+        if (!$imageUpload->isSuccess()) {
+            $msg = $imageUpload->getErrorMsg();
+        } else {
+            $ep = new Hrd_Models_Absent_ExcelProcessor();
+            $ep->run(11, 2014, $creator, $this->getAppSession(), $this->getAppRequest());
+            $success = $ep->getStatus();
+            $msg = $ep->getMessage();
+        }
+
+
+
+        $otherAT = array(array(
+                "STATUS" => $success ? TRUE : FALSE,
+                "MSG" => $msg
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function allRead() {
+
+
+
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'date', array('shifttype', 'absenttype', 'project', 'parametertlk'), array());
+        $dao = new Hrd_Models_AbsentDao();
+
+
+        $absent = new Hrd_Models_Absent();
+        $r = $this->getAppData();
+        $absent->setArrayTable($r);
+        $dg = new Hrd_Models_App_DayGenerator($absent->getMonth(), $absent->getYear());
+        $absent->getEmployee()->setArrayTable($r);
+        $hasil = $dao->getRoster($absent);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        $dm->setStoredObject(array("dayGenerator" => $dg));
+        return $dm;
+    }
+
+    public function startparamsRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'absent', array('department', 'employee'), array());
+        $dao = new Hrd_Models_AbsentDao();
+        $absent = new Hrd_Models_Absent();
+        $data = $this->getAppData();
+        $ses = $this->getAppSession();
+        $absent->setArrayTable($data);
+        $absent->setProject($ses->getProject());
+        $absent->setPt($ses->getPt());
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($dao->getStartParams($absent, $data["department_id"]));
+        return $dm;
+    }
+
+    public function employeeRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'absentrecord', array(), array());
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $dm->setDataList($dataList);
+        $dm->setHasil($dao->getAll($this->getAppRequest(), new Hrd_Models_Master_Employee()));
+        return $dm;
+    }
+
+    public function deleteabsentdateRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+
+        //===== MASTERDATA == //
+        $data = $this->getAppData();
+        $detail = new Hrd_Models_Master_General_Date();
+        $detail->setArrayTable($this->getAppData());
+        $detail->setDeleteBy($this->getAppSession()->getUser()->getId());
+        $dao = new Hrd_Models_AbsentDao();
+        $hasil = $dao->deleteabsentday($detail);
+
+
+        $otherAT = array(array(
+                "STATUSDELETE" => $hasil ? TRUE : FALSE,
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function deletemainabsentRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+
+        //===== MASTERDATA == //
+        $data = $this->getAppData();
+        $a = new Hrd_Models_Absent();
+        $a->setArrayTable($this->getAppData());
+        $a->setDeleteBy($this->getAppSession()->getUser()->getId());
+        $dao = new Hrd_Models_AbsentDao();
+        $hasil = $dao->deletemainabsent($a);
+
+
+        $otherAT = array(array(
+                "STATUSDELETE" => $hasil ? TRUE : FALSE,
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function filtersRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+
+        $data = $this->getAppData();
+
+        $dao = new Hrd_Models_AbsentDao();
+        $years = $dao->getYears($this->getAppSession());
+
+        $months = $dao->getMonths($this->getAppSession());
+
+        $departments = $dao->getDepartments();
+
+        $employees = $dao->getEmployes($this->getAppSession());
+
+
+
+        $dm->setHasil(array($years, $months, $departments, $employees));
+
+
+        return $dm;
+    }
+
+    public function genholidayRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+
+
+
+
+        $data = $this->getAppData();
+        $hasil = FALSE;
+        $msg = "Procesing...";
+        $processType = $data["process_type"];
+        switch ($processType) {
+            case "employee":
+
+                $absent = new Hrd_Models_Absent();
+
+                $this->setArrayTable($absent, $data);
+                $absent->setProject($this->getAppSession()->getProject());
+                $absent->setPt($this->getAppSession()->getPt());
+                $absent->getEmployee()->setId($data["employee_id"]);
+                $validator = new Hrd_Models_AbsentToolValidator("GENHOLIDAY");
+                $validator->run($absent);
+                $hasilValidation = $validator->getStatus();
+                $msg = $validator->getMsg();
+                $hasil = FALSE;
+                if ($hasilValidation) {
+                    /// by employee
+                    $daoCal = new Hrd_Models_Calendar_Dao();
+
+                    // get calender
+                    $calHasil = $daoCal->getDetailByEmployee($absent);
+
+                    // get absent sheet
+                    $daoAbs = new Hrd_Models_AbsentDao();
+                    $absHasil = $daoAbs->getAbsentSheet($absent, $this->getAppRequest());
+                    $tempDate1 = NULL;
+                    $tempDate2 = NULL;
+                    if ($absHasil) {
+                        if (count($absHasil[0]) > 0) {
+                            foreach ($absHasil[0] as $row) {
+                                $tempDate1 = date("Y-m-d", strtotime($row["date"]));
+                                foreach ($calHasil[0] as $cRow) {
+
+                                    $tempDate2 = date("Y-m-d", strtotime($cRow["date"]));
+                                    if ($tempDate1 == $tempDate2) {
+                                        $absentDetail = new Hrd_Models_Master_General_Date();
+                                        $absentDetail->setId($row["absentdetail_id"]);
+                                        $absentDetail->getShiftType()->setId($cRow["shifttype_id"]);
+                                        $absent->addDetail($absentDetail);
+                                    }
+                                }
+                            }
+
+                            $de = new Box_Delien_DelimiterEnhancer();
+                            $de->setDelimiterCandidate($absent);
+                            $de->generate();
+
+                            $hasil = $daoAbs->setupShiftByEmployee($absent, $this->getAppSession());
+                        }
+                    }
+                } else {
+                    $hasil = $hasilValidation;
+                }
+                break;
+            case "department":
+                $dsp = new Hrd_Models_Absent_Shiftprocess_DepartmentShiftProcess($this->getAppRequest(), $this->getAppSession());
+                $validator = new Hrd_Models_AbsentToolValidator("GENHOLIDAYBYDIVISION");
+
+                // set absent data from request
+                $absent = new Hrd_Models_Absent();
+                $this->setArrayTable($absent, $data);
+                $absent->setProject($this->getAppSession()->getProject());
+                $absent->setPt($this->getAppSession()->getPt());
+                $emp = new Hrd_Models_Master_EmployeePersonal();
+                $emp->getDepartment()->setId($data["department_id"]);
+                $absent->setEmployee($emp);
+
+
+                $dsp->setValidator($validator);
+                $dsp->run($absent);
+
+                $hasil = $dsp->getStatus();
+                $msg = $dsp->getErrorMessage();
+
+                break;
+            case "all":
+                $dsp = new Hrd_Models_Absent_Shiftprocess_AllShiftProcess($this->getAppRequest(), $this->getAppSession());
+                $validator = new Hrd_Models_AbsentToolValidator("GENHOLIDAYBYALL");
+
+                // set absent data from request
+                $absent = new Hrd_Models_Absent();
+                $this->setArrayTable($absent, $data);
+                $absent->setProject($this->getAppSession()->getProject());
+                $absent->setPt($this->getAppSession()->getPt());
+
+
+                $dsp->setValidator($validator);
+                $dsp->run($absent);
+
+
+
+                $hasil = $dsp->getStatus();
+                $msg = $dsp->getErrorMessage();
+                break;
+        }
+
+
+
+
+
+
+
+
+        $otherAT = array(array(
+                "STATUS" => $hasil ? TRUE : FALSE,
+                "MSG" => $msg
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function transferinfocsvRead() {
+        $hasil = FALSE;
+        $errorMsg = "...";
+        $isDelete = FALSE;
+        $request = $this->getAppData();
+        $isDelete = intval($request["is_delete"]);
+
+        $appData = $this->getAppData();
+        $month = isset($appData["month"]) ? $appData["month"] : date("m");
+        $year = isset($appData["year"]) ? $appData["year"] : date("Y");
+
+
+
+        $errorMsg = 'Error Msg';
+        $hasil = NULL;
+
+        //  $data = new Hrd_Models_Absent_Data_SqlServer();
+        $data = new Hrd_Models_Absent_Data_Csv($appData["file_name"]);
+        $data->setYear($year);
+        $data->setMonth($month);
+        $data->setStartDay($appData["start_day"]);
+        $data->setEndDay($appData["end_day"]);
+        $importer = new Hrd_Models_Absent_Importer($data);
+        $process = $importer->process();
+        $fpnl = array();
+        $newDataFix = array();
+
+
+        ////// dev
+        //var_dump($importer->getHeader()->getDCResult());
+        // die();
+        //// end dev
+
+        if ($process) {
+
+
+            $dcResult = $importer->getHeader()->getDCResult();
+            $psnno = $dcResult["psnno"];
+
+            $jumlahData = count(explode("~", $dcResult["psnno"]));
+            $newData = explode("~", $dcResult["psnno"]);
+            $newDataTI = explode("~", $dcResult["time_in"]); // timeIn
+            $newDataTO = explode("~", $dcResult["time_out"]);
+            $newDataD = explode("~", $dcResult["date"]);
+            $count = 0;
+            $countData = 0;
+            $jumlahGroup = 0;
+            $newDataFix[$jumlahGroup] = array("psnno" => "", "time_in" => "", "time_out" => "", "date" => "");
+            foreach ($newData as $record) {
+                if ($count >= 10) {
+                    $count = 0;
+                    $jumlahGroup++;
+                    $newDataFix[$jumlahGroup] = array("psnno" => "", "time_in" => "", "time_out" => "", "date" => "");
+                }
+
+                $newDataFix[$jumlahGroup]["psnno"] .= $newData[$countData] . "~";
+                $newDataFix[$jumlahGroup]["time_in"] .= $newDataTI[$countData] . "~";
+                $newDataFix[$jumlahGroup]["time_out"] .= $newDataTO[$countData] . "~";
+                $newDataFix[$jumlahGroup]["date"] .= $newDataD[$countData] . "~";
+
+                $countData++;
+                $count++;
+            }
+
+            $hasil = TRUE;
+        }
+        $errorMsg = $importer->getErrorMessage();
+        $arrayRespon = array("STATUS" => $hasil ? TRUE : FALSE,
+            "FPNUMBERLIST" => $newDataFix,
+            "ERRORMSG" => $errorMsg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function transferinfoRead() {
+        $hasil = FALSE;
+        $errorMsg = "...";
+        $isDelete = FALSE;
+        $request = $this->getAppData();
+        $isDelete = intval($request["is_delete"]);
+
+        $appData = $this->getAppData();
+        $month = isset($appData["month"]) ? $appData["month"] : date("m");
+        $year = isset($appData["year"]) ? $appData["year"] : date("Y");
+
+
+
+        $errorMsg = 'Error Msg';
+        $hasil = NULL;
+
+
+        $data = Hrd_Models_Absent_Data_SqlServerDbs::getDb($this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId());
+
+
+
+
+
+        $data->setYear($year);
+        $data->setMonth($month);
+        $data->setStartDay($appData["start_day"]);
+        $data->setEndDay($appData["end_day"]);
+        $importer = new Hrd_Models_Absent_Importer($data);
+        $process = $importer->process();
+        $fpnl = array();
+        $newDataFix = array();
+        if ($process) {
+
+
+            $dcResult = $importer->getHeader()->getDCResult();
+            $psnno = $dcResult["psnno"];
+
+            $jumlahData = count(explode("~", $dcResult["psnno"]));
+            $newData = explode("~", $dcResult["psnno"]);
+            $newDataTI = explode("~", $dcResult["time_in"]); // timeIn
+            $newDataTO = explode("~", $dcResult["time_out"]);
+            $newDataD = explode("~", $dcResult["date"]);
+            $count = 0;
+            $countData = 0;
+            $jumlahGroup = 0;
+            $newDataFix[$jumlahGroup] = array("psnno" => "", "time_in" => "", "time_out" => "", "date" => "");
+            foreach ($newData as $record) {
+                if ($count >= 10) {
+                    $count = 0;
+                    $jumlahGroup++;
+                    $newDataFix[$jumlahGroup] = array("psnno" => "", "time_in" => "", "time_out" => "", "date" => "");
+                }
+
+                $newDataFix[$jumlahGroup]["psnno"] .= $newData[$countData] . "~";
+                $newDataFix[$jumlahGroup]["time_in"] .= $newDataTI[$countData] . "~";
+                $newDataFix[$jumlahGroup]["time_out"] .= $newDataTO[$countData] . "~";
+                $newDataFix[$jumlahGroup]["date"] .= $newDataD[$countData] . "~";
+
+                $countData++;
+                $count++;
+            }
+
+            $hasil = TRUE;
+        }
+        $errorMsg = $importer->getErrorMessage();
+        $arrayRespon = array("STATUS" => $hasil ? TRUE : FALSE,
+            "FPNUMBERLIST" => $newDataFix,
+            "ERRORMSG" => $errorMsg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function transfersaveRead() {
+        $hasil = TRUE;
+
+        $data = $this->getAppData();
+
+
+        $fpnl = json_decode($data["data"], TRUE);
+
+        $dao = new Hrd_Models_AbsentDao();
+        $hasil = $dao->transferFingerPrintB($fpnl, $this->getAppSession());
+
+        $arrayRespon = array("STATUS" => $hasil ? TRUE : FALSE);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function processtransferRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+        // $data = new Hrd_Models_Absent_Data_JsonString();
+        $isDelete = FALSE;
+        $request = $this->getAppData();
+        $isDelete = intval($request["is_delete"]);
+
+        $appData = $this->getAppData();
+        $month = isset($appData["month"]) ? $appData["month"] : date("m");
+        $year = isset($appData["year"]) ? $appData["year"] : date("Y");
+
+
+
+        $errorMsg = 'Error Msg';
+        $hasil = NULL;
+
+        $data = new Hrd_Models_Absent_Data_SqlServer();
+        $data->setYear($year);
+        $data->setMonth($month);
+        $data->setStartDay($appData["start_day"]);
+        $data->setEndDay($appData["end_day"]);
+        $importer = new Hrd_Models_Absent_Importer($data);
+        $process = $importer->process();
+        if ($process) {
+
+            $dao = new Hrd_Models_AbsentDao();
+
+            if ($isDelete) { /// jika delete temporary
+                $hasilDelete = $dao->deleteTemporaryTransfer();
+            }
+
+
+
+
+            $hasil = $dao->transferFingerPrint($importer->getHeader(), $this->getAppSession());
+
+            //var_dump($importer->getHeader()->getDCResult());
+        }
+        $errorMsg = $importer->getErrorMessage();
+
+
+        $otherAT = array(array(
+                "STATUS" => $hasil ? TRUE : FALSE,
+                "ERRORMSG" => $errorMsg
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    /*
+      public function processtransferRead() {
+      $dm = new Box_Models_App_Hermes_DataModel();
+      $dm->setDirectResult(TRUE);
+      $dm->setRequiredDataList(FALSE);
+      $dm->setRequiredModel(FALSE);
+
+      $creator = new Box_Models_App_Creator();
+      // $data = new Hrd_Models_Absent_Data_JsonString();
+      $isDelete = FALSE;
+      $request = $this->getAppData();
+      $isDelete = intval($request["is_delete"]);
+
+      $appData = $this->getAppData();
+      $month = isset($appData["month"]) ? $appData["month"] : date("m");
+      $year = isset($appData["year"]) ? $appData["year"] : date("Y");
+
+
+
+      $errorMsg = 'Error Msg';
+      $hasil = NULL;
+
+      $data = new Hrd_Models_Absent_Data_SqlServer();
+      $data->setYear($year);
+      $data->setMonth($month);
+      $data->setStartDay($appData["start_day"]);
+      $data->setEndDay($appData["end_day"]);
+      $importer = new Hrd_Models_Absent_Importer($data);
+      $process = $importer->process();
+      if ($process) {
+
+      $dao = new Hrd_Models_AbsentDao();
+
+      if ($isDelete) { /// jika delete temporary
+      $hasilDelete = $dao->deleteTemporaryTransfer();
+      }
+
+
+
+
+      $hasil = $dao->transferFingerPrint($importer->getHeader(), $this->getAppSession());
+
+      //var_dump($importer->getHeader()->getDCResult());
+      }
+      $errorMsg = $importer->getErrorMessage();
+
+
+      $otherAT = array(array(
+      "STATUS" => $hasil ? TRUE : FALSE,
+      "ERRORMSG" => $errorMsg
+      ));
+
+
+
+
+      $dm->setHasil(array($otherAT));
+
+
+      return $dm;
+      }
+     */
+
+    public function attachsaveRead() {
+        $hasil = TRUE;
+
+        $data = $this->getAppData();
+        $fpnl = json_decode($data["data"], TRUE);
+        //$dao = new Hrd_Models_AbsentDao();
+        //$hasil = $dao->updateAbsentByFingerPrintB($fpnl, $this->getAppSession());
+	//$arrayRespon = array("STATUS" => $hasil ? TRUE : FALSE);
+
+	$result = $this->checkdataAttachsave($fpnl);
+        $arrayRespon = array("STATUS" => $result ? TRUE : FALSE);       
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    /* start added by ahmad riadi 14-06-2017 */
+    public function checkdataAttachsave($dataabsen) {
+        $ar_absendetail = explode('~', $dataabsen['absentdetail_id']);
+        if (count($ar_absendetail) > 0) {
+            $arraytmp = array();
+            $dao_shift = new Hrd_Models_Master_ShiftTypeDao();
+            $dao_absent = new Hrd_Models_AbsentDao();
+            $absentDetail = new Hrd_Models_Master_General_Date();
+            $mp = new Hrd_Models_Absent_MasterProcess($this->getAppSession());
+            $absentHeader = new Hrd_Models_Absent();
+
+            $index = 0;
+            $ar_in_7_14 = explode('~', $dataabsen['in_7_14']);
+            $ar_out_7_14 = explode('~', $dataabsen['out_7_14']);
+            $ar_in_15_21 = explode('~', $dataabsen['in_15_21']);
+            $ar_out_15_21 = explode('~', $dataabsen['out_15_21']);
+            $ar_in_22_6 = explode('~', $dataabsen['in_22_6']);
+            $ar_out_22_6 = explode('~', $dataabsen['out_22_6']);
+            $ar_late = explode('~', $dataabsen['late']);
+            $ar_attendance_total = explode('~', $dataabsen['attendance_total']);
+            $ar_total_hours = explode('~', $dataabsen['total_hours']);
+            $ar_time_in = explode('~', $dataabsen['time_in']);
+            $ar_time_out = explode('~', $dataabsen['time_out']);
+            $ar_time_lost = explode('~', $dataabsen['time_lost']);
+            $ar_date = explode('~', $dataabsen['date']);
+
+
+	    $lates_year =''; 	            
+            $lates_month ='';
+            $lates_employee_id ='';
+            foreach ($ar_absendetail as $rowabdetail) {
+                $absentdetail_id = $rowabdetail;
+                $date = $ar_date[$index];
+                $in_7_14 = $ar_in_7_14[$index];
+                $out_7_14 = $ar_out_7_14[$index];
+                $in_15_21 = $ar_in_15_21[$index];
+                $out_15_21 = $ar_out_15_21[$index];
+                $in_22_6 = $ar_in_22_6[$index];
+                $out_22_6 = $ar_out_22_6[$index];
+                $late = $ar_late[$index];
+                $total_hours = $ar_total_hours[$index];                
+                $time_in = $ar_time_in[$index];
+                $time_out = $ar_time_out[$index];
+                $time_lost = $ar_time_lost[$index];
+                $rowabsentdetail = $dao_absent->getAbsentdetail_byid($absentdetail_id);
+
+		//start added by ahmad riadi 22-09-2017 - request devina jika s-kd telatnya di hapus
+                  
+                if (!empty($rowabsentdetail['absenttype_id'])) {
+                    $rowabsenttype = $dao_absent->getAbsentType($rowabsentdetail['absenttype_id']);
+                    $paramreset = $this->code_for_reset_late($rowabsenttype['code'], $late, $time_lost);
+                    $late = $paramreset['late'];
+                    $time_lost = $paramreset['time_lost'];
+                }
+                
+                //end added by ahmad riadi 22-09-2017
+
+               
+
+                if (isset($rowabsentdetail['shifttype_id'])) {
+                    $rowshift = $dao_shift->getshift_byid($rowabsentdetail['shifttype_id']);
+                    $arraydata = array(
+                        "absentdetail_id" => $absentdetail_id,
+                        "shifttype_shifttype_id" => $rowabsentdetail['shifttype_id'],
+                        "employee_id" => $rowabsentdetail['employee_id'],
+                        "month" => date('m', strtotime($date)),
+                        "year" => date('Y', strtotime($date)),
+                        "day" => date('d', strtotime($date)),
+                        "time_in" => $time_in,
+                        "time_out" => $time_out,
+                    );              
+                    
+                    $user_id = $this->getAppSession()->getUser()->getId();
+                    $absentDetail->setArrayTable($arraydata);
+                    $absentHeader->setProject($this->getAppSession()->getProject());
+                    $absentHeader->setPt($this->getAppSession()->getPt());
+                    $absentHeader->setMonth($arraydata["month"]);
+                    $absentHeader->setYear($arraydata["year"]);
+                    $absentHeader->getEmployee()->setId($arraydata["employee_id"]);
+                    $absentDetail->setAddBy($user_id);
+                    $mp->process($absentDetail);
+                    $arrayupdate = $absentDetail->getArrayTable();
+                    
+                    $arraytmp['absentdetail_id'] = $absentdetail_id;
+                    $arraytmp['in_7_14'] = $in_7_14;
+                    $arraytmp['out_7_14'] = $out_7_14;
+                    $arraytmp['in_15_21'] = $in_15_21;
+                    $arraytmp['out_15_21'] = $out_15_21;
+                    $arraytmp['in_22_6'] = $in_22_6;
+                    $arraytmp['out_22_6'] = $out_22_6;
+                    $arraytmp['late'] = $late;
+                    $arraytmp['attendance_total'] = $arrayupdate['attendance_total'];
+                    $arraytmp['total_hours'] = $total_hours;
+                    $arraytmp['time_in'] = $time_in;
+                    $arraytmp['time_out'] = $time_out;
+                    $arraytmp['time_lost'] = $time_lost;
+                    $arraytmp['date'] = $date;
+                    $dao_absent->updateForAbsentDetail($arraytmp, $this->getAppSession());
+                    $lates_month = date('m', strtotime($date));
+		    $lates_year = date('Y', strtotime($date));	
+                    $lates_employee_id = $rowabsentdetail['employee_id'];
+		    /* start added by ahmad riadi 20-06-2017 */
+		    $this->cleardata_permit_latein_fastout($absentdetail_id);	
+		   /* end added by ahmad riadi 20-06-2017 */
+                    $index++;
+                }
+            }
+        }
+        
+        if(!empty($lates_month) && !empty($lates_employee_id)){
+            $dao_absent->cleardata_Employeeinoffiflate($lates_year,$lates_month, $lates_employee_id, $this->getAppSession());
+	    $this->cleardata_Halfdayleave_iflate($lates_year, $lates_month);
+	    /* start added by ahmad riadi 03-07-2017 */
+             $this->update_note_absentrecord_fromleave($lates_year,$lates_month);
+            /* start added by ahmad riadi 03-07-2017 */	
+	
+
+        }  
+        return true;
+    }
+  /* end added by ahmad riadi 14-06-2017 */
+
+
+ /* start added by ahmad riadi 22-09-2017 */
+    public function code_for_reset_late($paramcode, $late, $time_lost) {
+        $inresetcode = array('S-KD');
+        $return = array("late" => $late, "time_lost" => $time_lost);
+        if (in_array($paramcode, $inresetcode)) {
+            $return = array("late" => NULL, "time_lost" => NULL);
+        }
+        return $return;
+    }
+    /* end added by ahmad riadi 22-09-2017 */
+
+
+
+
+
+/* start added by ahmad riadi 19-06-2017 */
+
+
+
+/*
+   public function cleardata_Halfdayleave_iflate($lates_year, $lates_month) {
+        $dao_absent = new Hrd_Models_AbsentDao();
+        $dao_shift = new Hrd_Models_Master_ShiftTypeDao();        
+        $result = $dao_absent->Getdataleavehalfinlate($lates_year, $lates_month);
+        if ($result) {  
+            foreach ($result as $row) { 
+               $rowshift = $dao_shift->getshift_byid($row['shifttype_id']);
+               $shitf_time_in = $row['date'].' '.$rowshift['in_time'];
+               $shitf_time_out = $row['date'].' '.$rowshift['out_time'];
+               $shitf_hour = (strtotime($shitf_time_out) - strtotime($shitf_time_in)) / 3600;
+               $break_hour = 0;
+               $shift_totalhour = $shitf_hour-$break_hour; 
+               $shift_half_timein = $shift_totalhour-5;  
+               $end_half_time_in = date('Y-m-d H:i:s', strtotime("+".($shift_half_timein-1)." hours", strtotime($shitf_time_in)));
+               $start_half_time_out = date('Y-m-d H:i:s', strtotime("+".($shift_half_timein-1)." hours", strtotime($shitf_time_in)));
+               $filter_time = date('Y-m-d H:i:s', strtotime("+".$shift_half_timein." hours", strtotime($shitf_time_in)));
+               $date_time_in = $row['date'].' '.$row['time_in'];               
+               
+               $time_in = date('H:i:s', strtotime($shitf_time_in));
+               $time_out = date('H:i:s', strtotime($date_time_in));
+               $date_clean_late_hour = date('Y-m-d H:i:s', strtotime($row['date'].' '.Box_Tools::timeDifference($time_in, $time_out)));
+               $date_late_hour = date('Y-m-d H:i:s', strtotime($row['date'].' '.$row['late']));
+               $late_hour = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_late_hour)), date('H:i:s', strtotime($date_late_hour)));
+               $lost_time = $row['time_lost'];
+              
+                              
+               if ($date_time_in >= $shitf_time_in && $date_time_in <= $filter_time) {
+                    $time_in = date('H:i:s', strtotime($shitf_time_in));
+                    $time_out = date('H:i:s', strtotime($date_time_in));
+                    $date_clean_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'].' '.Box_Tools::timeDifference($time_in, $time_out)));                    
+                    $date_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'].' '.$lost_time));
+                    $lost = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_lost_time_hour)), date('H:i:s', strtotime($date_lost_time_hour)));
+                    $lost_time = date('H:i:s', strtotime($row['date'].' '.$lost));
+                 }
+
+                if ($date_time_in >= $filter_time && $date_time_in <= $shitf_time_out) {
+                    $time_in = date('H:i:s', strtotime($filter_time));
+                    $time_out = date('H:i:s', strtotime($shitf_time_out));
+                    $date_clean_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'].' '.Box_Tools::timeDifference($time_in, $time_out)));
+                    $date_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'].' '.$lost_time));
+                    $lost = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_lost_time_hour)), date('H:i:s', strtotime($date_lost_time_hour)));
+                    $lost_time = date('H:i:s', strtotime($row['date'].' '.$lost));
+                }
+                
+               $late_hour = date('H:i:s', strtotime($row['date'].' '.$late_hour));
+               $user_id = $this->getAppSession()->getUser()->getId();
+               $dao_absent->cleardata_Employeein_halfleaveiflate($row['absentdetail_id'],$late_hour,$lost_time,$user_id);
+                
+            }
+        }
+    }
+
+*/
+
+
+   public function cleardata_Halfdayleave_iflate($lates_year, $lates_month) {
+        $dao_absent = new Hrd_Models_AbsentDao();
+        $dao_shift = new Hrd_Models_Master_ShiftTypeDao();
+        $result = $dao_absent->Getdataleavehalfinlate($lates_year, $lates_month);
+        if ($result) {
+            foreach ($result as $row) {
+                $rowshift = $dao_shift->getshift_byid($row['shifttype_id']);
+                $shitf_time_in = $row['date'] . ' ' . $rowshift['in_time'];
+                $shitf_time_out = $row['date'] . ' ' . $rowshift['out_time'];
+                $shitf_hour = (strtotime($shitf_time_out) - strtotime($shitf_time_in)) / 3600;
+                $break_hour = 0;
+                $shift_totalhour = $shitf_hour - $break_hour;
+                $shift_half_timein = $shift_totalhour - 5;
+                $end_half_time_in = date('Y-m-d H:i:s', strtotime("+" . ($shift_half_timein - 1) . " hours", strtotime($shitf_time_in)));
+                $start_half_time_out = date('Y-m-d H:i:s', strtotime("+" . ($shift_half_timein - 1) . " hours", strtotime($shitf_time_in)));
+                $filter_time = date('Y-m-d H:i:s', strtotime("+" . $shift_half_timein . " hours", strtotime($shitf_time_in)));
+                $date_time_in = $row['date'] . ' ' . $row['time_in'];
+                $date_time_out = $row['date'] . ' ' . $row['time_out'];
+                $late_hour = $row['late'];
+                $lost_time = $row['time_lost'];
+
+                $data_hour_bytimein = (strtotime($date_time_in) - strtotime($shitf_time_in)) / 3600;
+                $data_hour_bytimeout = (strtotime($date_time_out) - strtotime($shitf_time_out)) / 3600;
+
+                $flag_from_time_in = 0;
+                $flag_from_time_out = 0;
+
+                if ($data_hour_bytimein > 0) {
+                    $flag_from_time_in = $data_hour_bytimein;
+                }
+                
+                if ($data_hour_bytimeout < 0) {
+                    $flag_from_time_out = abs($data_hour_bytimeout);
+                }                
+                
+                if ($flag_from_time_in > $flag_from_time_out) {
+                    $time_in = date('H:i:s', strtotime($shitf_time_in));
+                    $time_out = date('H:i:s', strtotime($date_time_in));
+                    $date_clean_late_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . Box_Tools::timeDifference($time_in, $time_out)));
+                    $date_late_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . $row['late']));
+                    $late_hour = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_late_hour)), date('H:i:s', strtotime($date_late_hour)));
+                    $date_clean_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . Box_Tools::timeDifference($time_in, $time_out)));
+                    $date_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . $lost_time));
+                    $lost = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_lost_time_hour)), date('H:i:s', strtotime($date_lost_time_hour)));
+                    $lost_time = date('H:i:s', strtotime($row['date'] . ' ' . $lost));
+                }
+                
+                if ($flag_from_time_in < $flag_from_time_out) {
+                    $time_in = date('H:i:s', strtotime($date_time_out));
+                    $time_out = date('H:i:s', strtotime($shitf_time_out));
+                    $date_clean_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . Box_Tools::timeDifference($time_in, $time_out)));
+                    $date_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . $lost_time));
+                    $lost = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_lost_time_hour)), date('H:i:s', strtotime($date_lost_time_hour)));
+                    $lost_time = date('H:i:s', strtotime($row['date'] . ' ' . $lost));
+                }
+                
+                $late_hour = date('H:i:s', strtotime($row['date'] . ' ' . $late_hour));
+                $user_id = $this->getAppSession()->getUser()->getId();
+                $dao_absent->cleardata_Employeein_halfleaveiflate($row['absentdetail_id'], $late_hour, $lost_time, $user_id);
+            }
+        }
+    }
+
+ /* end added by ahmad riadi 19-06-2017 */
+
+
+
+/* start added by ahmad riadi 20-06-2017 */
+public function cleardata_permit_latein_fastout($absentdetail_id) {
+        $dao_absent = new Hrd_Models_AbsentDao();
+        $dao_shift = new Hrd_Models_Master_ShiftTypeDao();
+        $row = $dao_absent->getAbsentdetail_forlateinfastout_by_id($absentdetail_id);
+        if ($row) {
+            $rowshift = $dao_shift->getshift_byid($row['shifttype_id']);
+            $shitf_time_in = $row['date'] . ' ' . $rowshift['in_time'];
+            $shitf_time_out = $row['date'] . ' ' . $rowshift['out_time'];
+            $shitf_hour = (strtotime($shitf_time_out) - strtotime($shitf_time_in)) / 3600;
+            $break_hour = 0;
+            $shift_totalhour = $shitf_hour - $break_hour;
+            $shift_half_timein = $shift_totalhour - 5;
+            $filter_time = date('Y-m-d H:i:s', strtotime("+" . $shift_half_timein . " hours", strtotime($shitf_time_in)));
+            $date_time_in = $row['date'] . ' ' . $row['time_in'];
+            $date_time_out = $row['date'] . ' ' . $row['time_out'];
+            
+            $late_hour = $row['late'];   
+            $lost_time = $row['time_lost'];            
+            
+            if ($row['code'] == 'I-ML') {
+                $time_in = date('H:i:s', strtotime($shitf_time_in));
+                $time_out = date('H:i:s', strtotime($date_time_in));
+                $date_clean_late_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . Box_Tools::timeDifference($time_in, $time_out)));
+                $date_late_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . $row['late']));
+                $late_hour = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_late_hour)), date('H:i:s', strtotime($date_late_hour)));
+                $date_clean_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . Box_Tools::timeDifference($time_in, $time_out)));
+                $date_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . $lost_time));
+                $lost = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_lost_time_hour)), date('H:i:s', strtotime($date_lost_time_hour)));
+                $lost_time = date('H:i:s', strtotime($row['date'] . ' ' . $lost));
+            }
+
+            if ($row['code'] == 'I-PA/S') {
+                $time_in = date('H:i:s', strtotime($date_time_out));
+                $time_out = date('H:i:s', strtotime($shitf_time_out));
+                $date_clean_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . Box_Tools::timeDifference($time_in, $time_out)));
+                $date_lost_time_hour = date('Y-m-d H:i:s', strtotime($row['date'] . ' ' . $lost_time));
+                $lost = Box_Tools::timeDifference(date('H:i:s', strtotime($date_clean_lost_time_hour)), date('H:i:s', strtotime($date_lost_time_hour)));
+                $lost_time = date('H:i:s', strtotime($row['date'] . ' ' . $lost));
+            }  
+                        
+            $late_hour = date('H:i:s', strtotime($row['date'] . ' ' . $late_hour));           
+            $user_id = $this->getAppSession()->getUser()->getId();
+            $dao_absent->cleardata_Employeein_permitlateinfastout($absentdetail_id, $late_hour, $lost_time, $user_id);
+        }
+    }
+
+/* end added by ahmad riadi 20-06-2017 */
+
+
+/* start added by ahmad riadi 03-07-2017 */
+
+    public function update_note_absentrecord_fromleave($lates_year, $lates_month) {
+        $dao_absent = new Hrd_Models_AbsentDao();
+        $result = $dao_absent->Getdataleave($lates_year, $lates_month);
+        if ($result) {
+            foreach ($result as $row) {
+                $absentdetail_id = $row['absentdetail_id'];
+                $description = $row['note'];
+                $dao_absent->Updatenote_absentrecord($absentdetail_id, $description, $this->getAppSession());
+            }
+        }
+    }
+
+ /* end added by ahmad riadi 03-07-2017 */
+
+
+
+    public function attachfingerprintinfoRead() {
+        $request = $this->getAppData();
+        $creator = new Box_Models_App_Creator();
+        $msg = "...";
+        $hasil = FALSE;
+
+        /// get transfer data
+        $absent = new Hrd_Models_Absent();
+        $absent->setProject($this->getAppSession()->getProject());
+        $absent->setPt($this->getAppSession()->getPt());
+        $data = $this->getAppData();
+        $m = isset($data["month"]) ? $data["month"] : date("m");
+        $y = isset($data["year"]) ? $data["year"] : date("Y");
+        $absent->setYear($y);
+        $absent->setMonth($m);
+
+        $dao = new Hrd_Models_AbsentDao();
+        $allFingerPrint = $dao->getAllFingerPrint($absent);
+
+        $lostTime = new Hrd_Models_Absent_LostTime($this->getAppSession());
+
+
+
+        // get employee absent sheet
+        $allAbsentFingerPrint = $dao->getAllAbsentFingerPrint($absent);
+
+
+
+        $tempDate = NULL;
+        $absentHeader = new Hrd_Models_Absent();
+
+        /* get all shifttype */
+        $daost = new Hrd_Models_Master_ShiftTypeDao();
+        $daost->setSession($this->getAppSession());
+
+        $shifTypes = $daost->getAllWOPL();
+        $shifTypes = Hrd_Models_Absent_Tools::buildObjects($creator, "shifttype", $shifTypes, 1);
+
+        $hal = new Hrd_Models_Absent_ProcessHal($this->getAppSession(), $shifTypes);
+
+
+        if (count($allAbsentFingerPrint[0]) > 0) { // jika ada sheet
+            foreach ($allAbsentFingerPrint[0] as $row) {
+                $tempDate = date("Y-m-d", strtotime($row["date"]));
+                if (count($allFingerPrint[0]) > 0) {
+                    foreach ($allFingerPrint[0] as $fpRow) {
+
+                        if ($row["employee_fingerprintcode"] > 0) {
+
+                            // echo $row["employee_fingerprintcode"]."<br/>";
+
+                            if ($row["employee_fingerprintcode"] == $fpRow["psnno"]) {
+
+
+
+
+                                if ($tempDate == $fpRow["date"]) {
+                                    $absenDetail = new Hrd_Models_Master_General_Date();
+                                    $absenDetail->setId($row["absentdetail_id"]);
+
+                                    Hrd_Models_Absent_Tools::attachTimeByShiftType($absenDetail, $fpRow["time_in"], TRUE);
+                                    Hrd_Models_Absent_Tools::attachTimeByShiftType($absenDetail, $fpRow["time_out"], FALSE);
+
+				    $absenDetail->setTimeIn($fpRow["time_in"]);
+                                    $absenDetail->setTimeOut($fpRow["time_out"]);
+
+
+                                    // process late
+                                    if (count($shifTypes) > 0) {
+
+                                        foreach ($shifTypes as $st) {
+
+                                            if ($row["shifttype_id"] == $st->getId()) {
+                                                Hrd_Models_Absent_Tools::attachLate($absenDetail, $st->getInTime());
+
+                                                Hrd_Models_Absent_Tools::attachAttendance($absenDetail, $st);
+                                                $hal->attachProcess($absenDetail, $st);
+                                            } else {
+                                                
+                                            }
+                                        }
+                                    } else {
+                                        $msg = "Tidak ada data shifttype";
+                                    }
+
+
+
+                                    $absenDetail->setTimeLost($lostTime->getAmount($fpRow["time_in"], $fpRow["time_out"], $shifTypes, $row['shifttype_id']));
+
+                                    $absenDetail->setDate($tempDate);
+
+                                    $absentHeader->addDetail($absenDetail);
+                                }
+                            } else {
+                                $msg = "Finger print ada yang tidak cocok";
+                            }
+                        } else {
+                            $msg = "Finger print code tidak ada ...";
+                        }
+                    }
+                } else {
+                    $msg = "Finger print data not found for this month (" . $m . "-" . $y . ")";
+                }
+            }
+        } else {
+            $msg = "Employee absent sheet not found for this month (" . $m . "-" . $y . ")";
+        }
+
+
+
+        $de = new Box_Delien_DelimiterEnhancer();
+        $de->setDelimiterCandidate($absentHeader);
+        $de->generate();
+
+
+
+        $defaultArray = array("absentdetail_id" => "", "in_7_14" => "", "out_7_14" => "", "in_15_21" => "",
+            "out_15_21" => "", "in_22_6" => "", "out_22_6" => "", "late" => "", "attendance_total" => "",
+            "total_hours" => "", "time_in" => "", "time_out" => "", "time_lost" => "", "date" => "");
+
+        $tempAr = $defaultArray;
+        $newDataFix = array();
+
+        if (count($absentHeader->getDCResult()) > 0) {
+            foreach ($absentHeader->getDCResult() as $k => $v) {
+                $tempAr[$k] = explode("~", $v);
+            }
+
+            /// split hasil array
+            $count = 0;
+            $countData = 0;
+            $jumlahGroup = 0;
+            $newDataFix[$jumlahGroup] = $defaultArray;
+            foreach ($tempAr["absentdetail_id"] as $record) {
+                if ($count >= 10) {
+                    $count = 0;
+                    $jumlahGroup++;
+                    $newDataFix[$jumlahGroup] = $defaultArray;
+                }
+
+                foreach ($tempAr as $k => $v) {
+                    if (key_exists($k, $newDataFix[$jumlahGroup])) {
+                        $newDataFix[$jumlahGroup][$k] .= $v[$countData] . "~";
+                    }
+                }
+
+
+                $countData++;
+                $count++;
+            }
+        }
+
+
+        ///end split hasil array
+        if (count($newDataFix) > 0) {
+            $hasil = TRUE;
+        }
+
+
+        $arrayRespon = array(
+            "STATUS" => $hasil ? TRUE : FALSE,
+            "DATAS" => $newDataFix,
+            "MSG" => $hasil ? $msg : $msg
+        );
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    /*
+      public function attachfingerprintRead() {
+
+
+
+
+
+      $dm = new Box_Models_App_Hermes_DataModel();
+      $dm->setDirectResult(TRUE);
+      $dm->setRequiredDataList(FALSE);
+      $dm->setRequiredModel(FALSE);
+      $msg = "Processing";
+
+      $creator = new Box_Models_App_Creator();
+      $request = $this->getAppData();
+
+      $hasil = FALSE;
+
+      /// get transfer data
+      $absent = new Hrd_Models_Absent();
+      $absent->setProject($this->getAppSession()->getProject());
+      $absent->setPt($this->getAppSession()->getPt());
+      $data = $this->getAppData();
+      $m = isset($data["month"]) ? $data["month"] : date("m");
+      $y = isset($data["year"]) ? $data["year"] : date("Y");
+      $absent->setYear($y);
+      $absent->setMonth($m);
+
+      $dao = new Hrd_Models_AbsentDao();
+      $allFingerPrint = $dao->getAllFingerPrint($absent);
+
+      $lostTime = new Hrd_Models_Absent_LostTime($this->getAppSession());
+
+
+
+      // get employee absent sheet
+      $allAbsentFingerPrint = $dao->getAllAbsentFingerPrint($absent);
+
+
+
+      $tempDate = NULL;
+      $absentHeader = new Hrd_Models_Absent();
+
+      /// get all shifttype
+      $daost = new Hrd_Models_Master_ShiftTypeDao();
+      $shifTypes = $daost->getAll($this->getAppRequest(), new Hrd_Models_Master_ShiftType());
+      $shifTypes = Hrd_Models_Absent_Tools::buildObjects($creator, "shifttype", $shifTypes, 1);
+
+      $hal = new Hrd_Models_Absent_ProcessHal($this->getAppSession(), $shifTypes);
+
+
+      if (count($allAbsentFingerPrint[0]) > 0) { // jika ada sheet
+      foreach ($allAbsentFingerPrint[0] as $row) {
+      $tempDate = date("Y-m-d", strtotime($row["date"]));
+      if (count($allFingerPrint[0]) > 0) {
+      foreach ($allFingerPrint[0] as $fpRow) {
+      if ($row["employee_fingerprintcode"] > 0) {
+
+      if ($row["employee_fingerprintcode"] == $fpRow["psnno"]) {
+
+
+      if ($tempDate == $fpRow["date"]) {
+      $absenDetail = new Hrd_Models_Master_General_Date();
+      $absenDetail->setId($row["absentdetail_id"]);
+
+      Hrd_Models_Absent_Tools::attachTimeByShiftType($absenDetail, $fpRow["time_in"], TRUE);
+      Hrd_Models_Absent_Tools::attachTimeByShiftType($absenDetail, $fpRow["time_out"], FALSE);
+
+      // process late
+      if (count($shifTypes) > 0) {
+      foreach ($shifTypes as $st) {
+      if ($row["shifttype_id"] == $st->getId()) {
+      Hrd_Models_Absent_Tools::attachLate($absenDetail, $st->getInTime());
+      Hrd_Models_Absent_Tools::attachAttendance($absenDetail, $st);
+      $hal->attachProcess($absenDetail, $st);
+      }
+      }
+      }
+
+      $absenDetail->setTimeIn($fpRow["time_in"]);
+      $absenDetail->setTimeOut($fpRow["time_out"]);
+
+
+
+      $absenDetail->setTimeLost($lostTime->getAmount($fpRow["time_in"], $fpRow["time_out"], $shifTypes, $row['shifttype_id']));
+
+      $absenDetail->setDate($tempDate);
+
+      $absentHeader->addDetail($absenDetail);
+      }
+      }
+      }
+      }
+      } else {
+      $msg = "Finger print data not found for this month (" . $m . "-" . $y . ")";
+      }
+      }
+      } else {
+      $msg = "Employee absent sheet not found for this month (" . $m . "-" . $y . ")";
+      }
+
+
+
+      $de = new Box_Delien_DelimiterEnhancer();
+      $de->setDelimiterCandidate($absentHeader);
+      $de->generate();
+
+
+
+
+
+
+
+
+      if ($absentHeader->getDCResult()) {
+      $hasil = $dao->updateAbsentByFingerPrint($absentHeader, $this->getAppSession());
+      } else {
+
+      }
+
+
+
+
+
+      /// check jika ada kesamaan tanggal dan nomor fingerprint
+
+
+      $otherAT = array(array(
+      "STATUS" => $hasil ? TRUE : FALSE,
+      "MSG" => $hasil ? "SUCCESS" : $msg
+      ));
+
+
+
+
+      $dm->setHasil(array($otherAT));
+
+
+      return $dm;
+      }
+
+     */
+
+    public function processdayRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+
+        //===== MASTERDATA == //
+        $msg = "Processing...";
+        $hasil = FALSE;
+
+        $data = $this->getAppData();
+        $absent = new Hrd_Models_Absent();
+        $absent->setMonth($data["month"]);
+        $absent->setYear($data["year"]);
+
+        $processor = new Hrd_Models_Absent_ProcessDay();
+        $processor->run($absent, $this->getAppSession(), $this->getAppRequest());
+        $hasil = $processor->getHasil();
+        $msg = $processor->getMsg();
+
+
+
+
+        $otherAT = array(array(
+                "STATUS" => $hasil ? TRUE : FALSE,
+                "MSG" => $msg
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function processhalRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+
+
+        $msg = "Processing...";
+        $hasil = FALSE;
+
+
+        /* get all shifttype */
+        $daost = new Hrd_Models_Master_ShiftTypeDao();
+        $shifTypes = $daost->getAll($this->getAppRequest(), new Hrd_Models_Master_ShiftType());
+        $shifTypes = Hrd_Models_Absent_Tools::buildObjects($creator, "shifttype", $shifTypes, 1);
+
+
+        $optionSelector = new Hrd_Models_Absent_OptionSelector($this->getAppData(), new Hrd_Models_Absent_ProcessHal($this->getAppSession(), $shifTypes));
+        $optionSelector->run($this->getAppSession(), $this->getAppRequest());
+
+
+        $otherAT = array(array(
+                "STATUS" => $optionSelector->getHasil(),
+                "MSG" => $optionSelector->getMsg()
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function processlateRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+
+        //===== MASTERDATA == //
+        $msg = "Processing...";
+        $hasil = FALSE;
+        $data = $this->getAppData();
+        $process = $data["process"];
+
+        switch ($process) {
+            case 'employee':
+                $employeeId = intval($data["employee_id"]);
+
+                $absent = new Hrd_Models_Absent();
+
+                $absent->setMonth($data["month"]);
+                $absent->setYear($data["year"]);
+                $absent->getEmployee()->setId($employeeId);
+
+                $processor = new Hrd_Models_Absent_ProcessLate();
+                $processor->run($absent, $this->getAppSession(), $this->getAppRequest());
+                $hasil = $processor->getHasil();
+                $msg = $processor->getMsg();
+
+
+                break;
+            case 'department':
+
+                $absent = new Hrd_Models_Absent();
+                $absent->setMonth($data["month"]);
+                $absent->setYear($data["year"]);
+
+                $processor = new Hrd_Models_Absent_ProcessLate();
+                $processor->run($absent, $this->getAppSession(), $this->getAppRequest());
+                $hasil = $processor->getHasil();
+                $msg = $processor->getMsg();
+
+                break;
+            case 'all':
+
+                $absent = new Hrd_Models_Absent();
+                $absent->setMonth($data["month"]);
+                $absent->setYear($data["year"]);
+
+                $processor = new Hrd_Models_Absent_ProcessLate();
+                $processor->run($absent, $this->getAppSession(), $this->getAppRequest());
+                $hasil = $processor->getHasil();
+                $msg = $processor->getMsg();
+
+                break;
+        }
+
+
+        $otherAT = array(array(
+                "STATUS" => $hasil ? TRUE : FALSE,
+                "MSG" => $msg
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function processabsentRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dm->setDirectResult(TRUE);
+        $dm->setRequiredDataList(FALSE);
+        $dm->setRequiredModel(FALSE);
+
+        $creator = new Box_Models_App_Creator();
+
+        //===== MASTERDATA == //
+        $msg = "Processing...";
+        $hasil = FALSE;
+        $data = $this->getAppData();
+        $process = $data["process"];
+        $startDate = $data["start_date"];
+        $endDate = $data["end_date"];
+        switch ($process) {
+            case 'employee':
+                $employeeId = intval($data["employee_id"]);
+
+                $absent = new Hrd_Models_Absent();
+
+                $absent->setMonth($data["month"]);
+                $absent->setYear($data["year"]);
+                $absent->getEmployee()->setId($employeeId);
+
+                $processor = new Hrd_Models_Absent_SetupShiftManual();
+                $processor->run($absent, $this->getAppSession(), $this->getAppRequest());
+                $hasil = $processor->getHasil();
+                $msg = $processor->getMsg();
+
+
+                break;
+            case 'department':
+
+                $absent = new Hrd_Models_Absent();
+                $absent->setMonth($data["month"]);
+                $absent->setYear($data["year"]);
+
+                $processor = new Hrd_Models_Absent_SetupShiftManual();
+                $processor->run($absent, $this->getAppSession(), $this->getAppRequest());
+                $hasil = $processor->getHasil();
+                $msg = $processor->getMsg();
+
+                break;
+            case 'all':
+
+                $absent = new Hrd_Models_Absent();
+                $absent->setMonth($data["month"]);
+                $absent->setYear($data["year"]);
+
+                $processor = new Hrd_Models_Absent_SetupShiftManual();
+                $processor->run($absent, $this->getAppSession(), $this->getAppRequest());
+                $hasil = $processor->getHasil();
+                $msg = $processor->getMsg();
+
+                break;
+        }
+
+
+        $otherAT = array(array(
+                "STATUS" => $hasil ? TRUE : FALSE,
+                "MSG" => $msg
+        ));
+
+
+
+
+        $dm->setHasil(array($otherAT));
+
+
+        return $dm;
+    }
+
+    public function mainCreate() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $obj = new Hrd_Models_Master_General_Date();
+
+        $dm->setDao(new Hrd_Models_AbsentDao());
+        $dm->setValidator(new Hrd_Models_AbsentValidator());
+        $dm->setObject($obj);
+
+        return $dm;
+    }
+
+    public function setupsheetCreate() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $obj = new Hrd_Models_Absent();
+
+        $dm->setDao(new Hrd_Models_AbsentDao());
+        $dm->setValidator(new Hrd_Models_AbsentMainValidator());
+        $dm->setObject($obj);
+
+        return $dm;
+    }
+
+    public function absenttlkCreate() {
+
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $obj = new Hrd_Models_Absent();
+        $validator = new Hrd_Models_AbsentMainValidator();
+        $validator->setNoValidation(TRUE);
+        $dm->setDao(new Hrd_Models_AbsentDao());
+        $dm->setValidator($validator);
+        $dm->setObject($obj);
+
+        return $dm;
+    }
+
+    public function updatebyrangedateCreate() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $obj = new Hrd_Models_Absent();
+        $validator = new Hrd_Models_AbsentMainValidator();
+        $validator->setNoValidation(TRUE);
+        $dm->setDao(new Hrd_Models_AbsentDao());
+        $dm->setValidator($validator);
+        $dm->setObject($obj);
+
+        return $dm;
+    }
+
+    public function generateRead() {
+        
+    }
+
+    /* @result fetch employee */
+
+    public function newRead() {
+        $r = $this->getAppData();
+        $month = $r["month_pick"];
+        $year = $r["year_pick"];
+        $data = array();
+        $days = array("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
+        $maxDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $dao = new Hrd_Models_AbsentDao();
+        $hasil = $dao->saveNewSheet(array("month" => $month, "year" => $year, "maxday" => $maxDay), $this->getAppSession());
+
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'employeepersonal', array('department'), array());
+
+        $data = $dao->getListEmployee($month, $year);
+        $dm->setDataList($dataList);
+        $dm->setHasil($data);
+
+        return $dm;
+    }
+
+    public function shifttypeexcelRead() {
+        $app = new Box_Models_App_Models_Create($this);
+        $msg = '???';
+        $success = FALSE;
+        $data = $this->getAppData();
+        $month = intval($data["month"]);
+        $year = intval($data["year"]);
+        $fileName = $data["file_name"];
+        $ste = new Hrd_Models_Absent_ShiftTypeExcel();
+        $decan = $ste->process($fileName, $this->getAppSession());
+
+        if ($ste->getStatus()) {
+            $aDao = new Hrd_Models_AbsentDao();
+            $success = $aDao->updateShiftTypeExcel($this->getAppSession(), $month, $year, $decan);
+            if ($success) {
+                $success = TRUE;
+                $msg = "Success";
+            } else {
+                $msg = "Error pada saat proses database";
+            }
+        } else {
+            $msg = $ste->getMsg();
+        }
+
+        $arrayRespon = array("HASIL" => $success, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function uploadRead() {
+
+        $ses = $this->getAppSession();
+
+
+        $data = $this->getAppData();
+
+        $msg = '???';
+        $success = FALSE;
+        $modeUpload = $data["type"];
+        $fileUpload = NULL;
+        if ($modeUpload == "csv") {
+            $fileUpload = new Box_Models_App_FileUpload("/" . Box_Config::SHIFTTYPE_EXCEL_PATH, "absent_" . $ses->getProject()->getId() . "_" . $ses->getPt()->getId(), "csv");
+        } else if ($modeUpload == "excel") {
+            $fileUpload = new Box_Models_App_FileUpload("/" . Box_Config::SHIFTTYPE_EXCEL_PATH, "absentshift_" . $ses->getProject()->getId() . "_" . $ses->getPt()->getId(), "xlsx");
+        }
+        $fileUpload->run();
+        if (!$fileUpload->isSuccess()) {
+            $msg = $fileUpload->getErrorMsg();
+        } else {
+            $success = TRUE;
+            $msg = $fileUpload->getFileName();
+        }
+
+        $arrayRespon = array("HASIL" => $success, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    /* CUMA UNTUK UPLOAD FILE EXCEL SHIFT TYPE , YANG LAINNYA PAKE uploadRead */
+
+    public function uploadAction() {
+        $app = new Box_Models_App_Models_Create($this);
+        //$app = new Erems_Box_Models_App_Models_Create($this);
+
+        $ses = $app->getSession();
+        $msg = '???';
+        $success = FALSE;
+        $fileUpload = new Box_Models_App_FileUpload("/" . Box_Config::SHIFTTYPE_EXCEL_PATH, "absentshift_" . $ses->getProject()->getId() . "_" . $ses->getPt()->getId(), "xlsx");
+        $fileUpload->run();
+        if (!$fileUpload->isSuccess()) {
+            $msg = $fileUpload->getErrorMsg();
+        } else {
+            $success = TRUE;
+            $msg = $fileUpload->getFileName();
+        }
+
+
+
+
+
+        $app->setMsg($msg);
+        $app->setSuccess($success);
+        $app->run();
+    }
+
+    protected function getDefaultProcessor() {
+        return new Hrd_Models_App_Box_AbsentProcessor();
+    }
+
+    protected function testingFlag() {
+        
+    }
+	
+	/* start added by ahmad riadi 06-04-2017 */
+    public function checkconfigintranetRead() {
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $dao = new Hrd_Models_Intranet_ConfigDao();
+        $data = $dao->getProjectconfig($project_id);
+        if(!empty($data[0])){
+            return Box_Tools::instantRead(array("HASIL" => 1,), array($data[0][0]));
+        }else{
+            return Box_Tools::instantRead(array("HASIL" => 1,), array());
+        }        
+    }
+	public function absenttypeRead() {
+        $ma = new Hrd_Models_App_Mastertable_AbsentType();
+        $aa = $ma->prosesDataWithSession($this->getAppSession(), TRUE);
+        $hasil = FALSE;
+        $arrayRespon = array(
+            "HASIL" => $hasil,
+            "ABSENTTYPEGROUP_LEAVE" => Box_Config::ABSENTTYPEGROUP_LEAVE,
+            "ABSENTTYPEGROUPCODE_LEAVE" => Box_Config::ABSENTTYPEGROUP_CODE_LEAVE);
+        return Box_Tools::instantRead($arrayRespon, array($aa));
+    }
+
+    public function getdatacutiintranetRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'intranetcuti', array(), array());
+        $dao = new Hrd_Models_Intranet_CutiDao();
+        $obj = new Hrd_Models_Intranet_Cuti();
+        $obj->setArrayTable($this->getAppData());
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $pt_id = $this->getAppSession()->getPt()->getId();
+        $data = $this->getAppData();
+        $config = $data['configintranet'];
+        $hasil = $dao->getAll($project_id, $pt_id, 'default', $config, null);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function getdatacutidetailintranetRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'intranetcutidetail', array(), array());
+        $dao = new Hrd_Models_Intranet_CutiDao();
+        $obj = new Hrd_Models_Intranet_Cutidetail();
+        $obj->setArrayTable($this->getAppData());
+        $data = $this->getAppData();
+        $cuti_id = $data['cuti_id'];
+        $config = $data['configintranet'];
+        $hasil = $dao->getCutidetail($cuti_id, $config);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function filtercutiintranetRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'intranetcuti', array(), array());
+        $dao = new Hrd_Models_Intranet_CutiDao();
+        $obj = new Hrd_Models_Intranet_Cuti();
+        $data = $this->getAppData();
+        $obj->setArrayTable($this->getAppData());
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $pt_id = $this->getAppSession()->getPt()->getId();
+        $hasil = $dao->getAll($project_id, $pt_id, 'filter', $data['configintranet'], $data['paramdata']);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function getdataijinintranetRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'intranetijin', array(), array());
+        $dao = new Hrd_Models_Intranet_IjinDao();
+        $obj = new Hrd_Models_Intranet_Ijin();
+        $obj->setArrayTable($this->getAppData());
+        $data = $this->getAppData();
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $pt_id = $this->getAppSession()->getPt()->getId();
+        $hasil = $dao->getAll($project_id, $pt_id, 'default', $data['configintranet'], null);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function filterijinintranetRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'intranetijin', array(), array());
+        $dao = new Hrd_Models_Intranet_IjinDao();
+        $obj = new Hrd_Models_Intranet_Ijin();
+        $data = $this->getAppData();
+        $obj->setArrayTable($this->getAppData());
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $pt_id = $this->getAppSession()->getPt()->getId();
+        $hasil = $dao->getAll($project_id, $pt_id, 'filter', $data['configintranet'], $data['paramdata']);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function getdatadinasintranetRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'intranetdinas', array(), array());
+        $dao = new Hrd_Models_Intranet_DinasDao();
+        $obj = new Hrd_Models_Intranet_Dinas();
+        $obj->setArrayTable($this->getAppData());
+        $data = $this->getAppData();
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $pt_id = $this->getAppSession()->getPt()->getId();
+        $hasil = $dao->getAll($project_id, $pt_id, 'default', $data['configintranet'], null);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function filterdinasintranetRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'intranetdinas', array(), array());
+        $dao = new Hrd_Models_Intranet_DinasDao();
+        $obj = new Hrd_Models_Intranet_Dinas();
+        $data = $this->getAppData();
+        $obj->setArrayTable($this->getAppData());
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $pt_id = $this->getAppSession()->getPt()->getId();
+        $hasil = $dao->getAll($project_id, $pt_id, 'filter', $data['configintranet'], $data['paramdata']);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function employeeprojectptRead() {
+        $obj = new Hrd_Models_App_Mastertable_Employee();
+        $data = $obj->prosesDataWithSession($this->getAppSession(), TRUE);
+        return Box_Tools::instantRead(array("HASIL" => 1,), array($data));
+    }
+
+    public function positionRead() {
+        $obj = new Hrd_Models_App_Mastertable_Position();
+        $data = $obj->prosesDataWithSession($this->getAppSession(), TRUE);
+        return Box_Tools::instantRead(array("HASIL" => 1,), array($data));
+    }
+    
+    public function cutidetailintranetRead() {
+        $this->getResponse()->setHeader('Content-Type', 'application/json');
+        $data = $this->getAppData();
+        $param = Zend_Json::decode($data['paramdata']);
+        $obj = new Hrd_Models_Intranet_Cuti();
+        $dao = new Hrd_Models_Intranet_CutiDao();
+        $user_id = $this->getAppSession()->getUser()->getId();
+        $project_id = $this->getAppSession()->getProject()->getId();
+        $pt_id = $this->getAppSession()->getPt()->getId();
+        $arraydata = array();
+        
+        foreach ($param as $rowh) {
+			$rowjeniscutiintranet = $dao->changeCuticestointranet($data['configintranet'],$rowh['absenttype_id']);
+            $resultdetail = $dao->getCutidetail($rowh['cuti_id'], $data['configintranet']);
+            //print_r($rowh);			
+            foreach ($resultdetail[1] as $rowd) {
+                $employee_id_ces = $rowh['employee_id_ces'];
+                $startdate = date("Y-m-d", strtotime($rowd['start_date']));
+                $start_use = date("Y", strtotime($rowd['start_date']));
+                $enddate = date("Y-m-d", strtotime($rowd['end_date']));
+                $dates = $obj->rangeDate($startdate, $enddate);
+                $leave_quota = $rowh['leave_quota'];
+                $absenttype_id = $rowh['absenttype_id'];
+                $absenttypegroup_id = $rowh['absenttypegroup_id'];
+                $absenttype_code = $rowh['absenttype_code'];
+                $note = $rowh['description'];
+                $duration = $rowd['total'];
+                $halfday = ($duration == 0.5) ? 1 : 0;
+                //$rowleaveentitlement = $dao->getLeaveentitlementsEmployee($employee_id_ces, $start_use);
+                //$leaveentitlements_id = $rowleaveentitlement['leaveentitlements_id'];
+                //$restold = $rowleaveentitlement['rest'];
+                //$restnew = $restold - $duration;
+                $rowabsentdetail= $dao->getAbsentdetail_byempstartdate($employee_id_ces, $startdate);
+				 if(empty($rowabsentdetail)){
+						$absentdetail_id =0;
+				 }else{
+						$absentdetail_id = $rowabsentdetail[0]['absentdetail_id'];
+				 } 
+
+                $record = array(
+                    "addby" => $user_id,
+                    "project_id" => $project_id,
+                    "configintranet" => $data['configintranet'], //for config to file .ini
+                    "cuti_id_intranet" => $rowh['cuti_id'], //for update to dbintranet
+					"cutitype_id_intranet" => intval($rowjeniscutiintranet['cutitype_id']), //for update to dbintranet
+                    "cutitype_intranet" => $rowjeniscutiintranet['cutitype'], //for update to dbintranet
+                    "hrd_check_intranet" =>"YES", //for update to dbintranet
+                    "hrd_comment_intranet" => trim($rowh['hrd_comment']), //for update to dbintranet
+                    "pt_id" => $pt_id,
+                    "absentdetail_id" => $absentdetail_id,
+                    "employee_employee_id" => $employee_id_ces,
+                    "start_date" => $startdate,
+                    "end_date" => $enddate,
+                    "dates" => $dates,
+                    "leave_quota" => $leave_quota,
+                    "absenttype_absenttype_id" => $absenttype_id,
+                    "note" => $note,
+                    "duration" => $duration,
+                    "is_halfday" => $halfday,
+                    "absenttypegroup_absenttypegroup_id" => $absenttypegroup_id,
+                    "absenttype_code" => $absenttype_code,
+                 //   "leaveentitlements_id" => $leaveentitlements_id,
+                 //   "rest" => $restnew,
+                );
+               $arraydata[] =$record;
+            }
+        }
+        return Box_Tools::instantRead(array("HASIL" => 1,), array($arraydata));
+    }
+    public function updatestatuscutiintranet($config,$cuti_id_intranet,$cutitype_id,$hrd_check,$hrd_comment) {
+        $dao = new Hrd_Models_Intranet_CutiDao();  
+       // $dao->updateStatusCutiIntranet($config, $cuti_id_intranet,$cutitype_id,$hrd_check, $hrd_comment);
+        $dao->updateStatusCutiIntranet($config, $cuti_id_intranet,$hrd_check);
+    }     
+    public function updatestatusijinintranet($config,$id,$hrd_comment) {       
+        $dao = new Hrd_Models_Intranet_IjinDao();       
+        $dao->updateStatusIntranet($config, $id, "YES", $hrd_comment);
+    }   
+    public function updatestatusdinasintranet($config,$id,$hrd_comment) {        
+        $dao = new Hrd_Models_Intranet_DinasDao();       
+        $dao->updateStatusIntranet($config, $id, "YES", $hrd_comment);
+    }
+     public function updatecutiintranetinchangeRead() {
+        $this->getResponse()->setHeader('Content-Type', 'application/json');
+        $dao = new Hrd_Models_Intranet_CutiDao();        
+        $data = $this->getAppData();
+        $param = Zend_Json::decode($data['paramdata']); 
+        $configintranet=$data['configintranet'];
+       $dao->Sendemail($configintranet,$param);
+        return Box_Tools::instantRead(array("HASIL" => 1,), array());
+    }
+    public function updateijinintranetinchangeRead() {
+        $this->getResponse()->setHeader('Content-Type', 'application/json');
+        $dao = new Hrd_Models_Intranet_IjinDao();        
+        $data = $this->getAppData();
+        $param = Zend_Json::decode($data['paramdata']); 
+        $configintranet=$data['configintranet'];
+        $dao->Sendemail($configintranet,$param);
+        return Box_Tools::instantRead(array("HASIL" => 1,), array());
+    }
+    public function updatedinasintranetinchangeRead() {
+        $this->getResponse()->setHeader('Content-Type', 'application/json');
+        $dao = new Hrd_Models_Intranet_DinasDao();        
+        $data = $this->getAppData();
+        $param = Zend_Json::decode($data['paramdata']); 
+        $configintranet=$data['configintranet'];
+        $dao->Sendemail($configintranet,$param);
+        return Box_Tools::instantRead(array("HASIL" => 1,), array());
+    }	
+    /* end added by ahmad riadi 06-04-2017 */
+
+    /* start added by ahmad riadi 02-06-2017 */
+    public function updatetimebyTLK($rowdatapost, $data) {
+        $absentDetail = new Hrd_Models_Master_General_Date();
+        $dao_tlk = new Hrd_Models_Intranet_DinasDao();
+        $dao_absent = new Hrd_Models_AbsentDao();
+        $absentHeader = new Hrd_Models_Absent();
+        $mp = new Hrd_Models_Absent_MasterProcess($this->getAppSession());
+
+        $ar_absendetail = explode('~', $rowdatapost['absentdetail_id']);
+        if (count($ar_absendetail) > 0) {
+            $index = 0;
+            $ar_day = explode('~', $rowdatapost['day']);
+            $ar_in_7_14 = explode('~', $rowdatapost['in_7_14']);
+            $ar_out_7_14 = explode('~', $rowdatapost['out_7_14']);
+            $ar_in_15_21 = explode('~', $rowdatapost['in_15_21']);
+            $ar_out_15_21 = explode('~', $rowdatapost['out_15_21']);
+            $ar_in_22_6 = explode('~', $rowdatapost['in_22_6']);
+            $ar_out_22_6 = explode('~', $rowdatapost['out_22_6']);
+            $ar_shifttype_id = explode('~', $rowdatapost['shifttype_shifttype_id']);
+            $ar_parametertlk_id = explode('~', $rowdatapost['parametertlk_parametertlk_id']);
+            $ar_description = explode('~', $rowdatapost['description']);
+            $ar_date = explode('~', $rowdatapost['date']);
+            $ar_tlk_other = explode('~', $rowdatapost['tlk_other']);
+            $ar_tlk_project_type = explode('~', $rowdatapost['tlk_project_type']);
+            $ar_time_in = explode('~', $rowdatapost['time_in']);
+            $ar_time_out = explode('~', $rowdatapost['time_out']);
+
+            foreach ($ar_absendetail as $rowabdetail) {
+                $absentdetail_id = $rowabdetail;
+                $day = $ar_day[$index];
+                $in_7_14 = $ar_in_7_14[$index];
+                $out_7_14 = $ar_out_7_14[$index];
+                $in_15_21 = $ar_in_15_21[$index];
+                $out_15_21 = $ar_out_15_21[$index];
+                $in_22_6 = $ar_in_22_6[$index];
+                $out_22_6 = $ar_out_22_6[$index];
+                $shifttype_id = $ar_shifttype_id[$index];
+                $parametertlk_id = $ar_parametertlk_id[$index];
+                $description = $ar_description[$index];
+                $date = $ar_date[$index];
+                $year = date('Y', strtotime($ar_date[$index]));
+                $month = date('m', strtotime($ar_date[$index]));
+                $tlk_other = $ar_tlk_other[$index];
+                $tlk_project_type = $ar_tlk_project_type[$index];
+                $time_in = $ar_time_in[$index];
+                $time_out = $ar_time_out[$index];
+                
+
+                $rowabsentdetail = $dao_tlk->getAbsentdetail_byid($absentdetail_id);
+                $rowshift = $dao_tlk->getshift_byid($shifttype_id);
+
+                $arraydata = array(
+                    "absentdetail_id" => $absentdetail_id,
+                    "shifttype_shifttype_id" => $shifttype_id,
+                    "description" => $description,
+                    "employee_id" => $data['employee_id_ces'],
+                    "month" => $month,
+                    "year" => $year,
+                    "day" => $day,
+                    "time_in" => $time_in,
+                    "time_out" => $time_out,
+                );
+
+		/* bugs karena !== '' tidak bisa memfilter data kosong, harus dengan !empty() */
+		/*
+                            
+                $flag_time_in = 0;
+                $flag_time_out = 0;   
+                if ($rowshift['in_time'] >= '07:00:00' && $rowshift['in_time'] <= '15:00:00') {
+                    if ($rowabsentdetail['in_7_14'] !== '' && $rowabsentdetail['in_7_14'] !== '00:00:00') {
+                        $arraydata['time_in'] = $rowabsentdetail['in_7_14'];
+                        $flag_time_in = 1;
+                    }            
+                    
+                }
+                
+                if ($rowshift['out_time'] >= '07:00:00' && $rowshift['out_time'] <= '15:00:00') {
+                    if ($rowabsentdetail['out_7_14'] !== '' && $rowabsentdetail['out_7_14'] !== '00:00:00') {
+                        $arraydata['time_out'] = $rowabsentdetail['out_7_14'];
+                        $flag_time_out = 1;
+                    }                   
+                }
+                
+                               
+                if ($rowshift['in_time'] >= '15:00:00' && $rowshift['in_time'] <= '21:00:00') {
+                    if ($rowabsentdetail['in_15_21'] !== '' && $rowabsentdetail['in_15_21'] !== '00:00:00') {
+                        $arraydata['time_in'] = $rowabsentdetail['in_15_21'];
+                        $flag_time_in = 1;
+                    }
+                }
+                
+                if ($rowshift['out_time'] >= '15:00:00' && $rowshift['out_time'] <= '21:00:00') {
+                    if ($rowabsentdetail['out_15_21'] !== '' && $rowabsentdetail['out_15_21'] !== '00:00:00') {
+                        $arraydata['time_out'] = $rowabsentdetail['out_15_21'];
+                        $flag_time_out = 1;
+                    }
+                }
+               
+                
+                if ($rowshift['in_time'] >= '22:00:00' && $rowshift['in_time'] <= '06:00:00') {
+                    if ($rowabsentdetail['in_22_6'] !== '' && $rowabsentdetail['in_22_6'] !== '00:00:00') {
+                        $arraydata['time_in'] = $rowabsentdetail['in_22_6'];
+                        $flag_time_in = 1;
+                    }
+                }
+                
+                if ($rowshift['out_time'] >= '22:00:00' && $rowshift['out_time'] <= '06:00:00') {
+                    if ($rowabsentdetail['out_22_6'] !== '' && $rowabsentdetail['out_22_6'] !== '00:00:00') {
+                        $arraydata['time_out'] = $rowabsentdetail['out_22_6'];
+                        $flag_time_out = 1;
+                    }                    
+                }
+                */
+
+		 /* update by ahmad riadi 14-06-2017 */
+
+                $flag_time_in = 0;
+                $flag_time_out = 0; 
+                if ($rowshift['in_time'] >= '07:00:00' && $rowshift['in_time'] <= '15:00:00') {
+                    if (!empty($rowabsentdetail['in_7_14']) && $rowabsentdetail['in_7_14'] !== '00:00:00') {
+                        $arraydata['time_in'] = $rowabsentdetail['in_7_14'];
+                        $flag_time_in = 1;                       
+                    } 
+                    
+                }               
+                
+                if ($rowshift['out_time'] >= '07:00:00' && $rowshift['out_time'] <= '15:00:00') {
+                    if (!empty($rowabsentdetail['out_7_14']) && $rowabsentdetail['out_7_14'] !== '00:00:00') {
+                        $arraydata['time_out'] = $rowabsentdetail['out_7_14'];
+                        $flag_time_out = 1;
+                    }                   
+                }
+                               
+                if ($rowshift['in_time'] >= '15:00:00' && $rowshift['in_time'] <= '21:00:00') {
+                    if (!empty($rowabsentdetail['in_15_21']) && $rowabsentdetail['in_15_21'] !== '00:00:00') {
+                        $arraydata['time_in'] = $rowabsentdetail['in_15_21'];
+                        $flag_time_in = 1;
+                    }
+                }
+                
+                if ($rowshift['out_time'] >= '15:00:00' && $rowshift['out_time'] <= '21:00:00') {
+                    if (!empty($rowabsentdetail['out_15_21']) && $rowabsentdetail['out_15_21'] !== '00:00:00') {
+                        $arraydata['time_out'] = $rowabsentdetail['out_15_21'];
+                        $flag_time_out = 1;
+                    }
+                }
+                
+                if ($rowshift['in_time'] >= '22:00:00' && $rowshift['in_time'] <= '06:00:00') {
+                    if (!empty($rowabsentdetail['in_22_6']) && $rowabsentdetail['in_22_6'] !== '00:00:00') {
+                        $arraydata['time_in'] = $rowabsentdetail['in_22_6'];
+                        $flag_time_in = 1;
+                    }
+                }
+                
+                if ($rowshift['out_time'] >= '22:00:00' && $rowshift['out_time'] <= '06:00:00') {
+                    if (!empty($rowabsentdetail['out_22_6']) && $rowabsentdetail['out_22_6'] !== '00:00:00') {
+                        $arraydata['time_out'] = $rowabsentdetail['out_22_6'];
+                        $flag_time_out = 1;
+                    }                    
+                }
+               
+                                
+                if ($arraydata['time_in']== $rowshift['in_time'] && $arraydata['time_out'] == $rowshift['out_time']) {
+                    /* apabila jam in dan out sama dengan jam di shift karyawan
+                     * maka tidak usah cek kondisi untuk tlk,
+                     * input sesuai jam karyawan
+                     */
+                    $flag_time_in = 0;
+                    $flag_time_out = 0;
+                } 
+             
+               /* kebutuhan untuk simulasi data
+                    $flag_time_in = 0; //di rubah sesuai kebutuhan
+                    $flag_time_out = 1; //di rubah sesuai kebutuhan
+                    $arraydata['time_in'] = '08:50:00'; //di rubah sesuai kebutuhan
+                    $arraydata['time_out'] = '13:00:00'; //di rubah sesuai kebutuhan
+                 */ 
+                
+                                                
+                if ($flag_time_in > 0 || $flag_time_out > 0) {                    
+                    $datetime_shift_in = date('Y-m-d H:i:s', strtotime($date.' '.$rowshift['in_time']));
+                    $datetime_shift_out = date('Y-m-d H:i:s', strtotime($date.' '.$rowshift['out_time']));
+                    $date_time_in = date('Y-m-d H:i:s', strtotime($date.' '.$arraydata['time_in']));
+                    $date_time_out = date('Y-m-d H:i:s', strtotime($date.' '.$arraydata['time_out']));
+                         
+                                      
+                    if ($flag_time_in == 1 && $flag_time_out == 0) {
+                        $start_filter_time = date('Y-m-d H:i:s', strtotime("-4 hours", strtotime($datetime_shift_in)));
+                        $end_filter_time = date('Y-m-d H:i:s', strtotime("+2 hours", strtotime($datetime_shift_in)));
+                        if ($date_time_in >= $start_filter_time && $date_time_in <= $end_filter_time) {
+                            /*
+                             * di dalam kondisi ini apabila time in masuk dalam filter maka
+                             * time in tidak di replace dengan default shift karyawan
+                             */
+                            $arraydata['time_in'] = date('H:i:s', strtotime($date_time_in));
+                        } else {
+                            /*
+                             * di dalam kondisi ini apabila time in tidak masuk dalam filter maka
+                             * time in  di replace dengan default shift karyawan
+                             */
+                            $arraydata['time_in'] = date('H:i:s', strtotime($datetime_shift_in));
+                        }
+                    } 
+                    
+                    if ($flag_time_in == 0 && $flag_time_out == 1) {
+                        $start_filter_time = date('Y-m-d H:i:s', strtotime("-2 hours", strtotime($datetime_shift_out)));
+                        $end_filter_time = date('Y-m-d H:i:s', strtotime("+4 hours", strtotime($datetime_shift_out)));
+                        
+                                                
+                        if ($date_time_out >= $start_filter_time && $date_time_out <= $end_filter_time) {
+                            /*
+                             * di dalam kondisi ini apabila time out masuk dalam filter maka
+                             * time out tidak di replace dengan default shift karyawan
+                             */
+                            $arraydata['time_out'] = date('H:i:s', strtotime($date_time_out));
+                        } else {
+                            /*
+                             * di dalam kondisi ini apabila time out tidak masuk dalam filter maka
+                             * time out  di replace dengan default shift karyawan
+                             */
+                            $arraydata['time_out'] = date('H:i:s', strtotime($datetime_shift_out));
+                        }
+                        
+                    }
+                }
+                
+                $user_id = $this->getAppSession()->getUser()->getId();
+                $absentDetail->setArrayTable($arraydata);
+                $absentHeader->setProject($this->getAppSession()->getProject());
+                $absentHeader->setPt($this->getAppSession()->getPt());
+                $absentHeader->setMonth($arraydata["month"]);
+                $absentHeader->setYear($arraydata["year"]);
+                $absentHeader->getEmployee()->setId($arraydata["employee_id"]);
+                $absentDetail->setAddBy($user_id);
+                $mp->process($absentDetail);
+                $dao_tlk->Updatetlkbyintranet($absentDetail, $absentdetail_id, $parametertlk_id, $tlk_other, $tlk_project_type);
+                $index++;
+            }
+        }
+    }
+    /* end added by ahmad riadi 02-06-2017 */
+
+   /* start added by ahmad riadi 06-06-2017 */
+
+   public function getdatalogfingerprintRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'logfingerprint', array(), array());
+        $dao = new Hrd_Models_Absent_LogfingerprintDao();
+        $obj = new Hrd_Models_Absent_Logfingerprint();
+        $postdata = $this->getAppData();
+        $obj->setArrayTable($postdata);
+        $hasil      = $dao->getAll($this->getAppRequest(),$obj);   
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+   /* end added by ahmad riadi 06-06-2017 */	
+			
+
+   
+
+	
+	
+
+}
+
+?>

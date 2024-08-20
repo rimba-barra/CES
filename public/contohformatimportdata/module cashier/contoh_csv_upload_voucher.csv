@@ -1,0 +1,4 @@
+Voucher ID;Department;Coa Account Header;Dataflow (Input I (Voucher in) / O (Voucher Out));Total Amount;Note;Is Customer?;Is Vendor?;Vendor Name;Tanggal Pengajuan;Kwitansi Date (Khusus voucher In);Due Date (Khusus Voucher Out);Receipt No;Voucher Detail ID;Coa Account Detail;Detail Amount;Description;Sub Unit;Cluster;Project ID;PT ID;Nomor SPK;Tgl Bayar
+12229;IT;11.10.100;I;100000;Contoh Data;0;1;VENDOR CONTOH DATA;YYYY-MM-DD;YYYY-MM-DD;;112233;1224;99.10.110;20000;TEST;;;;;;
+12229;IT;11.10.100;I;100000;Contoh Data;0;1;VENDOR CONTOH DATA;YYYY-MM-DD;YYYY-MM-DD;;112233;1225;11.10.113;30000;TEST;;;;;;
+12229;IT;11.10.100;I;100000;Contoh Data;0;1;VENDOR CONTOH DATA;YYYY-MM-DD;YYYY-MM-DD;;112233;1226;11.10.120;50000;TEST;;;;;;

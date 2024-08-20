@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.kelompokabsensi.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.kelompokabsensi.Grid','Hrd.view.lookup.kelompokabsensi.FormSearch'],
+    alias:'widget.lookupkelompokabsensipanel',
+    itemId:'LookupkelompokabsensiPanel',
+    height:500,
+    gridPanelName:'lookupkelompokabsensigrid',
+    formSearchPanelName:'lookupkelompokabsensiformsearch'
+});

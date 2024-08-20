@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.parameterbeasiswa.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.parameterbeasiswa.Grid','Hrd.view.parameterbeasiswa.FormSearch','Hrd.view.parameterbeasiswa.FormData'],
+    alias:'widget.parameterbeasiswapanel',
+    itemId:'ParameterbeasiswaPanel',
+    gridPanelName:'parameterbeasiswagrid',
+    formSearchPanelName:'parameterbeasiswaformsearch',
+    formDataName:'parameterbeasiswaformdata',
+});

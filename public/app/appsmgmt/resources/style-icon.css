@@ -1,0 +1,19 @@
+.icon-appsmgmt-application {
+	background-image: url('images/icons/applications.png');
+}
+
+.icon-appsmgmt-flag-green {
+	background-image: url('images/icons/flag-green.png');
+}
+
+.icon-appsmgmt-users {
+	background-image: url('images/icons/users.png');
+}
+
+.icon-appsmgmt-key {
+	background-image: url('images/icons/key.png');
+}
+
+.icon-appsmgmt-logout {
+	background-image: url('images/icons/logout.png');
+}

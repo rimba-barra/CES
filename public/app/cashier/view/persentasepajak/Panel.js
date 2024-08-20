@@ -1,0 +1,11 @@
+Ext.define('Cashier.view.persentasepajak.Panel',{
+    extend:'Cashier.library.template.view.Panel',
+    requires:[
+        'Cashier.view.persentasepajak.Grid',
+        'Cashier.view.persentasepajak.FormSearch'
+    ],
+    alias:'widget.persentasepajakpanel',
+    itemId:'PersentasepajakPanel',
+    gridPanelName:'persentasepajakgrid',
+    formSearchPanelName:'persentasepajakformsearch',
+});

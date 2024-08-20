@@ -1,0 +1,70 @@
+<style>
+    .loader_box {
+        height: 30px;margin-top: 10px;    
+    }
+    .loader {
+        border: 5px solid #e0e0d1;
+        border-top: 5px solid #a3a375; 
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .loader_text{
+        float: left;
+        margin-left: 11px;
+        margin-top: 4px;
+        color: #6b6b47;
+    }
+
+</style>
+
+<br>
+<div class="container" id="gantiNamaFormPrintoutID">
+    <form action="" id="gantiNamaFormPrintoutformID" class="">
+
+        <fieldset class="form-group row">
+            <legend class="col-form-legend col-sm-6">Select Template:</legend>
+            <div class="col-sm-10">
+                {{{radio_file_list}}}
+                
+              
+            </div>
+        </fieldset>
+
+        <div class="form-group row">
+            <label for="smFormGroupInput" class="col-sm-2 col-form-label col-form-label-sm">Nomor Adendum</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm" name="adendum_no"  placeholder="Nomor Adendum">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="smFormGroupInput" class="col-sm-2 col-form-label col-form-label-sm">Persetujuan</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control form-control-sm" name="persetujuan_nama"  placeholder="">
+            </div>
+            <label for="smFormGroupInput" class="col-sm-2 col-form-label col-form-label-sm">Status</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control form-control-sm" name="persetujuan_relasi" placeholder="">
+            </div>
+        </div>
+
+
+
+        <div id="gantiNamaFormPrintoutmsgID" style="    height: 70px;
+             display: block;
+             border: 1px solid #66b3ff;
+             padding: 10px;">
+            &nbsp;
+        </div>
+
+
+        <button type="button" class="btn btn-primary btn-sm" id="gantiNamaFormPrintoutprintid" style="margin-top: 33px;">Print</button>
+    </form>
+</div>

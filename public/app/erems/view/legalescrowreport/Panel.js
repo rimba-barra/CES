@@ -1,0 +1,19 @@
+Ext.define('Erems.view.legalescrowreport.Panel', {
+    extend              : 'Erems.library.template.view.Panel',
+    requires            : ['Erems.view.legalescrowreport.FormData'],
+    alias               : 'widget.legalescrowreportpanel',
+    itemId              : 'CollagingescrowreportPanel',
+    formSearchPanelName : 'legalescrowreportformsearch',
+    layout              : 'vbox',
+    initComponent       : function() {
+        var me = this;
+        Ext.applyIf(me, {
+            items: [
+                {
+                    xtype : 'legalescrowreportformdata'
+                }
+            ]
+        });
+        me.callParent(arguments);
+    }
+});

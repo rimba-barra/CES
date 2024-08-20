@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.employeetraining.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.employeetraining.Grid','Hrd.view.lookup.employeetraining.FormSearch'],
+    alias:'widget.lookupemployeetrainingpanel',
+    itemId:'LookupemployeetrainingPanel',
+    height:500,
+    gridPanelName:'lookupemployeetraininggrid',
+    formSearchPanelName:'lookupemployeetrainingformsearch'
+});

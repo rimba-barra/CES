@@ -1,0 +1,483 @@
+<script type="text/javascript">/*<![CDATA[*/
+    desktop.menubar.add([
+        {xtype: 'box', autoEl:
+                    {tag: 'img', src: '<?php echo $this->currentmoduleicon; ?>',
+                        title: '<?php echo $this->info['apps_name']; ?>',
+                        style: 'width:16px;height:16px;margin-right:7px;'}
+        }, {
+            xtype: 'tbseparator'}]
+            );
+    desktop.menubar.add(<?php echo $this->menu; ?>);
+    //start tambah tahun jika terdaftar, edited by ahmad riadi 10-10-2017
+    <?php if (count($this->setyearlistapp)) { ?>
+            var yearsList = <?php echo json_encode($this->setyearlistapp); ?>;
+
+            var yearsStore = Ext.create('Ext.data.Store', {
+                fields: [
+                    {name: 'dbapps_year', type: 'int'},
+                    {name: 'dbapps_dbname', type: 'string'}
+                ],
+                data: yearsList
+            });
+
+            var defYear = '<?php echo $this->setyearapp; ?>';
+            desktop.menubar.add([
+                {xtype: 'tbseparator'},
+                {
+                    xtype: 'combo',
+                    itemId: 'yearsCmbx',
+                    fieldLabel: 'Select Year',
+                    queryMode: 'local',
+                    displayField: 'dbapps_year',
+                    valueField: 'dbapps_dbname',
+                    editable: false,
+                    labelWidth: 'auto',
+                    store: yearsStore,
+                    value: '<?php echo $this->setyearapp; ?>',
+                    listeners: {
+                        change: function (combo, newValue, oldValue) {
+                            if (defYear != newValue) {
+                                Ext.MessageBox.confirm('Confirm', 'Change Year?', confirmFunction);
+                                function confirmFunction(btn) {
+                                    if (btn == 'yes') {
+                                        desktop.body.mask('Loading...');
+                                        Ext.Ajax.request({
+                                            url: 'main/index/selectedyearapp',
+                                            method: 'POST',
+                                            params: {
+                                                year: combo.getRawValue(),
+                                                database: newValue
+                                            },
+                                            success: function (conn, response, options, eOpts) {
+                                                defYear = newValue;
+                                                Ext.WindowManager.each(function (cmp) {
+                                                    if (cmp.xtype === 'window') {
+                                                        cmp.close();
+                                                    }
+                                                });
+                                                desktop.body.unmask();
+                                            },
+                                            failure: function (conn, response, options, eOpts) {
+                                                defYear = oldValue;
+                                                desktop.body.unmask();
+                                                combo.setValue(oldValue);
+                                                Ext.Msg.show({
+                                                    title: 'Failure',
+                                                    msg: 'Error while accessing the server database',
+                                                    icon: Ext.Msg.ERROR,
+                                                    buttons: Ext.Msg.OK
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        defYear = oldValue;
+                                        combo.setValue(oldValue);
+                                    }
+                                }
+                            }
+                        },
+                    }
+                }
+            ]);
+    <?php } ?>
+    //end tambah tahun jika terdaftar
+
+    var controllers_loaded = [];
+
+    //09-03-2020 : David Prasetyo
+    //DIRECT LOAD adalah loading controller tanpa harus load semua controller pertama kali
+
+    function is_directload(a){
+        var appname = '<?php echo $this->info['apps_module'] ?>';
+        var groupname = '<?php echo $this->info['group_name'] ?>';
+
+        //SAAT INI HANYA CASHIER DAN TIDAK SAMA DENGAN [ ADMINISTRATOR CASHIER ]
+        var roleexcludes = ['[ ADMINISTRATOR CASHIER ]', '[ VOUCHER DEPARTMENT APPROVAL ]'];
+        if((appname =='erems' && <?php echo $this->optimizeLoader; ?> == 1) || (appname =='cashier' && !roleexcludes.includes(groupname))){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    function loadcontroller(a){
+			console.log('Opening Menu...');
+            
+            var appname = '<?php echo $this->info['apps_module'] ?>';
+            var name = a.controller;
+			
+			if(appname == 'erems'){
+				var dependController = <?php echo $this->dependControllerOptimize;?>            
+				Ext.getBody().mask('Opening Menu...').dom.style.zIndex = '99999';
+				var controllers = [name];
+				var depends = typeof dependController[name] !== 'undefined' ? dependController[name] : [];
+				
+				
+				depends = depends.concat(controllers);
+				// controllers_loaded = controllers_loaded.concat(controllers);
+				controllers_loaded = controllers_loaded.concat(depends);
+
+				controllers = controllers_loaded.filter(function(item, pos, self) {
+				return self.indexOf(item) == pos;
+				})
+
+				//console.log(controllers);
+
+				//Global Variable Setiap Controller harus dibawa juga setiap open new menu
+				var _GLOBAL_VAR = {"erems": []}
+
+				controllers.forEach(function(ctrname){
+					_GLOBAL_VAR["erems"][ctrname] = null;
+				});
+								
+				if (_myAppGlobal !== null){
+					controllers.forEach(function(ctrname){
+						_GLOBAL_VAR["erems"][ctrname] = _myAppGlobal.getController(ctrname);
+					});
+				}
+
+
+				Ext.application({
+				name: '<?php echo ucfirst($this->info['apps_module']); ?>',
+						appFolder: 'app/<?php echo $this->info['apps_module']; ?>',
+						controllers:controllers,
+						init: function () {
+							_myAppGlobal = this;
+						},
+						launch: function() {
+
+						//object2 yg tdk perlu di load ulang
+						//var excludes = ["application", "hasListeners", "events", "myConfig", "tools", "references","refCache"];
+						var excludes = [];
+						//State variable sebelumnya harus di assign ke load yg baru
+						setTimeout(function(){
+
+						if (_myAppGlobal !== null){
+							controllers.forEach(function(ctrname){
+								var _GLOBAL_VAR_V = _GLOBAL_VAR["erems"][ctrname];
+								if (_GLOBAL_VAR_V !== null){
+							
+									var thekeys = Object.keys(_GLOBAL_VAR_V);
+									thekeys.forEach(function(gbvar){
+										if (!excludes.includes(gbvar)){
+											if (typeof _GLOBAL_VAR_V[gbvar] !== "function") {
+												_myAppGlobal.getController(ctrname)[gbvar] = _GLOBAL_VAR_V[gbvar];
+											}
+										}
+									});
+								}
+							});
+						}
+						//desktop.body.unmask();
+						Ext.getBody().unmask();
+						}, 1000);
+						if (typeof a == 'undefined' || typeof a.widget == 'undefined' || (a.widget).trim() == '') return false;
+						Ext.getBody().unmask();
+						return openWindow({
+						id: a.id,
+								title: a.title,
+								icon: !a.icon && !a.iconCls ? 'app/main/images/icons/window.png': a.icon,
+								iconCls: a.iconCls,
+								width: '75%',
+								height: '70%',
+								minWidth: 600,
+								minHeight: 400,
+								sender: a.sender,
+								controller: a.controller,
+								content: Ext.create(a.widget),
+								listeners: a.listeners
+						});
+						}
+				});
+				console.log(_GLOBAL_VAR);
+			}
+			
+            if(appname !=='cashier'){
+                return 0;
+            }
+            //desktop.body.mask('Opening Menu...');
+            Ext.getBody().mask('Opening Menu...').dom.style.zIndex = '99999';
+
+            var controllers = [name];
+            var depends = [];
+            if(name == 'Journal' || name == 'Journaleliminasi'){
+                 depends = ['Balancesheetkp'];
+            }else if(name=='Banktransactionreport' || name=='Pengeluaranharianreport' || name =='Coauseraccess'){
+                depends = ["Coauseraccess","Setupcashflow","Subdesccode"];
+            }else if(name=='Vdtransaction' || name=='Vouchertransactionreport'){
+                depends = ["Coauseraccess","Setupcashflow"];
+            }else if(name=='Voucher'){
+                depends = ["Subaccountcode"];
+            }else if(name=='VDRequest'){
+                depends = ["Vendor"];
+            }else if(name=='Agingcashadvancereport'){
+                depends = ["Coauseraccess","Setupcashflow","Subdesccode"];
+            }else if(name=='Mastercheque'){
+                depends = ["VDRequest", "Vendor"];
+            }else{
+                 depends = [];
+            }
+
+            depends = depends.concat(controllers);
+            controllers_loaded = controllers_loaded.concat(depends);
+
+            controllers = controllers_loaded.filter(function(item, pos, self) {
+                return self.indexOf(item) == pos;
+            })
+
+            //console.log(controllers);
+
+            //Global Variable Setiap Controller harus dibawa juga setiap open new menu
+            var _GLOBAL_VAR = {
+                "cashier": []
+            }
+
+            controllers.forEach(function(ctrname){
+                _GLOBAL_VAR["cashier"][ctrname] = null;
+            });
+
+            //console.log(_GLOBAL_VAR);
+
+            if(_myAppGlobal!==null){
+                controllers.forEach(function(ctrname){
+                    _GLOBAL_VAR["cashier"][ctrname] = _myAppGlobal.getController(ctrname);
+                });
+            }
+
+            Ext.application({name: '<?php echo ucfirst($this->info['apps_module']); ?>', appFolder: 'app/<?php echo $this->info['apps_module']; ?>', 
+                controllers:controllers, init: function () {
+                    _myAppGlobal = this;
+            },
+            launch: function() {
+                    
+                    //object2 yg tdk perlu di load ulang
+                    //var excludes = ["application", "hasListeners", "events", "myConfig", "tools", "references","refCache"];
+                    var excludes = [];
+
+                    //State variable sebelumnya harus di assign ke load yg baru
+                    setTimeout(function(){ 
+                        
+                        if(_myAppGlobal!==null){
+                            controllers.forEach(function(ctrname){
+                                var _GLOBAL_VAR_V = _GLOBAL_VAR["cashier"][ctrname];
+                                if(_GLOBAL_VAR_V !== null){
+                                    var thekeys = Object.keys(_GLOBAL_VAR_V);
+                                    thekeys.forEach(function(gbvar){
+                                        if(!excludes.includes(gbvar)){
+                                            if (typeof _GLOBAL_VAR_V[gbvar] !== "function") {
+                                                 _myAppGlobal.getController(ctrname)[gbvar] = _GLOBAL_VAR_V[gbvar];
+                                            }                       
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        //desktop.body.unmask();
+                        Ext.getBody().unmask();
+
+                    }, 1000);
+
+                   if (typeof a == 'undefined' || typeof a.widget == 'undefined' || (a.widget).trim() == '') return false;
+                    return openWindow({
+                        id: a.id,
+                        title: a.title,
+                        icon: !a.icon && !a.iconCls ? 'app/main/images/icons/window.png': a.icon,
+                        iconCls: a.iconCls,
+                        width: '75%',
+                        height: '70%',
+                        minWidth: 600,
+                        minHeight: 400,
+                        sender: a.sender,
+                        controller: a.controller,
+                        content: Ext.create(a.widget),
+                        listeners: a.listeners
+                    })
+            }});
+
+
+    }
+
+
+    apps.gid = '<?php echo $this->currentgroup; ?>';
+    apps.projectpt = '<?php echo $this->currentprojectpt; ?>';
+    apps.project = '<?php echo $this->currentproject; ?>';
+    apps.projectname = '<?php echo $this->currentprojectname; ?>';
+    apps.projectiscpms = '<?php echo $this->projectiscpms; ?>';
+    apps.pt = '<?php echo $this->currentpt ?> ';
+    apps.ptname = '<?php echo $this->currentptname; ?>';
+    apps.appId = '<?php echo $this->info['apps_module']; ?>';
+    apps.subholdingId = '<?php echo $this->currentsubholdingid ?> ';
+    apps.subholdingSub = '<?php echo $this->currentsubholdingsub ?> ';
+
+    var _Apps, acts =<?php echo $this->actions; ?>, objs =<?php echo $this->objects; ?>;
+    var _myAppGlobal = null;
+    Ext.Loader.setConfig({disableCaching: true, enabled: true, paths: {<?php echo $this->appsdepend; ?>}});
+    
+    Ext.require(['Main.library.*']);
+    Ext.application({name: '<?php echo ucfirst($this->info['apps_module']); ?>', appFolder: 'app/<?php echo $this->info['apps_module']; ?>',
+        //dont load all   
+        //depends
+
+        //SAAT INI HANYA CASHIER DAN TIDAK SAMA DENGAN [ ADMINISTRATOR CASHIER ]
+        <?php 
+            $excludes = array('[ ADMINISTRATOR CASHIER ]', '[ VOUCHER DEPARTMENT APPROVAL ]');
+            if($this->info['apps_module']=='cashier' && !in_array($this->info['group_name'], $excludes)): ?>
+        
+        controllers: ['Init'],
+
+        //controllers: ["Vendor"],
+
+        init: function () {
+
+        <?php else : ?>
+
+        controllers:<?php echo $this->controllers; ?>, init: function () {
+
+       <?php endif ; ?>
+
+
+            _Apps = this;
+			<?php if($this->info['apps_module'] == 'erems' && $this->optimizeLoader == 0){ ?>
+				_myAppGlobal = this;
+			<?php } ?>
+            desktop.menubar.setVisible(true);
+            Ext.fly('apps-text-running').update('<?php echo $this->info['text_running']; ?>');
+            Ext.fly('apps-title').update('<?php echo $this->info['apps_name']; ?>');
+            Ext.fly('apps-ver').update('<?php echo $this->info['apps_version']; ?>');
+            Ext.fly('project-pt').update('<?php echo $this->info['project_pt_name']; ?>');
+            Ext.fly('group').update('<?php echo $this->info['group_name']; ?>');
+            desktop.body.unmask();
+            /*start added by ahmad riadi for popup module 04-10-2017  */
+            /*modified by david*/
+            //if (apps.appId == 'hrd') {
+            if (apps.appId == 'hrd' || apps.appId == 'erems' || apps.appId == 'cashier') {
+                //alert('a');
+                $.ajax({
+                    type: "POST",
+                    url: 'main/popup/read',
+                    data: {},
+                    dataType: 'json',
+                    success: function (response)
+                    {
+                        var result, total, data, user_id;
+                        total = response.total;
+                        data = response.data;
+                        user_id = response.user_id;
+                        if (total > 0) {
+                            
+                            /*modified by wulan 2020 09 29*/
+                            /*khusus HCMS popup selalu muncul, karena data yang ditampilkan berbeda2*/
+                            if (apps.appId == 'hrd') {                                
+                                $.each(data, function (index, value) {
+                                    openPage({
+                                        itemId: value.widget,
+                                        id: value.widget,
+                                        title: value.popupname,
+                                        controller: value.controller,
+                                        widget: value.widget,
+                                        content: Ext.create(value.widget),
+                                    });
+                                    localStorage.setItem("whatsnewPop"+apps.appId, 1);
+                                });                                
+                                
+                            } else if(apps.appId == 'erems'){
+								 //////// CEK GENCO PROLIB & Maskre Field
+								$.ajax({
+									type     : "POST",
+									url      : 'erems/bypass/general',
+									data     : { mode_read : 'cek_genco_prolib' },
+									dataType : 'json',
+									success  : function (response){
+										apps.maskre_field = response.xtype_maskre;
+
+										if(response.msg != ''){
+											var msg = response.msg + '\nSilakan Hubungi IT Kantor Pusat.';
+											alert(msg);
+										}
+
+										$.each(data, function (index, value) {
+											if(localStorage.getItem(value.controller+apps.appId) === null){
+												openPage({
+													itemId: value.widget,
+													id: value.widget,
+													title: value.popupname,
+													controller: value.controller,
+													widget: value.widget,
+													content: Ext.create(value.widget),
+												});
+												localStorage.setItem(value.controller+apps.appId, 1);
+											}
+										});
+
+                                        if(getCookie("module_menu")){
+                                            var module_menu = Ext.JSON.decode(atob(decodeURIComponent(getCookie("module_menu"))));
+                                            if(module_menu.controller == "Approvalpricelistopen"){
+                                                var b   = Ext.ComponentQuery.query("#mnuApproval")[0];
+                                                var bb  = Ext.ComponentQuery.query("#mnuApprovalpricelist")[0];
+                                                var bbb = Ext.ComponentQuery.query("#mnuApprovalpricelistopen")[0];
+                                                 
+                                                setTimeout(function(){
+                                                    b.showMenu();
+                                                    bb.activate();
+                                                    bb.expandMenu();
+                                                    setTimeout(function(){
+                                                        bbb.activate();
+                                                        setTimeout(function(){
+                                                            $('#'+bbb.id).trigger("click");
+                                                            bb.deactivate();
+                                                            bbb.deactivate();
+                                                        }, 500); 
+                                                    }, 300); 
+                                                }, 100); 
+                                            }
+                                        }
+									}
+								});
+							} else {
+                                $.each(data, function (index, value) {
+                                    if(localStorage.getItem("whatsnewPop"+apps.appId) === null){
+                                        openPage({
+                                            itemId: value.widget,
+                                            id: value.widget,
+                                            title: value.popupname,
+                                            controller: value.controller,
+                                            widget: value.widget,
+                                            content: Ext.create(value.widget),
+                                        });
+                                        localStorage.setItem("whatsnewPop"+apps.appId, 1);
+                                    }
+                                });
+                            }
+                        }
+						
+						//addby RH 20211123
+						if(apps.appId == 'erems'){
+							if(response.alert.active == 1 && localStorage.getItem("AlertInformation"+apps.appId) === null){
+								var messagebox = Ext.Msg.alert("Alert", response.alert.pesan).toFront();
+								// var task = new Ext.util.DelayedTask(function(){
+								// 	messagebox.zIndexManager.bringToFront(messagebox);
+								// });
+								// task.delay(700);
+								localStorage.setItem("AlertInformation"+apps.appId, 1);
+								for (var i = 0, max = 30; i < max; i++) {
+									Ext.Function.defer(function () {
+										messagebox.zIndexManager.bringToFront(messagebox);
+									},1000);
+								}
+							}
+						}
+                    }
+                });
+
+            }
+            /*end added by ahmad riadi for popup module 04-10-2017  */
+
+            /* added by tommy 20180214 */
+                <?php echo $this->appSpecialFunc; ?>
+             /*end added by tommy 20180214 */
+        }});/*]]>*/
+
+
+        var is_accountingloaded = 0;
+
+</script>

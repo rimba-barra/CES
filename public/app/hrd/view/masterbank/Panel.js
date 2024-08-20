@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.masterbank.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.masterbank.Grid','Hrd.view.masterbank.FormSearch','Hrd.view.masterbank.FormData'],
+    alias:'widget.masterbankpanel',
+    itemId:'MasterbankPanel',
+    gridPanelName:'masterbankgrid',
+    formSearchPanelName:'masterbankformsearch',
+    formDataName:'masterbankformdata',
+});

@@ -1,0 +1,176 @@
+<div class="modal" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index: 99999;" abc-action="create">
+    <div class="modal-dialog modal-lg modal-ku" style="width: 950px;margin: auto;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title"><span class="icon icon-form-add">&nbsp;</span><span class="teks">Pemutihan</span></h4>
+                <button type="button" class="close btn-sm x-tool x-tool-close" data-dismiss="modal">&nbsp;</button>
+
+
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="mellong">
+                    <div class="container my-container" style="padding: 7px 15px;width:930px;">
+
+                        <form id="formMasterKomisiID">
+
+                            <input type="hidden" name="klaimkomisi_id" >
+                            <input type="hidden" name="deleted_rows" >
+
+
+
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Info Purchaseletter
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="nomor_invoice_agent_ID" class="col-2 col-form-label">No. Invoice Agent </label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control" id="nomor_invoice_agent_ID" name="nomor_invoice_agent" placeholder="Nomor Invoice Agent">
+                                                </div>
+                                                <label class="col-2 col-form-label">&nbsp;</label>
+                                                <label for="tgl_pengajuan_ID" class="col-2 col-form-label">Tanggal Pengajuan</label>
+                                                <div class="col-3">
+                                                    <input type="date" class="form-control abcdate" id="tgl_pengajuan_ID" name="tgl_pengajuan" placeholder="">
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label class="col-2 col-form-label">Tipe Agent</label>
+                                                <div class="col-3">
+                                                    <label class="radio-inline" style="margin-right: 20px;"><input type="radio" name="tipe_agent" value="1" style="margin-right: 10px;">Salesman</label>
+                                                    <label class="radio-inline" style="margin-right: 20px;"><input type="radio" name="tipe_agent" value="2" style="margin-right: 10px;" checked="checked">Citraclub</label>
+                                                </div>
+                                                <label  class="col-7 col-form-label">&nbsp;</label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="agent_id_ID" class="col-2 col-form-label">Nama Agent</label>
+                                                <div class="col-3">
+                                                    <select class="form-control" id="agent_id_ID" name="agent_id" style="height: 25px;"></select>
+
+                                                </div>
+                                                <label  class="col-2 col-form-label">&nbsp;</label>
+                                                <label for="nomor_pengajuan_ID" class="col-2 col-form-label">Nomor Pengajuan <span style="color:red;">*</span></label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control" id="nomor_pengajuan_ID" name="nomor_pengajuan" placeholder="" >
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="npwp_ID" class="col-2 col-form-label">NPWP</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control" id="npwp_ID" name="npwp" placeholder="NPWP">
+                                                </div>
+                                                <label for="purchaseDateId" class="col-7 col-form-label">&nbsp;</label>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row" style="height:210px;">
+                                        <div id="kotak_table"></div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <textarea class="form-control" rows="7" name="note"></textarea>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="row">
+                                                <label for="nilai_komisi_ID" class="col-3 col-form-label">Nilai Komisi</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="nilai_komisi_ID" name="nilai_komisi" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="pph_ID" class="col-3 col-form-label">PPH Perorangan</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="pph_ID" name="pph" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="pphpt_ID" class="col-3 col-form-label">PPH PT</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="pphpt_ID" name="pphpt" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="ppn_ID" class="col-3 col-form-label">PPN</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="ppn_ID" name="ppn" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="total_bayar_ID" class="col-3 col-form-label">Total Bayar</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="total_bayar_ID" name="total_bayar" placeholder="" readonly>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+
+
+
+
+                                </div> <!-- end card cblock -->
+                            </div>
+
+
+
+
+
+
+
+                        </form>
+                    </div> 
+                </div>
+            </div> <!-- // end modal-body -->
+
+        </div>
+        <div class="modal-footer">
+            <div class="inside-footer">
+                <button type="button" class="btn btn-sm" abc-action="save"><span class="icon icon-save">&nbsp;</span>Save</button>
+                <button type="button" class="btn btn-sm" data-dismiss="modal"><span class="icon icon-cancel">&nbsp;</span>Close</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>

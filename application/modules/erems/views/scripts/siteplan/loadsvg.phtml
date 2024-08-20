@@ -1,0 +1,156 @@
+<div class="mellong container-fluid">
+	<table>
+		<tr>
+			<!--<div class="col col-md-12 text-capitalize" style="margin-bottom: 20px; height: 50px; text-align: center; border: #000 solid thick">-->
+			<?php
+			$i = 1;
+			foreach ($this->data['legend']['data'] AS $val) {
+				echo '<td style="vertical-align: middle; height: 50px; ">';
+				echo '<object prefixcode_svg="' . $val['prefixcode_svg'] . '" id-db="' . $val['siteplanlegend_id'] . '" style-color="' . $val['color'] . '" idobject="' . $val['legendid_svg'] . '" class="siteplansvglegend" id="siteplansvglegend-' . $val['siteplanlegend_id'] . '" data="app/erems/uploads/siteplan/' . $val['file_svg'] . '" type="image/svg+xml" style="width:50px; height:50px"></object>';
+				echo '</td>';
+				echo '<td width="150"><b>' . $val['description'] . '</b></td>';
+				if ($i == 5) {
+					echo '</tr><tr>';
+				}
+				$i++;
+			}
+			?>
+		</tr>
+		<!--</div>-->
+	</table>
+	<div class="col col-md-12 text-center" style="margin-bottom: 20px;overflow: hidden;height: 85%;">
+		<object id="svglegend" data="app/erems/uploads/mastercluster/<?php echo $this->data['siteplan_svg']; ?>" type="image/svg+xml" style="width:100%; height:100%"></object>
+	</div>
+</div>
+<script>
+	var unitArr = <?= $this->data['listunit'] ?>;
+	var rule = <?= $this->data['rulelegend'] ?>;
+//	var StoreUnit = Ext.create('Ext.data.Store', {
+//		fields: ['unit_number', 'progress'],
+//		data: unitArr
+//	});
+//	console.log(unitArr);
+
+	var a = document.getElementById("svglegend");
+
+
+	// It's important to add an load event listener to the object,
+	// as it will load the svg doc asynchronously
+	a.addEventListener("load", function (e) {
+		e.preventDefault();
+		// Expose to window namespase for testing purposes
+		svgPanZoom('#svglegend', {
+			zoomEnabled: true,
+			controlIconsEnabled: true,
+		});
+
+		// get the inner DOM of alpha.svg
+		var svgDoc = a.contentDocument;
+
+
+
+
+
+
+		Ext.Array.each(unitArr, function (valUnit) {
+			Ext.Array.each(document.getElementsByClassName("siteplansvglegend"), function (legendsvg) {
+				var setStyle = true;
+				Ext.Array.each(rule[legendsvg.getAttribute("id-db")], function (arrRule) {
+//				Ext.Array.each(arrRule, function (valRule) {
+					var compare = parseFloat(valUnit[arrRule.index]);
+					var valRule = parseFloat(arrRule.value);
+//					if (arrRule.index == "ProgresKonstruksi") {
+//						compare = valUnit.progress
+//					} else if (arrRule.index == "is_akad") {
+//						compare = valUnit.is_alreadyakad;
+//					}
+
+					if (arrRule.operator == "=" || arrRule.operator == "") {
+						if (compare != valRule && setStyle) {
+//							console.log(compare + "=" + arrRule.value);
+							setStyle = false;
+						}
+					} else if (arrRule.operator == "!=") {
+						if (compare == valRule && setStyle) {
+							setStyle = false;
+						}
+					} else if (arrRule.operator == "<=") {
+						if (compare > valRule && setStyle) {
+							setStyle = false;
+						}
+					} else if (arrRule.operator == ">=") {
+						if (compare < valRule && setStyle) {
+							setStyle = false;
+						}
+					}
+				});
+
+				if (setStyle) {
+//					console.log(legendsvg.getAttribute("color"));
+					var delta = svgDoc.getElementById(valUnit.unit_number + "-" + legendsvg.getAttribute("prefixcode_svg"));
+					//					var delta = svgDoc.getElementById("K1519-F");
+					if (delta != null) {
+						delta.setAttribute("style",
+								"fill:" + legendsvg.getAttribute("style-color")
+								+ ";stroke-width: 1;stroke:black"
+								);
+					}
+				}
+			});
+			//			return false;
+		});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// get the inner element by id
+//						var delta = svgDoc.getElementById("C07-01-F");
+//						delta.setAttribute("style",
+//								"fill:black"
+//								+ ";stroke-width: 1;stroke:black"
+//								);
+//						delta.setAttributeNS(null, "style",
+//								"fill:" + record.get('color')
+////							+";stroke-width: 1;stroke:black"
+//								);
+		//						console.log(delta);
+		// add behaviour
+//						delta.addEventListener("mousedown", function () {
+		//							alert('hello world!')
+		//						}, false);
+	}, false);
+
+
+	Ext.Array.each(document.getElementsByClassName("siteplansvglegend"), function (field) {
+		field.addEventListener("load", function () {
+			var color = field.getAttribute("style-color")
+			var legendidsvg = field.getAttribute("idobject")
+
+			// get the inner DOM of svg
+			var svgDoc = field.contentDocument;
+			// get the inner element by id
+			var delta = svgDoc.getElementById(legendidsvg);
+			delta.setAttribute("style",
+					"fill:" + color
+					+ ";stroke-width: 1;stroke:black"
+					);
+			// add behaviour
+//						delta.addEventListener("mousedown", function () {
+			//							alert('hello world!')
+			//						}, false);
+		}, false);
+	});
+</script>

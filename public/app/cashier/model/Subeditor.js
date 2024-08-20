@@ -1,0 +1,27 @@
+Ext.define('Cashier.model.Subeditor', {
+    extend: 'Ext.data.Model',
+    alias: 'model.subeditormodel',
+    idProperty: 'journalsubdetail_id',
+    fields: [
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'journalsubdetail_id', type: 'int'},
+        {name: 'jid', type: 'string'},
+        {name: 'voucher_date', type: 'date'},
+        {name: 'voucher_no', type: 'string'},
+        {name: 'coa', type: 'string'},
+        {name: 'type', type: 'string'},
+        {name: 'description', type: 'string'},
+        {name: 'kelsub', type: 'string'},
+        {name: 'kelsub_id', type: 'int'},
+        {name: 'amount', type: 'money'},
+        {name: 'subgl_id', type: 'int'},
+        {name: 'code', type: 'string'},
+        {name: 'code1', type: 'string'},
+        {name: 'code2', type: 'string'},
+        {name: 'code3', type: 'string'},
+        {name: 'code4', type: 'string'},
+        {name: 'keterangan', type: 'string'},
+        {name: 'hideparam', type: 'string'},
+    ]
+});

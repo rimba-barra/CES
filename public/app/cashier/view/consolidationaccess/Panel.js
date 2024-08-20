@@ -1,0 +1,11 @@
+Ext.define('Cashier.view.consolidationaccess.Panel',{
+    extend:'Cashier.library.template.view.Panel',
+    requires:[
+        'Cashier.view.consolidationaccess.Grid',
+        'Cashier.view.consolidationaccess.FormSearch'
+    ],
+    alias:'widget.consolidationaccesspanel',
+    itemId:'ConsolidationaccessPanel',
+    gridPanelName:'consolidationaccessgrid',
+    formSearchPanelName:'consolidationaccessformsearch'
+});

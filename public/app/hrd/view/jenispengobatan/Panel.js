@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.jenispengobatan.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.jenispengobatan.Grid','Hrd.view.jenispengobatan.FormSearch','Hrd.view.jenispengobatan.FormData'],
+    alias:'widget.jenispengobatanpanel',
+    itemId:'JenispengobatanPanel',
+    gridPanelName:'jenispengobatangrid',
+    formSearchPanelName:'jenispengobatanformsearch',
+    formDataName:'jenispengobatanformdata',
+});

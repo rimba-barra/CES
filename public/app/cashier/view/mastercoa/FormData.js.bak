@@ -1,0 +1,343 @@
+Ext.define('Cashier.view.mastercoa.FormData', {
+    extend: 'Cashier.library.template.view.FormData',
+    alias: 'widget.mastercoaformdata',
+    frame: true,
+    autoScroll: true,
+    anchorSize: 100,
+    bodyBorder: true,
+    bodyPadding: 10,
+    bodyStyle: 'border-top:none;border-left:none;border-right:none;',
+    deletedRows: [],
+    editedRow: -1,
+    id: 'mastercoaid',
+    initComponent: function () {
+        var me = this;
+
+        Ext.applyIf(me, {
+            defaults: {
+                labelAlign: 'left',
+                labelSeparator: ' ',
+                labelClsExtra: 'small',
+                fieldStyle: 'margin-bottom:3px;',
+                anchor: '100%'
+            },
+            items: [{
+                    xtype: 'hiddenfield',
+                    name: 'coa_id'
+                },
+                {
+                    xtype: 'combobox',
+                    name: 'project_project_id',
+                    fieldLabel: 'Project',
+                    displayField: 'project_name',
+                    valueField: 'project_project_id',
+                    width: '300',
+                    queryMode: 'local',
+                    allowBlank: false,
+                    msgTarget: "side",
+                    enforceMaxLength: true,
+                    blankText: 'This should not be blank!',
+                },
+                {
+                    xtype: 'combobox',
+                    name: 'pt_pt_id',
+                    fieldLabel: 'Company',
+                    displayField: 'name',
+                    valueField: 'pt_id',
+                    forceSelection: false,
+                    allowBlank: false,
+                    readOnly: false,
+                    enforceMaxLength: true,
+                    queryMode: 'local',
+                    rowdata: null,
+                    matchFieldWidth: false,
+                    msgTarget: "side",
+                    blankText: 'This should not be blank!',
+                    tpl: Ext.create('Ext.XTemplate',
+                            '<table class="x-grid-table" width="500px">',
+                            '<tr class="x-grid-row">',
+                            '<th width="40px"><div class="x-column-header x-column-header-inner">Code</div></th>',
+                            '<th width="200px"><div class="x-column-header x-column-header-inner">Company</div></th>',
+                            '<th width="200px"><div class="x-column-header x-column-header-inner">Project</div></th>',
+                            '</tr>',
+                            '<tpl for=".">',
+                            '<tr class="x-boundlist-item">',
+                            '<td ><div class="x-grid-cell x-grid-cell-inner">{code}</div></td>',
+                            '<td ><div class="x-grid-cell x-grid-cell-inner">{name}</div></td>',
+                            '<td ><div class="x-grid-cell x-grid-cell-inner">{project_name}</div></td>',
+                            '</tr>',
+                            '</tpl>',
+                            '</table>'
+                            ),
+                },
+                {
+                    xtype: 'textfield',
+                    itemId: 'fdms_coacode',
+                    emptyText: 'Insert with number',
+                    name: 'coa',
+                    msgTarget: "side",
+                    blankText: 'This should not be blank!',
+                    fieldLabel: 'Chart of Account(COA)',
+                    allowBlank: false,
+                    enforceMaxLength: true,
+                    maxLength: 9,
+                    absoluteReadOnly: true,
+                    anchor: '-5',
+                    enableKeyEvents: true,
+
+                },
+                {
+                    xtype: 'textfield',
+                    itemId: 'fdms_name',
+                    name: 'name',
+                    msgTarget: "side",
+                    blankText: 'This should not be blank!',
+                    fieldLabel: 'Account Name',
+                    emptyText: 'Insert with string',
+                    allowBlank: false,
+                    enforceMaxLength: true,
+                    //absoluteReadOnly: true,
+                    maxLength: 100,
+                    anchor: '-5'
+                },
+
+                {
+                    xtype: 'combobox',
+                    allowBlank: false,
+                    name: 'parent_id',
+                    msgTarget: "side",
+                    blankText: 'This should not be blank!',
+                    fieldLabel: 'Coa Parent',
+                    flex: 2,
+                    displayField: 'name',
+                    valueField: 'coa_id',
+                    width: 400,
+                    queryMode: 'local',
+                    //forceSelection:true,
+                    tpl: Ext.create('Ext.XTemplate',
+                            '<table class="x-grid-table" width="500px" >',
+                            '<tr class="x-grid-row">',
+                            '<th width="15px"><div class="x-column-header x-column-header-inner">Coa Account</div></th>',
+                            '<th width="100px"><div class="x-column-header x-column-header-inner">Name</div></th>',
+                            '</tr>',
+                            '<tpl for=".">',
+                            '<tr class="x-boundlist-item">',
+                            '<td ><div class="x-grid-cell x-grid-cell-inner">{coa}</div></td>',
+                            '<td ><div class="x-grid-cell x-grid-cell-inner">{name}</div></td>',
+                            '</tr>',
+                            '</tpl>',
+                            '</table>'
+                            ),
+                    absoluteReadOnly: true,
+                    enableKeyEvents: true,
+                    rowdata: null,
+                    forceSelection: false,
+                    typeAhead: false,
+                    listeners: {
+                        keyup: function (field) {
+                            var c = 0;
+                            var searchString = field.getValue().toLowerCase();
+                            if (searchString) {
+                                this.store.filterBy(function (record, id) {
+                                    if (record.get('name').toLowerCase().indexOf(searchString) > -1) {
+                                        return true;
+                                        this.store.clearFilter(true);
+                                    } else if (record.get('coa').indexOf(searchString) > -1) {
+                                        return true;
+                                        this.store.clearFilter(true);
+                                    } else {
+                                        return false;
+                                        this.store.clearFilter(true);
+                                    }
+                                });
+                            }
+                        },
+                        buffer: 300,
+                    },
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Parent Code(COA)',
+                    anchor: '-5',
+                    allowBlank: false,
+                    readOnly: true,
+                    name: 'parent_code',
+                    itemId: 'fdms_parent_code',
+                    id: 'fdms_parent_code',
+                    flex: 1
+                },
+                {
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Account Type',
+                    defaultType: 'radiofield',
+                    defaults: {
+                        flex: 3
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            boxLabel: 'Debet',
+                            name: 'type',
+                            inputValue: 'D',
+                            id: 'radio1'
+                        },
+                        {
+                            boxLabel: 'Credit',
+                            name: 'type',
+                            inputValue: 'C',
+                            id: 'radio2'
+                        }
+                    ]
+
+                },
+                {
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Status of Journal',
+                    defaultType: 'radiofield',
+                    itemId: 'datajournal',
+                    defaults: {
+                        flex: 3
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            boxLabel: 'Journal',
+                            name: 'is_journal',
+                            inputValue: '1',
+                            checked: false,
+                            id: 'radio3'
+                        },
+                        {
+                            boxLabel: 'No Journal',
+                            name: 'is_journal',
+                            inputValue: '0',
+                            checked: false,
+                            id: 'radio4'
+                        }
+                    ]
+
+                },
+                {
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Status of Report',
+                    defaultType: 'radiofield',
+                    defaults: {
+                        flex: 1
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            boxLabel: 'Neraca',
+                            name: 'report',
+                            inputValue: 'N',
+                            id: 'radio5'
+                        },
+                        {
+                            boxLabel: 'Profit Loss',
+                            name: 'report',
+                            inputValue: 'L',
+                            id: 'radio6'
+                        }
+                    ]
+
+                },
+                {
+                    xtype: 'numberfield',
+                    anchor: '100%',
+                    itemId: 'fdms_level',
+                    name: 'level',
+                    allowBlank: false,
+                    fieldLabel: 'Account Level',
+                    maxValue: 12,
+                    minValue: 1,
+                    readOnly: false,
+                },
+                {
+                    xtype: 'combobox',
+                    name: 'kelsub_kelsub_id',
+                    fieldLabel: 'Sub Account Group',
+                    queryMode: 'local',
+                    valueField: 'kelsub_id',
+                    allowBlank: true,
+                    msgTarget: "side",
+                    blankText: 'This should not be blank!',
+                    forceSelection: true,
+                    displayField: 'description',
+                    tpl: Ext.create('Ext.XTemplate',
+                            '<table class="x-grid-table" width="350" >',
+                            '<tr class="x-grid-row">',
+                            '<th width="50"><div class="x-column-header x-column-header-inner">Sub Group</div></th>',
+                            '<th width="250"><div class="x-column-header x-column-header-inner">Description</div></th>',
+                            '</tr>',
+                            '<tpl for=".">',
+                            '<tr class="x-boundlist-item">',
+                            '<td ><div class="x-grid-cell x-grid-cell-inner">{kelsub}</div></td>',
+                            '<td ><div class="x-grid-cell x-grid-cell-inner">{description}</div></td>',
+                            '</tr>',
+                            '</tpl>',
+                            '</table>'
+                            ),
+                },
+                {
+                    xtype: 'combobox',
+                    name: 'group_gl',
+                    fieldLabel: 'Acc. Code Group',
+                    queryMode: 'local',
+                    valueField: 'status',
+                    allowBlank: true,
+                    msgTarget: "side",
+                    blankText: 'This should not be blank!',
+                    forceSelection: true,
+                    displayField: 'description',
+                    store: new Ext.data.JsonStore({
+                        fields: ['status', 'description'],
+                        data: [
+                            {status: 'A', description: 'Active'},
+                            {status: 'P', description: 'Passive'},
+                        ]
+                    }),
+                },
+            ],
+            dockedItems: me.generateDockedItem()
+        });
+
+        me.callParent(arguments);
+    },
+    generateDockedItem: function () {
+        var x = [
+            {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                layout: {
+                    padding: 6,
+                    type: 'hbox'
+                },
+                items: [
+                    {
+                        xtype: 'button',
+                        action: 'save',
+                        itemId: 'btnSave',
+                        padding: 5,
+                        width: 75, iconCls: 'icon-save',
+                        text: 'Save'
+                    },
+                    {
+                        xtype: 'button',
+                        action: 'cancel',
+                        itemId: 'btnCancel',
+                        padding: 5,
+                        width: 75,
+                        iconCls: 'icon-cancel',
+                        text: 'Cancel',
+                        handler: function () {
+                            this.up('window').close();
+                        }
+                    }
+                ]
+            }
+        ];
+        return x;
+    },
+});
+

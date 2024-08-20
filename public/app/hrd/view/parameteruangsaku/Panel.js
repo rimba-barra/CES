@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.parameteruangsaku.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.parameteruangsaku.Grid','Hrd.view.parameteruangsaku.FormSearch','Hrd.view.parameteruangsaku.FormData'],
+    alias:'widget.parameteruangsakupanel',
+    itemId:'ParameteruangsakuPanel',
+    gridPanelName:'parameteruangsakugrid',
+    formSearchPanelName:'parameteruangsakuformsearch',
+    formDataName:'parameteruangsakuformdata',
+});

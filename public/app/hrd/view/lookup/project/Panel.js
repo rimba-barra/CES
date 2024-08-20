@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.project.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.project.Grid','Hrd.view.lookup.project.FormSearch'],
+    alias:'widget.lookupprojectpanel',
+    itemId:'LookupprojectPanel',
+    height:500,
+    gridPanelName:'lookupprojectgrid',
+    formSearchPanelName:'lookupprojectformsearch'
+});

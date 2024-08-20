@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.sanksiketerlambatan.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.sanksiketerlambatan.Grid','Hrd.view.lookup.sanksiketerlambatan.FormSearch'],
+    alias:'widget.lookupsanksiketerlambatanpanel',
+    itemId:'LookupsanksiketerlambatanPanel',
+    height:500,
+    gridPanelName:'lookupsanksiketerlambatangrid',
+    formSearchPanelName:'lookupsanksiketerlambatanformsearch'
+});

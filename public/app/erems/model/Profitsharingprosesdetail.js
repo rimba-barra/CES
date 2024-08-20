@@ -1,0 +1,35 @@
+Ext.define('Erems.model.Profitsharingprosesdetail', {
+	extend: 'Ext.data.Model',
+	alias: 'model.profitsharingprosesdetailmodel',
+
+	idProperty: 'profitsharing_detail_id',
+
+	fields: [
+		{name: 'profitsharing_detail_id', type: 'int'},
+		{name: 'profitsharing_id', type: 'int'},
+		{name: 'type_id', type: 'int'},
+		{name: 'cluster_code', type: 'string'},
+		{name: 'type_name', type: 'string'},
+		{name: 'unit_number', type: 'string'},
+		{name: 'payment_date', type: 'string'},
+		{name: 'total_payment', type: 'decimal'},
+		{name: 'rs_payment', type: 'decimal'},
+		{name: 'rs_total_partner_dpp', type: 'decimal'},
+		{name: 'rs_total_partner_ppn', type: 'decimal'},
+		{name: 'rs_total_ciputra_dpp', type: 'decimal'},
+		{name: 'rs_total_ciputra_ppn', type: 'decimal'},
+		{name: 'nilai_lahan_gross_awal', type: 'decimal'},
+		{name: 'hj_kavling_awal', type: 'decimal'},
+		{name: 'kenaikan_hj_kavling_persen', type: 'decimal'},
+		{name: 'nilai_lahan_gross', type: 'decimal'},
+		{name: 'efisiensi_lahan', type: 'decimal'},
+		{name: 'nilai_netto_lahan', type: 'decimal'},
+		{name: 'rs_land_size', type: 'decimal'},
+		{name: 'management_fee_dpp', type: 'decimal'},
+		{name: 'management_fee_ppn', type: 'decimal'},
+		{name: 'management_fee_pph', type: 'decimal'},
+		{name: 'royalty_dpp', type: 'decimal'},
+		{name: 'royalty_ppn', type: 'decimal'},
+		{name: 'royalty_pph', type: 'decimal'},
+	]
+});

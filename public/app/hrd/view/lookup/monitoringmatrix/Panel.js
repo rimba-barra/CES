@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.monitoringmatrix.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.monitoringmatrix.Grid','Hrd.view.lookup.monitoringmatrix.FormSearch'],
+    alias:'widget.lookupmonitoringmatrixpanel',
+    itemId:'LookupmonitoringmatrixPanel',
+    height:500,
+    gridPanelName:'lookupmonitoringmatrixgrid',
+    formSearchPanelName:'lookupmonitoringmatrixformsearch'
+});

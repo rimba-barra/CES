@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.programtraining.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.programtraining.Grid','Hrd.view.programtraining.FormSearch','Hrd.view.programtraining.FormData'],
+    alias:'widget.programtrainingpanel',
+    itemId:'ProgramtrainingPanel',
+    gridPanelName:'programtraininggrid',
+    formSearchPanelName:'programtrainingformsearch',
+    formDataName:'programtrainingformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

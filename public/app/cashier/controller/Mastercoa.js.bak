@@ -1,0 +1,268 @@
+Ext.define('Cashier.controller.Mastercoa', {
+    extend: 'Cashier.library.template.controller.Controller2',
+    alias: 'controller.Mastercoa',
+    refs: [
+        {
+            ref: 'panel',
+            selector: 'mastercoapanel'
+        },
+        {
+            ref: 'grid',
+            selector: 'mastercoagrid'
+        },
+        {
+            ref: 'detailgrid',
+            selector: 'mastercoadetailgrid'
+        },
+        {
+            ref: 'formdata',
+            selector: 'mastercoaformdata'
+        },
+        {
+            ref: 'formsearch',
+            selector: 'mastercoaformsearch'
+        },
+    ],
+    controllerName: 'mastercoa',
+    fieldName: 'coa',
+    bindPrefixName: 'Mastercoa',
+    formxWinId: 'win-mastercoawinId',
+    project_id: 0,
+    pt_arr: [],
+    pt_id: 0,
+    constructor: function (configs) {
+        this.callParent(arguments);
+        var me = this;
+        this.myConfig = new Cashier.library.box.Config({
+            _controllerName: me.controllerName
+        });
+    },
+    init: function () {
+        var me = this;
+        var events = new Cashier.library.box.tools.EventSelector();
+        this.control(events.getEvents(me, me.controllerName));
+        me.tools = new Cashier.library.box.tools.Tools({config: me.myConfig});
+        this.control({
+            'mastercoaformsearch [name=pt_id]': {
+                change: function (el) {
+                    var value = el.value;
+                    me.pt_id = value;
+//                    me.setprojectpt(el.name, el.ownerCt, 'project_id');
+                }
+            },
+            'mastercoaformsearch [name=project_id]': {
+                change: function (v) {
+                    var f = me.getFormsearch();
+                    if (v.value) {
+                        me.project_id = v.value;
+                        var pt = f.down("[name=pt_id]").getStore();
+                        pt.clearFilter();
+                        pt.filter('project_project_id', v.value, true, false);
+                        if(v.value==apps.project){
+                            f.down("[name=pt_id]").setValue(parseInt(apps.pt));
+                        }else{
+                            f.down("[name=pt_id]").setValue('');
+                        }
+                    }
+                }
+            },
+            'mastercoadetailgrid ': {
+                selectionchange: function (v) {
+                    me.detailgridselectionchange();
+                }
+            },
+            
+            'mastercoaformdata [name=project_project_id]': {
+                change: function (v) {
+                    var f = me.getFormdata();
+                    if (v.value) {
+                        var pt = f.down("[name=pt_pt_id]").getStore();
+                        pt.clearFilter();
+                        pt.filter('project_project_id', v.value, true, false);
+                    }
+                }
+            },
+            'mastercoaformdata [name=pt_pt_id] ': {
+                change: function (el) {
+                    var f = me.getFormdata();
+                    var pt = f.down("[name=pt_pt_id]").getValue();
+                    if (f.editedRow) {
+                        console.log(f.editedRow);
+                    }
+                    var g = me.getGrid();
+                    var rec = g.getSelectedRecord();
+                    me.getCustomRequestComboboxv2('getparentcoa', pt, '', '', 'parent_id', 'coa', '', f, '', function () {
+                        me.getCustomRequestComboboxv2('getkelsub', pt, '', '', 'kelsub_kelsub_id', 'kelsub', '', f, '', function () {
+
+                        });
+                    }, true);
+                }
+            },
+            'mastercoaformdata [name=parent_id] ': {
+                change: function (el) {
+                    var f = me.getFormdata();
+                    var value = el.rawValue;
+                    var pt = f.down("[name=parent_code]").setValue(value);
+                }
+            },
+            'mastercoaformdata': {
+                boxready: function () {
+                    var me = this;
+                    $("#mastercoaid").keyup(function (e) {
+                        if (e.which == 13) {
+                            e.preventDefault();
+                            me.mainDataSave()
+                            return false;
+                        }
+                    });
+                    $("#mastercoaid input[name='coa']").keyup(function ()
+                    {
+                        this.value = this.value.replace(/(\d{2})(\d{2})/, '$1' + '.' + '$2')
+                    });
+                }
+            },
+        });
+    },
+    panelAfterRender: function () {
+        var me = this;
+        var p = me.getPanel();
+        var f = me.getFormsearch();
+        p.setLoading("Please wait");
+        me.tools.ajax({
+            params: {module: me.controllerName},
+            form: p,
+            success: function (data, model) {
+
+                try {
+                    me.project_id = apps.project;
+                    me.pt_id=apps.pt;
+                    me.tools.weseav2(data.project, f.down("[name=project_id]")).comboBox('', function () {
+                            f.down("[name=project_id]").setValue(parseInt(apps.project));
+                    });
+                    me.tools.weseav2(data.pt, f.down("[name=pt_id]")).comboBox('', function () {
+                        var combostore = f.down('[name=pt_id]').getStore();
+                        var record = combostore.findRecord('pt_id', parseInt(apps.pt));
+                            f.down("[name=pt_id]").setValue(parseInt(apps.pt));
+                        if (record) {
+                            combostore.filter('project_project_id', apps.project, true, false);
+                            var grid = me.getGrid();
+                            grid.setLoading('Please wait');
+                            var storear = grid.getStore();
+                            var fields = f.getForm().getFieldValues();
+                            for (var x in fields) {
+                                storear.getProxy().setExtraParam(x, fields[x]);
+                            }
+                            storear.load({
+                                callback: function () {
+                                    grid.setLoading(false);
+                                }
+                            });
+                        }
+                    });
+
+                } catch (err) {
+                    console.log(err.message);
+                    me.tools.alert.warning("Failed to generate init.");
+                }
+
+                p.setLoading(false);
+            }
+        }).read('init');
+    },
+    formDataAfterRender: function (el) {
+        var me = this;
+        var f = me.getFormdata();
+        var g = me.getGrid();
+        var rec = g.getSelectedRecord();
+        var state = el.up('window').state;
+        me.fdar().init();
+        if (state == 'create') {
+//            me.project_id = apps.project;
+            me.fdar().create();
+            me.setActiveForm(f);
+            var pt = f.down("[name=pt_pt_id]").getStore();
+            pt.clearFilter();
+            pt.filter('project_project_id', '', true, false);
+            me.getCustomRequestComboboxv2('detailproject', '', '', '', 'project_project_id', 'pt', 'project', f, '', function () {
+//                f.down("[name=project_project_id]").setValue(me.project_id);
+            });
+            me.getCustomRequestComboboxv2('detailpt', '', '', '', 'pt_pt_id', 'pt', 'project', f, '', function () {
+//                f.down("[name=pt_pt_id]").setValue(me.pt_id);
+            });
+
+        } else if (state == 'update') {
+            me.setActiveForm(f);
+            f.editedRow = g.getSelectedRow();
+            me.getCustomRequestComboboxv2('detailproject', '', '', '', 'project_project_id', 'pt', 'project', f, '', function () {
+//                f.down("[name=project_project_id]").setValue(me.project_id);
+            });
+            me.getCustomRequestComboboxv2('detailpt', '', '', '', 'pt_pt_id', 'pt', 'project', f, '', function () {
+                f.loadRecord(rec);
+                 f.down('[name=coa]').setReadOnly(true);
+                me.getCustomRequestComboboxv2('getparentcoa', rec.get("pt_pt_id"), '', '', 'parent_id', 'coa', '', f, '', function () {
+                    me.getCustomRequestComboboxv2('getkelsub', rec.get("pt_pt_id"), '', '', 'kelsub_kelsub_id', 'kelsub', '', f, function () {
+                        f.loadRecord(rec);
+                       
+                    });
+                }, true);
+            }, true);
+        }
+
+
+    },
+    ptChange: function (val) {
+        var me = this;
+        var f = me.getFormsearch();
+        f.down("[name=pt_id]").setValue(val);
+        me.pt_id = val;
+    },
+    mainDataSave: function (mode) {
+        var me = this;
+        var m = typeof mode !== "undefined" ? mode : "";
+        var fa = me.getFormdata();
+        var gd = me.getDetailgrid();
+        if (fa.getForm().isValid()) {
+            me.insSave({
+                form: fa,
+                grid: me.getGrid(),
+                finalData: function (data) {
+                    data['deletedRows'] = fa.deletedRows;
+                    return data;
+                },
+                sync: true,
+                callback: function (a, b, c) {
+                },
+                cb: function () { //ini baru jaalan callbacknya, di atas gajalan
+                    if (typeof call === "function") {
+                        call();
+                    }
+                }
+            });
+        }
+
+
+    },
+    afterDataDetailInit: function (param, f) { //after
+        var me = this;
+        var fid = f.ownerCt.id;
+        var g = me.getGrid();
+        if (param == "update") {
+            var rec = g.getSelectedRecord();
+            f.editedRow = g.getSelectedRow();
+
+            f.getForm().loadRecord(rec);
+        }
+    },
+    detailgridselectionchange: function () {
+        var me = this;
+        var g = me.getDetailgrid();
+        me.pt_arr = [];
+        var mpdetail = '';
+        var row = g.getSelectionModel().getSelection();
+        row.forEach(function (rec) {
+
+            me.pt_arr += rec.get("pt_id") + "~";
+        });
+
+    }
+});

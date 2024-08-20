@@ -1,0 +1,337 @@
+<?php
+
+/**
+ * Description of Employee Intranet
+ *
+ * @author MIS - AHMAD RIADI
+ * 
+ */
+class Hrd_Models_Intranet_Employee {
+    //Daftar Config
+    public $function;
+    public $dbmysql;
+    public $model_employee;
+    public $employeee_data = null;
+    public $errorMsg;
+    public $user_id_ces = 0;
+    public $user_id_intranet = 0;
+
+    function __construct() {
+        $this->function = new Hrd_Models_General_Setup;
+        $this->model_employee = new Hrd_Models_Master_EmployeeDao;
+        $this->dbmysql = new Hrd_Models_Intranet_Dbmysql;
+    }
+
+    public function Authorizeuser($employee_id) {
+        $this->getEmployeedatainces($employee_id);	
+	 //cek data employee di ces
+        if (!empty($this->employeee_data)) {
+            $this->dbmysql->getConfigdbintrabet($this->employeee_data['project_id']); //cek config intranet di project data employee
+            if (!empty($this->dbmysql->configdbintranet)) {               
+                
+                $this->dbmysql->getmysqlConfig($this->dbmysql->configdbintranet); // dapatkan data config intranet di file config
+                $result_ldap = $this->dbmysql->getdatain_p_sec_user_ldap_byemail($this->employeee_data['email_ciputra']);
+                $result_sec_user = $this->dbmysql->getdatain_sec_user_byemployee_idces($this->employeee_data['employee_id']);
+                /* jika data karyawan baru, maka cek email di  p_sec_user_ldap, jika belum ada maka buat baru
+                 * namun jika sudah ada email_ciputra dan employee_id_ces sudah ada maka update                                   * 
+                 */
+                $this->data_sec_user_sqlsrv();
+                $this->data_sec_user_mysql($result_ldap, $result_sec_user);
+                $this->data_ldap_mysql($result_ldap, $result_sec_user);
+                $this->data_sec_user_group($result_ldap, $result_sec_user);
+                $this->data_m_employee($result_ldap, $result_sec_user);
+            }
+
+          //create user from master projectpt
+            $this->generateuser_from_projectpt($this->employeee_data['project_id'],$this->employeee_data['pt_id']);
+
+
+        }
+    }
+
+
+   /* dibuat oleh ahmad riadi 09-10-2017, kebutuhan intranet lintas config */
+
+   public function generateuser_from_projectpt($project_id, $pt_id) {
+        $dataprojectpt = $this->dbmysql->getdata_projectpt($project_id, $pt_id);
+        if (!empty($dataprojectpt)) {
+            if (!empty($dataprojectpt['dbintranet_name'])) {
+                $this->dbmysql->getmysqlConfig($dataprojectpt['dbintranet_name']); // dapatkan data config intranet di file config
+                $result_ldap = $this->dbmysql->getdatain_p_sec_user_ldap_byemail($this->employeee_data['email_ciputra']);
+                $result_sec_user = $this->dbmysql->getdatain_sec_user_byemployee_idces($this->employeee_data['employee_id']);
+                /* jika data karyawan baru, maka cek email di  p_sec_user_ldap, jika belum ada maka buat baru
+                 * namun jika sudah ada email_ciputra dan employee_id_ces sudah ada maka update                                   * 
+                 */
+                $this->data_sec_user_sqlsrv();
+                $this->data_sec_user_mysql($result_ldap, $result_sec_user);
+                $this->data_ldap_mysql($result_ldap, $result_sec_user);
+                $this->data_sec_user_group($result_ldap, $result_sec_user);
+                $this->data_m_employee($result_ldap, $result_sec_user);
+            }
+        }
+    }
+
+
+
+
+    public function data_m_employee($data_ldap = null, $data_sec_user = null) {
+        $counter_1 = count($data_ldap);
+        $counter_2 = count($data_sec_user);
+        $checkexist = intval($counter_1) + intval($counter_2);
+
+        $result_sec_user = $this->dbmysql->getdatain_sec_user_by_id($this->user_id_intranet);
+        if ($result_sec_user) {
+            $result_ldap = $this->dbmysql->getdatawithparam($this->dbmysql->tbl_p_sec_user_ldap, array('sec_user_id' => $this->user_id_intranet));
+            $result_project = $this->dbmysql->getdata_projectces($this->employeee_data['project_id']);
+            $result_pt = $this->dbmysql->getdata_ptces($this->employeee_data['pt_id']);
+
+            $religion = null;
+            $blood = null;
+            $education = null;
+            $divcode = null;
+            $deptcode = null;
+            $jabatan = null;
+            $ldap_id = $result_ldap[0]['ldap_id'];
+
+            if ($this->employeee_data['religion_id'] > 0 && !empty($this->employeee_data['religion_id'])) {
+                $result_religion = $this->dbmysql->getdata_religionces($this->employeee_data['religion_id']);
+                $religion = $result_religion['religion'];
+            }
+
+            if ($this->employeee_data['bloodgroup_id'] > 0 && !empty($this->employeee_data['bloodgroup_id'])) {
+                $result_blood = $this->dbmysql->getdata_bloodgroupces($this->employeee_data['bloodgroup_id']);
+                $blood = $result_blood['bloodgroup'];
+            }
+
+            if ($this->employeee_data['last_education'] > 0 && !empty($this->employeee_data['last_education'])) {
+                $result_edu = $this->dbmysql->getdata_educationces($this->employeee_data['last_education']);
+                $education = $result_edu['education'];
+            }
+
+            if ($this->employeee_data['division_id'] > 0 && !empty($this->employeee_data['division_id'])) {
+                $result_div = $this->dbmysql->getdata_divisionces($this->employeee_data['division_id']);
+                $divcode = $result_div['code'];
+            }
+
+            if ($this->employeee_data['department_id'] > 0 && !empty($this->employeee_data['department_id'])) {
+                $result_dept = $this->dbmysql->getdata_departmentces($this->employeee_data['department_id']);
+                $deptcode = $result_dept['code'];
+            }
+
+            if ($this->employeee_data['position_id'] > 0 && !empty($this->employeee_data['position_id'])) {
+                $result_position = $this->dbmysql->getdata_positionces($this->employeee_data['position_id']);
+                $jabatan = $result_position['position'];
+            }
+
+            switch ($this->employeee_data['marriagestatus_id']) {
+                case 1:
+                    $status = 'SG';
+                    break;
+                case 2:
+                    $status = 'M' . $this->employeee_data['child_count'];
+                    break;
+                case 3:
+                    $status = 'D' . $this->employeee_data['child_count'];
+                    break;
+                default:
+                    $status = null;
+                    break;
+            }
+
+            $record = array(
+                "IS_ACTIVE" => 1,
+                "hcms_group_id" => 1,
+                "project_id" => $this->employeee_data['project_id'],
+                "pt_id" => $this->employeee_data['pt_id'],
+                "PER_PROYEK" => $result_project['code'],
+                "PER_PT" => $result_pt['code'],
+                "SEC_USER_ID" => $this->user_id_intranet,
+                "LDAP_ID" => $ldap_id,
+                "NIK" => $this->employeee_data['employee_nik'],
+                "NAME" => $this->employeee_data['employee_name'],
+                "TEMPAT_LAHIR" => $this->employeee_data['birth_place'],
+                "TGL_LAHIR" => $this->employeee_data['birth_date'],
+                "SEX" => $this->employeee_data['sex'],
+                "NO_KTP" => $this->employeee_data['ktp_number'],
+                "ADDRESS1" => $this->employeee_data['address'],
+                "AGAMA" => $religion,
+                "GOL_DARAH" => $blood,
+                "STATUS" => $status,
+                "JUMLAH_ANAK" => $this->employeee_data['child_count'],
+                "NO_TELP" => $this->employeee_data['phone_number'],
+                "PENDIDIKAN_AKHIR" => $education,
+                "PER_DIVISI" => $divcode,
+                "PER_DEPARTEMEN" => $deptcode,
+                "PER_JABATAN" => $jabatan,
+                "TGL_MASUK" => $this->employeee_data['hire_date'],
+                "EMAIL" => $this->employeee_data['email_ciputra'],
+            );
+
+            if ($checkexist == 0) {
+                //jika datanya belum ada di ldap,dan sec user, maka buat user groupnya kebutuhan general
+                $this->dbmysql->insertdata($this->dbmysql->tbl_m_employee, $record);
+            } else {
+                if ($counter_2 > 0) {
+                    unset($record['IS_ACTIVE']);
+                    unset($record['hcms_group_id']);
+                    unset($record['SEC_USER_ID']);
+                    unset($record['LDAP_ID']);
+                    unset($record['IS_ACTIVE']);
+                    $this->dbmysql->updatedata($this->dbmysql->tbl_m_employee,$record, array("SEC_USER_ID" => $this->user_id_intranet));
+                }
+            }
+        }
+    }
+
+    public function data_sec_user_group($data_ldap = null, $data_sec_user = null) {
+        $counter_1 = count($data_ldap);
+        $counter_2 = count($data_sec_user);
+        $checkexist = intval($counter_1) + intval($counter_2);
+        $result_sec_user = $this->dbmysql->getdatain_sec_user_by_id($this->user_id_intranet);
+        if ($result_sec_user) {
+            $secProgramId = 12; //untuk Aplikasi Intranet
+            $secGroupId = 36;  //untuk General User
+
+            $record = array(
+                "sec_user" => $this->user_id_intranet,
+                "sec_program" => $secProgramId,
+                "sec_group" => $secGroupId,
+            );
+            if ($checkexist == 0) {
+                //jika datanya belum ada di ldap,dan sec user, maka buat user groupnya kebutuhan general
+                $this->dbmysql->insertdata($this->dbmysql->tbl_sec_user_group, $record);
+            }
+        }
+    }
+
+    public function data_ldap_mysql($data_ldap = null, $data_sec_user = null) {
+        $counter_1 = count($data_ldap);
+        $counter_2 = count($data_sec_user);
+        $checkexist = intval($counter_1) + intval($counter_2);
+        $result_sec_user = $this->dbmysql->getdatain_sec_user_by_id($this->user_id_intranet);
+        if ($result_sec_user) {
+            $record = array(
+                "sec_user_id" => $this->user_id_intranet,
+                "ldap_id" => $result_sec_user['name'],
+                "email" => $this->employeee_data['email_ciputra'],
+            );
+
+            if ($checkexist == 0) {
+                //jika user ldap belum ada di ldap dan sec_user, maka buat datanya
+                $this->dbmysql->insertdata($this->dbmysql->tbl_p_sec_user_ldap, $record);
+            }else{
+                //tambah fungsi update emailnya.
+                    unset($record['sec_user_id']);
+                    unset($record['ldap_id']);                  
+                    $this->dbmysql->updatedata($this->dbmysql->tbl_p_sec_user_ldap,$record, array("sec_user_id" => $this->user_id_intranet));
+            }
+        }
+    }
+
+    public function data_sec_user_mysql($data_ldap = null, $data_sec_user = null) {
+        $tmpname = explode(" ", $this->employeee_data['employee_name']);
+        $passworddefault = 'sungairaya';
+
+        $record = array(
+            "user_id_ces" => $this->user_id_ces,
+            "project_id_ces" => $this->employeee_data['project_id'],
+            "pt_id_ces" => $this->employeee_data['pt_id'],
+            "employee_id_ces" => $this->employeee_data['employee_id'],
+            "name" => $this->employeee_data['email_ciputra'],
+            "First_Name" => $tmpname[0],
+            "Full_Name" => $this->employeee_data['employee_name'],
+            "password" => $passworddefault,
+        );
+
+        $counter_1 = count($data_ldap);
+        $counter_2 = count($data_sec_user);
+        $checkexist = intval($counter_1) + intval($counter_2);
+
+        if ($checkexist == 0) {
+            //jika user belum ada di ldap dan sec_user, maka buat datanya
+            $this->dbmysql->insertdata($this->dbmysql->tbl_sec_user, $record);
+            $result_sec_user = $this->dbmysql->getdatawithparam($this->dbmysql->tbl_sec_user, array('name' => $this->employeee_data['email_ciputra']));
+            $row_sec_user = $result_sec_user[0];
+            $this->user_id_intranet = $row_sec_user['id'];
+        } else {
+            if ($counter_2 > 0) {
+                //jika ada datanya dengan employee_id_ces, maka update datanya
+                if(empty($data_sec_user['name'])){ //jika usernya kosong, maka update fieldnamenya
+                     $this->dbmysql->update_user_with_name_mysql($record);
+                }else{
+                     $this->dbmysql->update_user_mysql($record);
+                }
+                
+                $this->user_id_intranet = $data_sec_user['id'];
+            }
+        }
+    }
+
+    public function data_sec_user_sqlsrv() {
+        $temp = explode("@", $this->employeee_data['email_ciputra']);
+        $userIntranet = $temp[0];
+        $this->function->_tabledata = 'dbwebsec.dbo.sec_user';
+        $result_user_ces_by_email = $this->function->getdata_standard(array("user_name" => $this->employeee_data['email_ciputra']));
+        $result_user_ces_by_userintranet = $this->function->getdata_standard(array("user_name" => $userIntranet));
+        $counter_1 = count($result_user_ces_by_userintranet[0]);
+        $counter_2 = count($result_user_ces_by_email[0]);
+        $passworddefault = md5('sungairaya');
+
+        $record = array(
+            "user_name" => $this->employeee_data['email_ciputra'],
+            "user_pass" => $passworddefault,
+            "user_fullname" => $this->employeee_data['employee_name'],
+            "user_email" => $this->employeee_data['email_ciputra'],
+            "addon" => date("Y-m-d H:i:s"),
+            "addby" => $this->function->_user_id,
+            "employee_id" => $this->employeee_data['employee_id'],
+        );
+
+        if ($counter_1 == 0 && $counter_2 == 0) {   //jika belum ada      
+            $this->function->insertdata($record);
+            $rowafterinsert = $this->function->getdata_standard($record);
+            if (!empty($rowafterinsert[0])) {
+                $this->user_id_ces = $rowafterinsert[0][0]['user_id'];
+            }
+        }
+
+        if ($counter_1 > 0 && $counter_2 == 0) { //jika user id tanpa format email ada, maka update
+            $row = $result_user_ces_by_userintranet[0][0];
+            $this->dbmysql->update_user_no_format_email($row, $record);
+            $this->user_id_ces = $row['user_id'];
+        }
+
+        if ($counter_1 == 0 && $counter_2 > 0) { //jika user id dgn format email ada, maka update
+            $row = $result_user_ces_by_email[0][0];
+            $this->dbmysql->update_user_with_format_email($row, $record);
+            $this->user_id_ces = $row['user_id'];
+        }
+
+        if ($counter_1 > 0 && $counter_2 > 0) { //jika sudah ada kedua datanya maka beri user_id_ces dengan data yang mengandung email saja
+            $row = $result_user_ces_by_userintranet[0][0];
+            $this->user_id_ces = $row['user_id'];
+        }
+    }
+
+    public function getEmployeedatainces($employee_id) {
+        $totaldata = 0;
+        $result = $this->model_employee->getAllByIds($employee_id);
+        $totaldata = $result[0][0]['totalRow'];
+        if ($totaldata > 0) {
+            $this->employeee_data = $result[1][0];
+        } else {
+            $this->errorMsg = 'Get data employee with employee id ' . $employee_id . ' not found..!';
+        }
+    }
+
+    public function cleanDate($param) {
+        $date = $param;
+        if ($param == '1970-01-01') {
+            $date = null;
+        }
+        return $date;
+    }
+
+}
+
+?>

@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.karyawanmod.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.karyawanmod.Grid','Hrd.view.karyawanmod.FormSearch','Hrd.view.karyawanmod.FormData'],
+    alias:'widget.karyawanmodpanel',
+    itemId:'KaryawanmodPanel',
+    gridPanelName:'karyawanmodgrid',
+    formSearchPanelName:'karyawanmodformsearch',
+    formDataName:'karyawanmodformdata',
+});

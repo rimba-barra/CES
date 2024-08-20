@@ -1,0 +1,183 @@
+Ext.define('Erems.view.legalbelumaktappjbreport.FormData', {
+    extend: 'Erems.library.template.view.FormData',
+    alias: 'widget.legalbelumaktappjbreportformdata',
+    requires: [
+		'Erems.library.template.component.Buildingclasscombobox',
+		'Erems.library.template.component.Productcategorycombobox',
+		'Erems.library.template.component.Clustercombobox',
+		'Erems.library.template.component.Pricetypecombobox'
+   	],
+    frame: true,
+    autoScroll: true,
+    bodyBorder: true,
+	width: 500,
+	//height: 300,
+    bodyStyle: 'border-top:none;border-left:none;border-right:none;',
+    initComponent: function() {
+        var me = this;
+
+        Ext.applyIf(me, {
+            dockedItems: me.generateDockedItems(),
+            items: [
+				{
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'buildingclasscombobox',
+                            name: 'buildingclass',
+                            fieldLabel:'Group Admin',
+                            reportParams: true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_buildingclass',
+                            checked: true,
+                            inputValue: '1',
+                            uncheckedValue: '0',
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                },
+				{
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'clustercombobox',
+                            name: 'cluster_id',
+							fieldLabel:'Cluster / Kawasan',
+                            reportParams:true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_cluster_id',
+                            checked: true,
+                            inputValue: '1',
+                            uncheckedValue: '0',
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                },
+				{
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'productcategorycombobox',
+                            name: 'productcategory_id',
+							fieldLabel:'Type Bangunan',
+                            reportParams:true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_productcategory_id',
+                            checked: true,
+                            inputValue: '1',
+                            uncheckedValue: '0',
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                },
+				{
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'pricetypecombobox',
+                            name: 'pricetype_id',
+							fieldLabel:'Price Type',
+                            reportParams:true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_pricetype_id',
+                            checked: true,
+                            inputValue: '1',
+                            uncheckedValue: '0',
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                }
+            ]
+
+        });
+
+        me.callParent(arguments);
+    },
+    generateDockedItems: function() {
+        var dockedItems = [
+            {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                layout: {
+                    padding: 6,
+                    type: 'hbox'
+                },
+                items: [
+                    {
+                        xtype: 'button',
+                        action: 'process',
+                        itemId: 'btnSearch',
+                        padding: 5,
+                        width: 75,
+                        iconCls: 'icon-search',
+                        text: 'Process'
+                    },
+                    {
+                        xtype: 'button',
+                        action: 'reset',
+                        itemId: 'btnReset',
+                        padding: 5,
+                        width: 75,
+                        iconCls: 'icon-reset',
+                        text: 'Reset'
+                    }
+                ]
+            }
+        ];
+        return dockedItems;
+    }
+});
+

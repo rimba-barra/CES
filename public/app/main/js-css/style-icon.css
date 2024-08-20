@@ -1,0 +1,135 @@
+.icon-application-default {
+	background-image: url('../images/icons/application.png');
+}
+
+.icon-window-default {
+	background-image: url('../images/icons/window.png');
+}
+
+.icon-form {
+	background-image: url('../images/icons/form.png');
+}
+
+.icon-form-add {
+	background-image: url('../images/icons/form-add.png');
+}
+
+.icon-form-edit {
+	background-image: url('../images/icons/form-edit.png');
+}
+
+.icon-new {
+	background-image: url('../images/icons/new.png');
+}
+
+.icon-add {
+	background-image: url('../images/icons/add.png');
+}
+
+.icon-edit {
+	background-image: url('../images/icons/edit.png');
+}
+
+.icon-delete {
+	background-image: url('../images/icons/delete.png');
+}
+
+.icon-search {
+	background-image: url('../images/icons/search.png');
+}
+
+.icon-save {
+	background-image: url('../images/icons/save.png');
+}
+
+.icon-cancel {
+	background-image: url('../images/icons/cancel.png');
+}
+
+.icon-print {
+	background-image: url('../images/icons/printer.png');
+}
+
+.icon-reset {
+	background-image:url('../images/icons/clockwise-arrow.png');
+}
+
+.icon-refresh {
+	background-image:url('../images/icons/update.png');
+}
+
+.icon-copy {
+	background-image:url('../images/icons/copy.png');
+}
+
+.icon-plus {
+	background-image:url('../images/icons/plus.png');
+}
+
+.icon-gear {
+	background-image:url('../images/icons/gear.png');
+}
+
+.icon-archive {
+	background-image:url('../images/icons/archives.png');
+}
+
+.x-form-add-trigger {
+	background-image:url('../images/icons/add-trigger.gif');
+}
+
+.x-form-edit-trigger {
+	background-image:url('../images/icons/edit-trigger.gif');
+}
+
+.x-form-delete-trigger {
+	background-image:url('../images/icons/delete-trigger.gif');
+}
+
+/* added by tommy - 24 november 2014 */
+.icon-approve {
+	background-image:url('../images/icons/approve.png');
+}
+.icon-unapprove {
+	background-image:url('../images/icons/unapprove.png');
+}
+/* end added by tommy - 24 november 2014 */
+
+.icon-approve2 {
+	background-image:url('../images/icons/approve2.png');
+}
+
+/* added by tommy - 13 April 2016 */
+.icon-pdf {
+	background-image:url('../images/icons/pdf.png');
+}
+.icon-notification {
+	background-image:url('../images/icons/notification.png');
+}
+/* end added by tommy - 13 April 2016  */
+.icon-cal {
+	background-image:url('../images/icons/calculator.png');
+}
+.icon-excel {
+	background-image:url('../images/icons/excel.png');
+}
+.icon-flash {
+	background-image:url('../images/icons/flash.png');
+}
+/* added by hadi - 23/10/2019 */
+.icon-mail {
+	background-image:url('../images/icons/mail.png');
+}
+/* end added by hadi - 23/10/2019  */
+
+.icon-revision {
+	background-image:url('../images/icons/revision.png');
+}
+
+.icon-expand-up {
+	background-image:url('../images/icons/expand-up.png');
+}
+
+.icon-expand-down {
+	background-image:url('../images/icons/expand-down.png');
+}

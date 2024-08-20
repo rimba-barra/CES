@@ -1,0 +1,71 @@
+<!-- Modal -->
+<div id="myModalBrowseUnitID" class="modal" role="dialog" style="z-index: 100000;">
+    <div class="modal-dialog modal-lg modal-ku">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><span class="icon icon-form-add">&nbsp;</span><span class="teks">Sold Unit List</span></h4>
+                    <button type="button" class="close btn-sm x-tool x-tool-close" data-dismiss="modal">&nbsp;</button>
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-4 kotak_pencarian">
+                            <form role="form" style="padding-right: 15px;" id="plBrowseFormID">
+                                <div class="formku_search">
+                                    <div class="form-group form-group-sm">
+                                        <label>Unit Number</label>
+                                        <input class="form-control input-sm" name="unit_number" placeholder="">
+
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label>Customer Name</label>
+                                        <input class="form-control input-sm" name="customer_name" placeholder="">
+
+                                    </div>
+                                    
+                                </div>
+
+                                <button  class="btn btn-primary btn-sm" name="submit_search"><span class="icon icon-search">&nbsp;</span>Search</button>
+                                <button class="btn btn-default btn-sm" name="submit_reset"><span class="icon icon-reset">&nbsp;</span>Reset</button>
+                            </form>
+                        </div>
+                        <div class="col-8 kotak_browse_grid">
+                            <div>
+                                <button  id="purchaseSubmitSelectedBtn" class="btn btn-primary btn-sm" style="background: none;border: 0px;" name="submit_selected"><span class="icon icon-approve" style="margin-right: 5px;">&nbsp;</span>Submit Selected</button>
+                            </div>
+                            <table id="ktPurchaseParamListId" class="table table-sm table-striped table-fixedx">
+                                <thead>
+                                    <tr>
+                                        <th style="width:30px;height:40px;"><span class="text">No.</span></th>
+                                        <th style="width:30px;height:40px;"><span class="text"><input class="abccheckbox_header" type="checkbox" /></span></th>
+                                        <th style="width:70px;height:40px;"><span class="text">Unit Number</span></th>
+                                        <th style="width:70px;height:40px;"><span class="text">Cluster</span></th>
+                                        <th style="width:70px;height:40px;"><span class="text">Type</span></th>
+                                        <th style="width:150px;height:40px;"><span class="text">Nomor Purchaseletter</span></th>
+                                        <th style="width:150px;height:40px;"><span class="text">Customer</span></th>
+                                        <th style="width:70px;height:40px;"><span class="text">&nbsp;</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  
+                                </tbody>
+                            </table>
+                            <div class="mysuper_paging"> 
+                                <a href="#" class="first"> &nbsp; </a><a href="#" class="prev"> &nbsp; </a> <span class="text"> | Page </span> <span class="text current_page">0</span> <span class="text"> of </span><span class="text total_page">0</span><span class="text"> | </span><a href="#" class="next"> &nbsp; </a><a href="#" class="last"> &nbsp; </a>
+                                <span class="total_records">Total Record: 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+          
+            </div>
+        </div>
+
+    </div>
+</div>

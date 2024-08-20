@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.parameterlosttime.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.parameterlosttime.Grid','Hrd.view.parameterlosttime.FormSearch','Hrd.view.parameterlosttime.FormData'],
+    alias:'widget.parameterlosttimepanel',
+    itemId:'ParameterlosttimePanel',
+    gridPanelName:'parameterlosttimegrid',
+    formSearchPanelName:'parameterlosttimeformsearch',
+    formDataName:'parameterlosttimeformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

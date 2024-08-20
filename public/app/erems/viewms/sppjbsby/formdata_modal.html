@@ -1,0 +1,868 @@
+<div class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index: 99999;" abc-action="create">
+    <div class="modal-dialog modal-lg modal-ku">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span class="icon icon-form-add">&nbsp;</span><span class="teks">Form SPPJB</span></h4>
+                    <button type="button" class="close btn-sm x-tool x-tool-close" data-dismiss="modal">&nbsp;</button>
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="mellong">
+                    <div class="container my-container" style="padding: 7px 15px;">
+
+                        <form id="formSPPJBID">
+
+                            <input type="hidden" name="sppjb_id" >
+                            <input type="hidden" name="pihak1_parametersppjb_id" >
+
+
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="col-12">
+                                        <div class="form-group row">
+                                            <label for="sppjb_no_ID" class="col-4 col-form-label">Nomor SPPJB</label>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control" id="sppjb_no_ID" name="sppjb_no" placeholder="Nomor SPPJB" maxlength="50">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                                <div class="col-1">
+                                    &nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <div class="col-12">
+                                        <div class="form-group row">
+                                            <label for="company_sertifikat_induk_ID" class="col-4 col-form-label">Company Sertifikat Induk</label>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control " id="company_sertifikat_induk_ID" name="company_sertifikat_induk" placeholder="Company Sertifikat Induk" maxlength="50">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="col-12">
+                                        <div class="form-group row">
+                                            <label for="sppjb_date_id" class="col-4 col-form-label">Tanggal SPPJB</label>
+                                            <div class="col-8">
+                                                <input type="date" class="form-control" id="sppjb_date_id" name="sppjb_date" placeholder="SPPJB Date">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-1">
+                                    &nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <div class="col-12">
+                                        <div class="form-group row">
+                                            <label for="company_kecamatan_ID" class="col-4 col-form-label">Kecamatan</label>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control" id="company_kecamatan_ID" name="company_kecamatan" placeholder="Kecamatan" maxlength="50">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="col-12">
+                                        <div class="form-group row">
+                                            <label for="cetak_ID" class="col-4 col-form-label">Cetak</label>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control" id="cetak_ID" name="cetak" placeholder="CETAK" maxlength="50">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-1">
+                                    &nbsp;
+                                </div>
+                                <div class="col-6">
+                                    &nbsp;
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col-12">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" data-toggle="tab" href="#kirimcusID" style="width: 140px;height: 40px;">Dikirim ke Customer</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#terimacusID" style="width: 140px;height: 40px;">Diterima Oleh Customer</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#kembalicusID" style="width: 140px;height: 40px;">Dikembalikan oleh Customer</a>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Tab panes -->
+                                        <div class="tab-content nav-kontensaya" style="height:200px;">
+                                            <div class="tab-pane active container" id="kirimcusID">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="kirimcustomer_tanggal_ID" class="col-4 col-form-label">Tanggal</label>
+                                                            <div class="col-8">
+                                                                <input type="date" class="form-control" id="kirimcustomer_tanggal_ID" name="kirimcustomer_tanggal" placeholder="Tanggal" >
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="kirimcustomer_keterangan_ID" class="col-4 col-form-label">Keterangan</label>
+                                                            <div class="col-8">
+                                                                <textarea class="form-control" id="kirimcustomer_keterangan_ID" name="kirimcustomer_keterangan" maxlength="255"></textarea>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane container" id="terimacusID">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="terimacustomer_tanggal_ID" class="col-4 col-form-label">Tanggal</label>
+                                                            <div class="col-8">
+                                                                <input type="date" class="form-control" id="terimacustomer_tanggal_ID" name="terimacustomer_tanggal" placeholder="Tanggal" >
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="terimacustomer_keterangan_ID" class="col-4 col-form-label">Keterangan</label>
+                                                            <div class="col-8">
+                                                                <textarea class="form-control" id="terimacustomer_keterangan_ID" name="terimacustomer_keterangan"></textarea>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane container" id="kembalicusID">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="kembalicustomer_tanggal_ID" class="col-4 col-form-label">Tanggal</label>
+                                                            <div class="col-8">
+                                                                <input type="date" class="form-control" id="kembalicustomer_tanggal_ID" name="kembalicustomer_tanggal" placeholder="PT" >
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="kembalicustomer_keterangan_ID" class="col-4 col-form-label">Keterangan</label>
+                                                            <div class="col-8">
+                                                                <textarea class="form-control" id="kembalicustomer_keterangan_ID" name="kembalicustomer_keterangan"></textarea>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>  <!-- /Tab panes -->
+                                    </div>
+                                    <div class="col-12">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" data-toggle="tab" href="#dataSPPJBID">Data SPPJB</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#hargatermasukID">Harga Termasuk</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#hargabelumtermasukID">Harga belum Termasuk</a>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Tab panes -->
+                                        <div class="tab-content nav-kontensaya">
+                                            <div class="tab-pane active container" id="dataSPPJBID">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_warna_ID" class="col-4 col-form-label">Warna Obyek pada lampiran I</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_warna_ID" name="datasppjb_warna" placeholder="Warna Obyek pada lampiran I" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_palinglambat_ID" class="col-4 col-form-label">Syarat Kredit paling lambat</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_palinglambat_ID" name="datasppjb_palinglambat" placeholder="Syarat" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_biayalambat_ID" class="col-4 col-form-label">B. Adm Keterlambatan Bayar</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_biayalambat_ID" name="datasppjb_biayalambat" placeholder="Biaya" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_alasanbatal_ID" class="col-4 col-form-label">Pembatalan terjadi apabila kredit </label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_alasanbatal_ID" name="datasppjb_alasanbatal" placeholder="Alasan" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_biayabatal_ID" class="col-4 col-form-label">B. Adm Pembatalan</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_biayabatal_ID" name="datasppjb_biayabatal" placeholder="Biaya Batal" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_st_setelah_ID" class="col-4 col-form-label">Serah terima bln setelah</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_st_setelah_ID" name="datasppjb_st_setelah" placeholder="ST" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_serahfisik_ID" class="col-4 col-form-label">Penyerahan fisik pada bulan</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_serahfisik_ID" name="datasppjb_serahfisik" placeholder="Penyerahan" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_dendalambatkosong_ID" class="col-4 col-form-label">Denda terlambat pengosongan</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_dendalambatkosong_ID" name="datasppjb_dendalambatkosong" placeholder="Denda" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_deadlinebangunan_ID" class="col-4 col-form-label">Deadline pendirian bangunan</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_deadlinebangunan_ID" name="datasppjb_deadlinebangunan" placeholder="Deadline" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_bayarbank_ID" class="col-4 col-form-label">Bayar di Bank</label>
+                                                            <div class="col-3">
+                                                                <input type="text" class="form-control " id="datasppjb_bayarbank_ID" name="datasppjb_bayarbank" placeholder="BANK" >
+                                                            </div>
+                                                            <div class="col-5">
+                                                                <input type="text" class="form-control " id="datasppjb_bayarbank_cabang_ID" name="datasppjb_bayarbank_cabang" placeholder="Cabang" >
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_nomor_rekening_ID" class="col-4 col-form-label">Nomor Rekening</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_nomor_rekening_ID" name="datasppjb_nomor_rekening" placeholder="Nomor Rekening" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row">
+                                                            <label for="datasppjb_atas_nama_ID" class="col-4 col-form-label">Atas Nama</label>
+                                                            <div class="col-8">
+                                                                <input type="text" class="form-control " id="datasppjb_atas_nama_ID" name="datasppjb_atas_nama" placeholder="Atas Nama" maxlength="50">
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="tab-pane container" id="hargatermasukID">
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatermasuk_is_imb_ID" name="hargatermasuk_is_imb" value="1"> Ijin Mendirikan Bangunan (IMB)
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatermasuk_is_air_ID" name="hargatermasuk_is_air" value="1"> Jaringan Air Bersih dan / atau Pompa Tangan
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="col-4" style="padding-left: 12px;">
+                                                            <div class="form-check form-check-inline" >
+                                                                <label class="form-check-label">
+                                                                    <input class="form-check-input" type="checkbox" id="hargatermasuk_listrik_ID" name="hargatermasuk_listrik" value="1"> Jaringan Listrik
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-6">
+                                                            <input type="text" class="form-control " id="hargatermasuk_listrik_nilai_ID" name="hargatermasuk_listrik_nilai" placeholder="VA" >
+                                                        </div>
+                                                        <label for="ptID" class="col-2 col-form-label">VA</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatermasuk_is_telpon_ID" name="hargatermasuk_is_telpon" value="1"> Jaringan Telepon 1 ( satu ) fixed line
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane container" id="hargabelumtermasukID">
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_isppn_ID" name="hargatdktermasuk_isppn" value="1"> Pajak Pertambahan Nilai ( PPN ) 
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_ppnbm_ID" name="hargatdktermasuk_ppnbm" value="1"> Pajak Pertambahan Nilai Barang Mewah ( PPNBM ) 
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_bphtb_ID" name="hargatdktermasuk_bphtb" value="1"> Bea Perolehan Hak Atas Tanah dan Bangunan ( BPHTB )
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_ppat_ID" name="hargatdktermasuk_ppat" value="1"> Biaya AJB di hadapan PPAT
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_bbn_ID" name="hargatdktermasuk_bbn" value="1"> BBN sertifikat hak atas tanah ke a/n PIHAK KEDUA
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_biayaadmin_ID" name="hargatdktermasuk_biayaadmin" value="1"> Biaya Adm ( apabila ada ) 
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_ipl_ID" name="hargatdktermasuk_ipl" value="1"> Biaya Iuran Pemeliharaan Lingkungan ( IPL ) 
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="hargatdktermasuk_lainnya_ID" name="hargatdktermasuk_lainnya" value="1"> Semua Bea/Pajak , Biaya , Retribusi , Pungutan lainnya
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>  <!-- /Tab panes -->
+                                    </div>
+
+
+
+
+                                </div>
+                                <div class="col-6">
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#ketcaraID" style="width:90px;    height: 58px;">Ket Cara Pembayaran (Ps 3.7)</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#pihaksatuID" style="width:90px;    height: 58px;">Pihak I</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#pihakduaID" style="width:90px;    height: 58px;">Pihak 2</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#deksaktakupihaksatu" style="width:90px;    height: 58px;">Deskripsi Akta Kuasa Pihak I</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#deksaktakupihakdua" style="width:90px;    height: 58px;">Deskripsi Akta Kuasa Pihak II</a>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content nav-kontensaya">
+                                        <div class="tab-pane active container" id="pihakduaID">
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_customer" class="col-4 col-form-label">Customer</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_customer_ID" name="pihak2_customer" placeholder="Customer" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_alamat_ID" class="col-4 col-form-label">Alamat</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_alamat_ID" name="pihak2_alamat" placeholder="Alamat" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_jabatan_ID" class="col-4 col-form-label">Jabatan</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_jabatan_ID" name="pihak2_jabatan" placeholder="Jabatan" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_namapt_ID" class="col-4 col-form-label">Nama PT</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_namapt_ID" name="pihak2_namapt" placeholder="Nama PT" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_telp_ID" class="col-4 col-form-label">Telp. </label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_telp_ID" name="pihak2_telp" placeholder="Telp" maxlength="15">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_fax_ID" class="col-4 col-form-label">Fax</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_fax_ID" name="pihak2_fax" placeholder="Fax" maxlength="15">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_ktp_no_ID" class="col-4 col-form-label">No KTP</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_ktp_no_ID" name="pihak2_ktp_no" placeholder="No KTP" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_npwp_ID" class="col-4 col-form-label">NPWP</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_npwp_ID" name="pihak2_npwp" placeholder="NPWP" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_suratkuasano_ID" class="col-4 col-form-label">No. Surat Kuasa</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_suratkuasano_ID" name="pihak2_suratkuasano" placeholder="No. Surat Kuasa" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_suratkuasatgl_ID" class="col-4 col-form-label">Tgl Surat Kuasa</label>
+                                                    <div class="col-8">
+                                                        <input type="date" class="form-control" id="pihak2_suratkuasatgl_ID" name="pihak2_suratkuasatgl" placeholder="Tgl Surat Kuasa" >
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_suratkuasanama_ID" class="col-4 col-form-label">Nama</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_suratkuasanama_ID" name="pihak2_suratkuasanama" placeholder="Nama" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_suratkuasaalamat_ID" class="col-4 col-form-label">Alamat</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_suratkuasaalamat_ID" name="pihak2_suratkuasaalamat" placeholder="Alamat" maxlength="50">
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="pihak2_suratkuasanik_ID" class="col-4 col-form-label">NIK</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control " id="pihak2_suratkuasanik_ID" name="pihak2_suratkuasanik" placeholder="NIK" maxlength="50">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane container" id="pihaksatuID">
+                                            <button type="button" id="browseParamBtnId" class="btn btn-primary btn-sm">Ambil data Signatory</button>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Penandatangan 1</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_name_01" placeholder="Penandatangan 1" readonly >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Jabatan</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_position_01" placeholder="Jabatan" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Nama PT</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_pt01" placeholder="Nama PT" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Alamat PT</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_address_01" placeholder="Alamat PT" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Telp.</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_telp01" placeholder="Telp." readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Fax</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_fax01" placeholder="Fax" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Penandatangan II</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_name_02" placeholder="Penandatangan II" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Jabatan</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_position_02" placeholder="Jabatan" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Nama PT</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_pt02" placeholder="Nama PT" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Alamat</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_address_02" placeholder="Alamat" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Telp.</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_telp02" placeholder="Telp." readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label for="ptID" class="col-4 col-form-label">Fax</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control form-control-disabled" id="ptID" name="parametersppjb_fax02" placeholder="Fax" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane container" id="ketcaraID">
+                                            <textarea class="form-control" rows="10" name="ket_carabayar" maxlength="255"></textarea>
+                                        </div>
+                                        <div class="tab-pane container" id="deksaktakupihaksatu">
+                                            <!-- Nav tabs -->
+                                            <ul class="nav nav-tabs">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#dpsdesSatuID" style="width: 140px;height: 40px;">Deskripsi I</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#dpsdesDuaID" style="width: 140px;height: 40px;">Deskripsi II</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#dpsdesSumID" style="width: 140px;height: 40px;">Summary</a>
+                                                </li>
+                                            </ul>
+
+                                            <!-- Tab panes -->
+                                            <div class="tab-content nav-kontensaya" style="height:200px;">
+                                                <div class="tab-pane active container" id="dpsdesSatuID">
+                                                     <textarea class="form-control" rows="10" name="des1_ak_pihak1" maxlength="255"></textarea>
+                                                </div>
+                                                <div class="tab-pane container" id="dpsdesDuaID">
+                                                    <textarea class="form-control" rows="10" name="des2_ak_pihak1" maxlength="255"></textarea>
+                                                </div>
+                                                <div class="tab-pane container" id="dpsdesSumID">
+                                                    <textarea class="form-control" rows="10" name="sum_ak_pihak1" maxlength="255"></textarea>
+                                                </div>
+                                            </div>  <!-- /Tab panes -->
+                                        </div>
+                                        <div class="tab-pane container" id="deksaktakupihakdua">
+                                            <!-- Nav tabs -->
+                                            <ul class="nav nav-tabs">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#dpddesSatuID" style="width: 140px;height: 40px;">Deskripsi I</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#dpddesDuaID" style="width: 140px;height: 40px;">Deskripsi II</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#dpddesSumID" style="width: 140px;height: 40px;">Summary</a>
+                                                </li>
+                                            </ul>
+
+                                            <!-- Tab panes -->
+                                            <div class="tab-content nav-kontensaya" style="height:200px;">
+                                                <div class="tab-pane active container" id="dpddesSatuID">
+                                                     <textarea class="form-control" rows="10" name="des1_ak_pihak2" maxlength="255"></textarea>
+                                                </div>
+                                                <div class="tab-pane container" id="dpddesDuaID">
+                                                    <textarea class="form-control" rows="10" name="des2_ak_pihak2" maxlength="255"></textarea>
+                                                </div>
+                                                <div class="tab-pane container" id="dpddesSumID">
+                                                    <textarea class="form-control" rows="10" name="sum_ak_pihak2" maxlength="255"></textarea>
+                                                </div>
+                                            </div>  <!-- /Tab panes -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                        </form>
+                    </div> 
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-sm" abc-action="save"><span class="icon icon-save">&nbsp;</span>Save</button>
+            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><span class="icon icon-cancel">&nbsp;</span>Close</button>
+        </div>
+    </div>
+
+</div>
+</div>

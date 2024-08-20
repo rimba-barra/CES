@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.alokasibiaya.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.alokasibiaya.Grid','Hrd.view.alokasibiaya.FormSearch','Hrd.view.alokasibiaya.FormData'],
+    alias:'widget.alokasibiayapanel',
+    itemId:'AlokasibiayaPanel',
+    gridPanelName:'alokasibiayagrid',
+    formSearchPanelName:'alokasibiayaformsearch',
+    formDataName:'alokasibiayaformdata',
+});

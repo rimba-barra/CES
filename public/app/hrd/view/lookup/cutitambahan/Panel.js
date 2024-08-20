@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.cutitambahan.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.cutitambahan.Grid','Hrd.view.lookup.cutitambahan.FormSearch'],
+    alias:'widget.lookupcutitambahanpanel',
+    itemId:'LookupcutitambahanPanel',
+    height:500,
+    gridPanelName:'lookupcutitambahangrid',
+    formSearchPanelName:'lookupcutitambahanformsearch'
+});

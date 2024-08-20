@@ -1,0 +1,27 @@
+Ext.define('Erems.model.Morecustomer', {
+    extend: 'Ext.data.Model',
+    alias: 'model.morecustomermodel',
+    idProperty: 'purchaseletter_customer_id',
+    fields: [   
+                {name : "purchaseletter_customer_id", type: "int"},
+                {name : "purchaseletter_id", type: "int"},
+                {name : "customer_id", type : "string"},
+                {name : "customer_name", type : "string"},
+                {name : "customer_address", type : "string"},
+                {name : "customer_city_id", type : "int"},
+                {name : "customer_city", type : "string"},
+                {name : "customer_zipcode", type : "string"},
+                {name : "customer_homephone", type : "string"},
+                {name : "customer_mobilephone", type : "string"},
+                {name : "customer_officephone", type : "string"},
+                {name : "customer_fax", type : "string"},
+                {name : "customer_ktp", type : "string"},
+                {name : "customer_ktp_address", type : "string"},
+                {name : "customer_npwp", type : "string"},
+                {name : "customer_npwp_address", type : "string"},
+                {name : "customer_npwp_name", type : "string"},
+                {name : "customer_email", type : "string"},
+                {name : "customer_porsi_kepemilikan_customer", type : "float"},
+                {name : "deleted", type : "boolean"},
+    ]
+});

@@ -1,0 +1,53 @@
+<div id="logintitle" class="front-title" style="margin-bottom:20px;padding-bottom:10px;padding-left:3px;">Login</div>
+<form name="frmlogin" id="frmlogin">
+	<table cellspacing="0" cellpadding="3" align="center" border="0">
+		<tr>
+			<td width="60" class="disabled">User</td>
+			<td><input type="text" name="usr" id="usr" size="35" disabled="disabled" /></td>
+		</tr>
+		<tr>
+			<td width="60" class="disabled">Password</td>
+			<td><input type="password" name="pas" id="pas" size="35" disabled="disabled" /></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="padding-top:20px;">
+				<span class="link small disabled" id="lnkforget" style="margin-top:10px;float:left;">Forget Password ?</span>
+				<input type="button" value="Login" name="btnlogin" id="btnlogin" disabled="disabled" style="width:80px;height:30px;font-size:0.9em;float:right;" />				
+			</td>
+		</tr>
+	</table>
+</form>
+<script type="text/javascript">
+var loginchecktm;
+$('#lnkforget').click(function(){ if($('#lnkforget').hasClass('disabled')) { return false; } clearTimeout(loginchecktm); loadBasePage({actionName:'forgetpassword'}); });
+if ($.cookie('uid')==null){$.removeCookie('PHPSESSID',{path:'/'});}
+clearTimeout(loginchecktm);
+<?php
+	if (isset($this->msg)) { echo 'alert("'.$this->msg.'\n\n");'; }
+	if ($this->dbmainconnected) : 
+?>
+var submitLogin = function(stat) {
+	var emptyField = 0, emptyFieldIndex;
+	if ($.trim($('#frmlogin :input:eq(0)').val())=='') {
+		emptyFieldIndex = 0; emptyField++;
+	} else if($('#frmlogin :input:eq(1)').val()=='') {
+		emptyFieldIndex = 1; emptyField++;
+	}
+	if (emptyField) {
+		if (stat) { alert('Form is not completed !'); }
+		$('#frmlogin :input:eq('+emptyFieldIndex+')').focus();
+	} else {
+		loadBasePage({actionName:'loginprocess', method:'POST', data:'#frmlogin'});
+	}
+};
+$('input').removeAttr('disabled');
+$('.disabled').removeClass('disabled');
+$('#usr').focus();
+$('#frmlogin :input:not(#btnsubmit)').keydown(function(e){ if (e.which=='13'){ submitLogin(0); } });
+$('#btnlogin').addClass('ptr').click(function(){ submitLogin(1); });
+$('#logintitle').html('Login');
+<?php else : ?>
+$('#logintitle').html('Login is currently unavailable !');
+loginchecktm = setTimeout("loadBasePage({actionName:'login', loadermsg:''});",5000);
+<?php endif; ?>
+</script>

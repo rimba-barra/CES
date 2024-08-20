@@ -1,0 +1,9 @@
+Ext.define('Gl.view.coa.Panel',{
+    extend:'Gl.library.template.view.Panel',
+    requires:['Gl.view.coa.Grid','Gl.view.coa.FormSearch'],
+    alias:'widget.coapanel',
+    itemId:'CoaPanel',
+    maximized:true,
+    gridPanelName:'coagrid',
+    formSearchPanelName:'coaformsearch'
+});

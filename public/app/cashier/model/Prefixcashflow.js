@@ -1,0 +1,26 @@
+Ext.define('Cashier.model.Prefixcashflow', {
+    extend    : 'Ext.data.Model',
+    alias     : 'model.prefixcashflowmodel',
+    idProperty: 'prefix_id',
+    fields    : [
+        {name: 'prefix_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'projectcode', type: 'string'},
+        {name: 'ptcode', type: 'string'},
+        {name: 'projectname', type: 'string'},
+        {name: 'ptname', type: 'string'},
+        {name: 'prefix', type: 'string'},
+        {name: 'description', type: 'string'},
+        {name: 'is_cashflow', type: 'boolean'},
+        {name: 'is_cashier', type: 'boolean'},
+        {name: 'is_minority', type: 'boolean'},
+        {name: 'openmonth', type: 'int'},        
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'modion', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'modiby', type: 'string'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'hideparam', type: 'string'},
+    ]
+});

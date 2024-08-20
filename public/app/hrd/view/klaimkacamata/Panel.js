@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.klaimkacamata.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.klaimkacamata.Grid','Hrd.view.klaimkacamata.FormSearch','Hrd.view.klaimkacamata.FormData'],
+    alias:'widget.klaimkacamatapanel',
+    itemId:'KlaimkacamataPanel',
+    gridPanelName:'klaimkacamatagrid',
+    formSearchPanelName:'klaimkacamataformsearch',
+    formDataName:'klaimkacamataformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

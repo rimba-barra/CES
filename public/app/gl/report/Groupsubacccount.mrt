@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<StiSerializer version="1.02" type="Flex" application="StiReport">
+  <Dictionary isKey="true" Ref="1" type="Dictionary">
+    <Databases count="1" isList="true">
+      <GLCON isKey="true" Ref="2" type="Stimulsoft.Report.Dictionary.StiSqlDatabase">
+        <Alias>GLCON</Alias>
+        <ConnectionStringEncrypted>49Bla0YOWoViSbVUej1lP4sq18JmNZLNbAj9bHw9pGrCGNEC5kpLfUVsoQjhxKBuw8TR400V090=</ConnectionStringEncrypted>
+        <Name>GLCON</Name>
+      </GLCON>
+    </Databases>
+    <DataSources count="1" isList="true">
+      <Subaccountgroup isKey="true" Ref="3" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>Subaccountgroup</Alias>
+        <Columns count="15" isList="true">
+          <value>kelsub_id,System.Int32</value>
+          <value>project_id,System.Int32</value>
+          <value>pt_id,System.Int32</value>
+          <value>kelsub,System.String</value>
+          <value>description,System.String</value>
+          <value>addon,System.DateTime</value>
+          <value>addby,System.Int32</value>
+          <value>modion,System.DateTime</value>
+          <value>modiby,System.Int32</value>
+          <value>inactiveon,System.DateTime</value>
+          <value>inactiveby,System.Int32</value>
+          <value>deleteon,System.DateTime</value>
+          <value>deleteby,System.Int32</value>
+          <value>active,System.Int32</value>
+          <value>deleted,System.String</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>Subaccountgroup</Name>
+        <NameInSource>GLCON</NameInSource>
+        <Parameters count="0" isList="true"/>
+        <SqlCommand>exec sp_reportgroupsubaccount '{project_id}','{pt_id}','{from_kelsub}','{until_kelsub}'</SqlCommand>
+      </Subaccountgroup>
+    </DataSources>
+    <Relations count="0" isList="true"/>
+    <Report isRef="0"/>
+    <Variables count="9" isList="true">
+      <value>,project_name,project_name,System.String,,False,False</value>
+      <value>,pt_name,pt_name,System.String,,False,False</value>
+      <value>,tgl_sekarang,tgl_sekarang,System.String,,False,False</value>
+      <value>,time_sekarang,time_sekarang,System.String,,False,False</value>
+      <value>,userprint,userprint,System.String,,False,False</value>
+      <value>,project_id,project_id,System.Int32,,False,False</value>
+      <value>,pt_id,pt_id,System.Int32,,False,False</value>
+      <value>,from_kelsub,from_kelsub,System.Int32,,False,False</value>
+      <value>,until_kelsub,until_kelsub,System.Int32,,False,False</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings count="0" isList="true"/>
+  <MetaTags count="0" isList="true"/>
+  <Pages count="1" isList="true">
+    <Page1 isKey="true" Ref="4" type="Page">
+      <Border>None;Black;2;Solid;False;4;Black</Border>
+      <Brush>Transparent</Brush>
+      <Components count="19" isList="true">
+        <PageHeaderBand2 isKey="true" Ref="5" type="PageHeaderBand">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0.4,27.6,0.8</ClientRectangle>
+          <Components count="4" isList="true">
+            <TextInCells2 isKey="true" Ref="6" type="Stimulsoft.Report.Components.StiTextInCells">
+              <Border>All;Black;2;Solid;False;4;Black</Border>
+              <Brush>White</Brush>
+              <ClientRectangle>1,0.4,0,0</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,14,Bold</Font>
+              <Guid>2ee76e7de95f3f74c3f170a2667b8442</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>TextInCells2</Name>
+              <Page isRef="4"/>
+              <Parent isRef="5"/>
+              <Text>TextInCells1</Text>
+              <TextBrush>Black</TextBrush>
+            </TextInCells2>
+            <Text28 isKey="true" Ref="7" type="Text">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1,0,3.2,0.8</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,8</Font>
+              <Guid>8d796883d6747d6c586770a2667b9f0f</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text28</Name>
+              <Page isRef="4"/>
+              <Parent isRef="5"/>
+              <Text>Group Code</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text28>
+            <Text16 isKey="true" Ref="8" type="Text">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>4.2,0,23.4,0.8</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,8</Font>
+              <Guid>9927f79275f0ae850a0d70a2667b5888</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text16</Name>
+              <Page isRef="4"/>
+              <Parent isRef="5"/>
+              <Text>Group description</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text16>
+            <Text26 isKey="true" Ref="9" type="Text">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0,1,0.8</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,8</Font>
+              <Guid>435d1c349d887bdbc9c370a2667b245c</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text26</Name>
+              <Page isRef="4"/>
+              <Parent isRef="5"/>
+              <Text>No</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text26>
+          </Components>
+          <Conditions count="0" isList="true"/>
+          <Guid>21f20bcc5cb88c86f95570a2667b5bf6</Guid>
+          <Name>PageHeaderBand2</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+        </PageHeaderBand2>
+        <PageFooterBand1 isKey="true" Ref="10" type="PageFooterBand">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,14.2,27.6,0.8</ClientRectangle>
+          <Components count="0" isList="true"/>
+          <Conditions count="0" isList="true"/>
+          <Name>PageFooterBand1</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+        </PageFooterBand1>
+        <Text14 isKey="true" Ref="11" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,-4.4,1.6,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>cccd2645285a7d637f78709feb097e4a</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text14</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>Project</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text14>
+        <Text1 isKey="true" Ref="12" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,-3.2,1.6,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>52a029a5225a210fea0e709feb095220</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text1</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>Print Date</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text1>
+        <Text2 isKey="true" Ref="13" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,-2,1.6,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>43462520e79278e4082b709feb093546</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text2</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>Report File</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text2>
+        <Text3 isKey="true" Ref="14" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,-3.8,1.6,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>2d2fad133d45a65ee0e4709feb0963e0</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text3</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>PT</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text3>
+        <Text4 isKey="true" Ref="15" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>1.6,-3.2,4.8,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>0567c1e745cbb8d7d611709feb094ec1</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text4</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>: {tgl_sekarang}</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text4>
+        <Text6 isKey="true" Ref="16" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>1.6,-4.4,4.8,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>8d1b14a77b058c022c4d709feb09a82e</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text6</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>: {project_name}</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text6>
+        <Text7 isKey="true" Ref="17" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>1.6,-3.8,4.8,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>71bb8074c52b2198ca4a709feb09efd0</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text7</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>: {pt_name}</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text7>
+        <Text9 isKey="true" Ref="18" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>1.6,-2,4.8,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>fbd87510f77ef9f57519709feb09061b</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text9</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>: Groupsubacccount.mrt</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text9>
+        <Text10 isKey="true" Ref="19" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,-2.6,1.6,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>7544ec316f68211f737c709feb09084d</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text10</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>Print Time</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text10>
+        <Text11 isKey="true" Ref="20" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>1.6,-2.6,4.8,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>da5615f7643fbb37e593709feb0977d2</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text11</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>: {time_sekarang}</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text11>
+        <Text8 isKey="true" Ref="21" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,-1.4,1.6,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>abf77974e4480577d461709feb098602</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text8</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>Print by</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text8>
+        <Text13 isKey="true" Ref="22" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>1.6,-1.4,4.8,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>f9458092378db57e03e4709feb09aee6</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text13</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>: {userprint}</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text13>
+        <Text5 isKey="true" Ref="23" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>9.4,-3.6,11.4,0.8</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,14,Bold</Font>
+          <Guid>14df300bad485d908da7709feb094947</Guid>
+          <HorAlignment>Center</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text5</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>List group sub account</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text5>
+        <Text12 isKey="true" Ref="24" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>1.6,-0.8,4.8,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>2db90d5865a008d9986e709feb09ad42</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text12</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>:  {PageNumber} / {TotalPageCount}</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+        </Text12>
+        <Text15 isKey="true" Ref="25" type="Text">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,-0.8,1.2,0.6</ClientRectangle>
+          <Conditions count="0" isList="true"/>
+          <Font>Arial,8</Font>
+          <Guid>6d76e227f76f1093bb7b709feb09e3b7</Guid>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text15</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Text>Page</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+        </Text15>
+        <DataBand2 isKey="true" Ref="26" type="DataBand">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,2,27.6,0.8</ClientRectangle>
+          <Components count="3" isList="true">
+            <Text19 isKey="true" Ref="27" type="Text">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0.2,1,0.6</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,10</Font>
+              <Guid>03e55d0f463364d4817770a52739d415</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text19</Name>
+              <Page isRef="4"/>
+              <Parent isRef="26"/>
+              <Text>{Line}</Text>
+              <TextBrush>Black</TextBrush>
+            </Text19>
+            <Text22 isKey="true" Ref="28" type="Text">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.2,0.2,1.6,0.6</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,10</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text22</Name>
+              <Page isRef="4"/>
+              <Parent isRef="26"/>
+              <Text>{Subaccountgroup.kelsub}</Text>
+              <TextBrush>Black</TextBrush>
+            </Text22>
+            <Text24 isKey="true" Ref="29" type="Text">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>4.6,0.2,19.2,0.6</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,10</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text24</Name>
+              <Page isRef="4"/>
+              <Parent isRef="26"/>
+              <Text>{Subaccountgroup.description}</Text>
+              <TextBrush>Black</TextBrush>
+            </Text24>
+          </Components>
+          <Conditions count="0" isList="true"/>
+          <DataSourceName>Subaccountgroup</DataSourceName>
+          <Filters count="0" isList="true"/>
+          <Guid>248327e36ad4ddc447be70a52739d6ac</Guid>
+          <Name>DataBand2</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+          <Sort count="0" isList="true"/>
+        </DataBand2>
+        <FooterBand2 isKey="true" Ref="30" type="FooterBand">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,3.6,27.6,0.8</ClientRectangle>
+          <Components count="2" isList="true">
+            <Text20 isKey="true" Ref="31" type="Text">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0.6,0.2,3,0.4</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,10</Font>
+              <Guid>d9068279dd7bc5adc16b70a5f5c2dd5f</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text20</Name>
+              <Page isRef="4"/>
+              <Parent isRef="30"/>
+              <Text>TOTAL ACCOUNT</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text20>
+            <Text17 isKey="true" Ref="32" type="Text">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>3.8,0.2,1.6,0.6</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Arial,10</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text17</Name>
+              <Page isRef="4"/>
+              <Parent isRef="30"/>
+              <Text>{Count(DataBand2,Subaccountgroup.kelsub)}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Totals</Type>
+            </Text17>
+          </Components>
+          <Conditions count="0" isList="true"/>
+          <Guid>d6cbbed81bd1b21afa2670a5f5c21398</Guid>
+          <Name>FooterBand2</Name>
+          <Page isRef="4"/>
+          <Parent isRef="4"/>
+        </FooterBand2>
+      </Components>
+      <Conditions count="0" isList="true"/>
+      <Guid>55a25dca762e658f7748709e5fafa930</Guid>
+      <Margins>1,1.1,5,1</Margins>
+      <Name>Page1</Name>
+      <Orientation>Landscape</Orientation>
+      <PageHeight>21</PageHeight>
+      <PageWidth>29.7</PageWidth>
+      <Report isRef="0"/>
+      <Watermark isKey="true" Ref="33" type="Stimulsoft.Report.Components.StiWatermark">
+        <Font>Arial,100</Font>
+        <TextBrush>[50:0:0:0]</TextBrush>
+      </Watermark>
+    </Page1>
+  </Pages>
+  <PrinterSettings isKey="true" Ref="34" type="Stimulsoft.Report.Print.StiPrinterSettings"/>
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>06/21/2016 03:01:52 PM</ReportChanged>
+  <ReportCreated>06/21/2016 08:41:15 AM</ReportCreated>
+  <ReportFile>Groupsubacccount.mrt</ReportFile>
+  <ReportGuid>e869a7543d1580ae3d6271fab9e4cc9f</ReportGuid>
+  <ReportName>Report</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2014.3</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles count="0" isList="true"/>
+</StiSerializer>

@@ -1,0 +1,1 @@
+Ext.define('Appsmgmt.model.Group',{extend:'Ext.data.Model',alias:'model.GroupModel',idProperty:'group_id',fields:[{name:'group_id',type:'int'},{name:'group_name',type:'string'},{name:'apps_id',type:'int'},{name:'description',type:'string'},{name:'active',type:'boolean'},{name:'apps_name',type:'string'},{name:'apps_basename',type:'string'}]});

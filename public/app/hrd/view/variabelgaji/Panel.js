@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.variabelgaji.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.variabelgaji.Grid','Hrd.view.variabelgaji.FormSearch','Hrd.view.variabelgaji.FormData'],
+    alias:'widget.variabelgajipanel',
+    itemId:'VariabelgajiPanel',
+    gridPanelName:'variabelgajigrid',
+    formSearchPanelName:'variabelgajiformsearch',
+    formDataName:'variabelgajiformdata',
+});

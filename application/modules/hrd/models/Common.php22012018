@@ -1,0 +1,102 @@
+<?php
+
+ini_set("memory_limit", "-1");
+ini_set('max_execution_time', 0);
+
+class Hrd_Models_Common extends Zend_Db_Table_Abstract {
+
+    private $setting = null;
+
+    function init() {
+        date_default_timezone_set('Asia/Jakarta');
+        $this->_curdate = date('Y-m-d');
+        $this->_curdatetime = date('Y-m-d H:i:s');
+        $this->setting = new Hrd_Models_General_Setup();
+    }
+
+    function RoutesAllRequest($param) {
+        $return['success'] = false;
+        if (is_array($param) && count($param)) {
+            try {
+                $this->setting->_param = $param;
+                $this->setting->_paramsql = 'read';
+                switch ($this->setting->_param['mode_read']) {
+                    case 'getdataemployee':
+                        $return = $this->getdata_employee($param);
+                        $data = $return['data'];
+                        $counter = $return['total'];
+                        $message = null;
+                        $valid = true;
+                        break;
+                    case 'getdatashiftype':
+                        $return = $this->getdata_shifttype($param);
+                        $data = $return['data'];
+                        $counter = $return['total'];
+                        $message = null;
+                        $valid = true;
+                        break;
+                    default:
+                        $result = null;
+                        $valid = true;
+                        $counter = 0;
+                        $message = 'no action';
+                }
+
+                $return = array(
+                    "success" => $valid,
+                    "data" => $data,
+                    "msg" => $message,
+                    "total" => $counter,
+                    "counter" => $counter,
+                    "parameter" => $param['mode_read'],
+                );
+            } catch (Exception $e) {
+                
+            }
+        }
+        return $return;
+    }
+
+    public function getdata_employee($param) {
+        $project_id = $param['project_id'];
+        $pt_id = $param['pt_id'];
+        $return = array("total" => 0, "data" => array());
+        $this->setting->_storeprocedure = $this->setting->_sp_common;
+        $this->setting->_paramsql = 'read';
+        $this->setting->_project_id = $project_id;
+        $this->setting->_pt_id = $pt_id;
+        $this->setting->_param = array(
+            "hideparam" => 'employeedataprojectpt',
+        );
+        $result = $this->setting->executeSP();
+
+        if (!empty($result[2])) {
+            $return['total'] = $result[1][0]['RECORD_TOTAL'];
+            $return['data'] = $result[2];
+        }
+
+        return $return;
+    }
+
+    public function getdata_shifttype($param) {
+        $project_id = $param['project_id'];
+        $pt_id = $param['pt_id'];
+        $return = array("total" => 0, "data" => array());
+        $this->setting->_storeprocedure = $this->setting->_sp_common;
+        $this->setting->_paramsql = 'read';
+        $this->setting->_project_id = $project_id;
+        $this->setting->_pt_id = $pt_id;
+        $this->setting->_param = array(
+            "hideparam" => 'shifttypeprojectpt',
+        );
+        $result = $this->setting->executeSP();
+
+        if (!empty($result[2])) {
+            $return['total'] = $result[1][0]['RECORD_TOTAL'];
+            $return['data'] = $result[2];
+        }
+
+        return $return;
+    }
+
+}

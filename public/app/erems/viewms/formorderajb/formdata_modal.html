@@ -1,0 +1,1129 @@
+<div class="modal" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index: 99999;">
+    <div class="modal-dialog modal-lg modal-ku">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Form Order AJB</h4>
+                <button type="button" class="close btn-sm" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="mellong">
+                    <div class="container my-container" >
+
+                        <form id="formFormOrderAjbId">
+
+                            <input type="hidden" name="formorderajb_id" id="formorderajb_id">
+                            <input type="hidden" name="purchaseletter_purchaseletter_id" id="purchaseletter_purchaseletter_id">
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Order
+                                </div>
+                                <div class="card-block">
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="nomorOrderId" class="col-4 col-form-label">Nomor Order</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control" id="nomorOrderId" name="formorderajb_no" placeholder="Nomor Order" maxlength="30">
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="tanggalOrderId" class="col-4 col-form-label">Tanggal Order</label>
+                                                <div class="col-8">
+                                                 
+                                                    <input type="date" max="2100-12-31" min="1987-01-01" class="form-control" name="formorderajb_date" id="tanggalOrderId">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+
+
+
+
+
+
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Unit
+                                </div>
+                                <div class="card-block">
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="ptID" class="col-4 col-form-label">PT</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" id="ptID" name="pt_name" placeholder="PT" disabled>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="prodcatID" class="col-4 col-form-label">Product Category</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" id="prodcatID" name="productcategory_productcategory" placeholder="Product Category" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="clustercodeID" class="col-4 col-form-label">Kawasan / Cluster</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="clustercodeID" name="cluster_code" placeholder="Cluster Code" disabled>
+                                                </div>
+                                                <div class="col-5">
+                                                    <input type="text" class="form-control form-control-disabled" id="clusterclusterId" name="cluster_cluster" placeholder="Cluster Name" disabled>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="tipeId" class="col-4 col-form-label">Type</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" name="type_name" id="tipeId" placeholder="Type" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="blockCodeId" class="col-4 col-form-label">Block</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="blockCodeId" name="block_code" placeholder="Code" disabled>
+                                                </div>
+                                                <div class="col-5">
+                                                    <input type="text" class="form-control form-control-disabled" id="blockblockId" name="block_block" placeholder="Block" disabled>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="landSizeId" class="col-4 col-form-label">Land Size</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="landSizeId" name="unit_land_size" placeholder="Land Size" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2</label>
+                                                <label for="longId" class="col-2 col-form-label" style="text-align: right;">Long</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="longId" name="unit_long" placeholder="m2" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="unitnumberID" class="col-4 col-form-label">Kavling / Unit Number</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="unitnumberID" name="unit_unit_number" placeholder="Unit Number" disabled required>
+                                                </div>
+                                                <div class="col-4">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="browseUnitBtnID" disabled>Browse Unit</button>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="buildingSizeId" class="col-4 col-form-label">Building Size</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="buildingSizeId" name="unit_building_size" placeholder="Building Size" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2</label>
+                                                <label for="widthId" class="col-2 col-form-label" style="text-align: right;">Width</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="widthId" name="unit_width" placeholder="Width" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            &nbsp;
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="kelebihantanahId" class="col-4 col-form-label">Kelebihan Tanah</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="kelebihantanahId" name="unit_kelebihan" placeholder="Kelebihan Tanah" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2 </label>
+                                                <label for="floorID" class="col-2 col-form-label" style="text-align: right;">Floor</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="floorID" name="unit_floor"  placeholder="Floor" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Konsumen
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-9">
+
+                                            <div class="form-group row">
+                                                <label for="cusID" class="col-2 col-form-label">Customer ID</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusID" name="customer_customer_id" placeholder="Customer Id" disabled>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="cusNameId" class="col-2 col-form-label">Customer Name</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusNameId" name="pengalihanhak_name" placeholder="Customer Name" disabled>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="form-group row" style="margin-bottom: 17px;">
+                                                <label for="cusAddressID" class="col-2 col-form-label">Address</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+
+                                                    <textarea class="form-control form-control-disabled" id="cusAddressID" name="pengalihanhak_address" disabled>
+                                                        
+                                                    </textarea>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusCityId" class="col-2 col-form-label">City</label>
+                                                <div class="col-4" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusCityId" name="pengalihanhak_city" placeholder="City" disabled>
+                                                </div>
+
+                                                <label for="cuszipcodeID" class="col-2 col-form-label">Zip Code</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="cuszipcodeID" name="customer_zipcode" placeholder="Zipcode" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusHomePhoneID" class="col-2 col-form-label">Home Phone</label>
+                                                <div class="col-4" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusHomePhoneID" name="pengalihanhak_telephone" placeholder="Home Phone" disabled>
+                                                </div>
+
+                                                <label for="cusMobilePhoneID" class="col-2 col-form-label">Mobile Phone</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusMobilePhoneID" name="pengalihanhak_mobilephone" placeholder="Mobile Phone" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusOfficePhoneID" class="col-2 col-form-label">Office Phone</label>
+                                                <div class="col-4" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusOfficePhoneID" name="customer_office_phone" placeholder="Office Phone" disabled>
+                                                </div>
+
+                                                <label for="cusFaxId" class="col-2 col-form-label">Fax</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusFaxId" name="pengalihanhak_fax" placeholder="Fax" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusKTPNumberID" class="col-2 col-form-label">KTP Number</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusKTPNumberID" name="pengalihanhak_ktp" placeholder="KTP Number" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusNPWPID" class="col-2 col-form-label">NPWP Number</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusNPWPID" name="pengalihanhak_npwp_no" placeholder="NPWP Number" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusEmailAddressID" class="col-2 col-form-label">Email Address</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusEmailAddressID" name="pengalihanhak_email" placeholder="Email Address" disabled>
+                                                </div>
+
+
+                                            </div>
+
+
+
+
+
+
+
+
+                                        </div>
+
+                                        <div class="col-2">
+                                            <div class="my-foto">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Order 2
+                                </div>
+                                <div class="card-block">
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="biayaajbbbnID" class="col-4 col-form-label">Biaya AJB & Balik Nama</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control abcmoney" id="biayaajbbbnID" name="biaya_ajbbbn" placeholder="0.0">
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="biayabphtbId" class="col-4 col-form-label">Biaya BPHTB</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control abcmoney" id="biayabphtbId" name="biaya_bphtb" placeholder="0.0">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Syarat IJB
+                                </div>
+                                <div class="card-block">
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="islunasId" name="is_lunas" value="1"> LUNAS
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isterbangunid" name="is_terbangun" value="1"> TERBANGUN
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isbphtbid" name="is_bphtb" value="1"> BPHTB
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="ispbbId" name="is_pbb" value="1"> PBB
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="issudahterimaId" name="is_sudahserahterima" value="1"> SUDAH ST
+                                                    </label>
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="tahunId" class="col-4 col-form-label" style="padding-left: 33px;">Tahun</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control" id="tahunId" name="pbb_tahun" placeholder="Tahun" maxlength="4">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isbiayaajbbbnId" name="is_biayaajbbbn" value="1"> BIAYA AJB & BALIK NAMA
+                                                    </label>
+                                                </div>
+
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isskbsspId" name="is_skbssp" value="1"> SKB & SSP
+                                                    </label>
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="njopId" class="col-4 col-form-label" style="padding-left: 33px;">NJOP</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control abcmoney" id="njopId" name="pbb_njop" placeholder="0.0" >
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isterbitshgbId" name="is_terbitshgb" value="1"> TERBIT ( SHGB )
+                                                    </label>
+                                                </div>
+
+
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="luasTanahId" class="col-4 col-form-label" style="padding-left: 33px;">Luas Tanah (m2)</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control" id="luasTanahId" name="pbb_luastanah" placeholder="Luas Tanah" >
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="nomorId" class="col-4 col-form-label" style="padding-left: 33px;">Nomor</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control" id="nomorId" name="shgb_no" placeholder="Nomor" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="pbbluasbangunanId" class="col-4 col-form-label" style="padding-left: 33px;">Luas Bangunan (m2)</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control" id="pbbluasbangunanId" name="pbb_luasbangunan" placeholder="Luas Bangunan" >
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="shgbluasId" class="col-4 col-form-label" style="padding-left: 33px;">Luas</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control" id="shgbluasId" name="shgb_luas" placeholder="0.0" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="iskhususHPL" name="is_khususHPL" value="1"> Khusus HPL
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="kelurahanId" class="col-4 col-form-label" style="padding-left: 33px;">Kelurahan</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control" id="kelurahanId" name="shgb_kelurahan" placeholder="Kelurahan" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="terbitgsnoId" class="col-4 col-form-label" style="padding-left: 33px;">Terbit GS No.</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control" id="terbitgsnoId" name="terbitgs_no" placeholder="Terbit GS No" maxlength="30">
+                                                </div>
+
+                                                <label for="luasm2Id" class="col-2 col-form-label" style="text-align: right;">Luas(m2)</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control" id="luasm2Id" name="terbitgs_luas" placeholder="Luas">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Kelengkapan AJB
+                                </div>
+                                <div class="card-block">
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isktpsuamiId" name="is_ktpsuami" value="1"> KTP Suami
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isktpistriId" name="is_ktpistri" value="1"> KTP Istri
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="prodcatID" class="col-12 col-form-label"> <u><b>Khusus KPR / Auto Approve</b> </u></label>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="iskskkkId" name="is_kskkk" value="1"> KSK / KK
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <div class="col form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="iskprspkId" name="is_kprspk" value="1"> SPK ( Surat Persetujuan Kredit ) Bank
+                                                    </label>
+                                                </div>
+
+                                                <div class="col">
+                                                    <input type="text" class="form-control" name="kprspk_note" id="kprspk_note" placeholder="" maxlength="30">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isaktakawinId" name="is_aktakawin" value="1"> Akta Kawin / Surat Keterangan Belum Menikah ( Asli atau Keluarahan )
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="issptransfercustomerId" name="is_sptransfercustomer" value="1"> Surat Perintah Transfer dari Customer
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isNpwpId" name="is_npwp" value="1"> NPWP ( Nomor Pokok Wajib Pajak ) 
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isketdireksiId" name="is_ketdireksi" value="1"> Surat Keterangan ( Persetujuan Transfer dari Direksi ) 
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isgantinamaId" name="is_gantinama" value="1"> Ganti Nama dan / WNI
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+
+                                                <label class="form-label">
+                                                    ------------------------------------------------------------------------------------
+                                                </label>
+
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div class="row">
+
+
+
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isaktakelahiranId" name="is_aktakelahiran" value="1"> Akta Kelahiran
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isretribusiId" name="is_retribusi" value="1"> Retribusi s/d Periode
+                                                    </label>
+                                                </div>
+
+                                                <div class="col">
+                                                    <input type="text" class="form-control" name="retirbusi_periode" id="retirbusi_periode" placeholder="" maxlength="30">
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="issptId" name="is_spt" value="1"> SPT ( Surat Pemesanan Tanah )
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="issppjbId" name="is_sppjb" value="1"> SPPJB ( Surat Perjanjian Pengikatan Jual Beli )
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isbajbId" name="is_bajb" value="1"> BAJB ( Berita Acara Jual Beli )
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="form-check form-check-inline" style="padding-left: 12px;">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="isimbId" name="is_imb" value="1"> IMB ( Ijin Mendirikan Bangunan )
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="notesID" class="col-2 col-form-label">Catatan</label>
+                                                <div class="col-10" style="    padding-left: 56px;">
+                                                    <textarea class="form-control" id="notesID" name="note" rows="9" cols="200" maxlength="255">
+                                                        
+                                                    </textarea>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="card">
+                                                <div class="card-header" style="    background-color: white;
+                                                     color: black;
+                                                     font-weight: normal;">
+                                                    Yang Menyerahkan
+                                                </div>
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label for="pemberinameId" class="col-4 col-form-label">Nama</label>
+                                                        <div class="col-8">
+                                                            <input type="text" class="form-control" id="pemberinameId" name="pemberi_name" placeholder="" maxlength="30">
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group row">
+                                                        <label for="pemberiSelakuId" class="col-4 col-form-label">Selaku</label>
+                                                        <div class="col-8">
+                                                            <input type="text" class="form-control" id="pemberiSelakuId" name="pemberi_jabatan" placeholder="" maxlength="30">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="pemberitelpId" class="col-4 col-form-label">No. Telp</label>
+                                                        <div class="col-8">
+                                                            <input type="text" class="form-control" id="pemberitelpId" name="pemberi_telp" placeholder="" maxlength="15">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="card">
+                                                <div class="card-header" style="    background-color: white;
+                                                     color: black;
+                                                     font-weight: normal;">
+                                                    Penerima ( CS )
+                                                </div>
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label for="penerimanameId" class="col-4 col-form-label">Nama</label>
+                                                        <div class="col-8">
+                                                            <input type="text" class="form-control" id="penerimanameId" name="penerima_name" placeholder="" maxlength="30">
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group row">
+                                                        <label for="penerimadateId" class="col-4 col-form-label">Tanggal</label>
+                                                        <div class="col-8">
+                                                            <input type="date" max="2100-12-31" min="1987-01-01" class="form-control" name="penerima_date" id="penerimadateId">
+                                                           
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="prodcatID" class="col-12 col-form-label">&nbsp;</label>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="card">
+                                                <div class="card-header" style="    background-color: white;
+                                                     color: black;
+                                                     font-weight: normal;">
+                                                    Pengiriman Ke notaris
+                                                </div>
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label for="kirimnotarisdateId" class="col-4 col-form-label">Tanggal</label>
+                                                        <div class="col-8">
+                                                            
+                                                            <input type="date" max="2100-12-31" min="1987-01-01" class="form-control" name="kirimnotaris_date" id="kirimnotarisdateId">
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group row">
+                                                        <label for="kirimnotariscp3Id" class="col-2 col-form-label">Yang Menyerahkan CP3</label>
+                                                        <div class="col-4">
+                                                            <input type="text" class="form-control" id="kirimnotariscp3Id" name="kirimnotaris_cp3" placeholder="" maxlength="30">
+                                                        </div>
+                                                        <label for="kirimnotarispenerimaId" class="col-2 col-form-label">Yang Menerima Notaris</label>
+                                                        <div class="col-4">
+                                                            <input type="text" class="form-control" id="kirimnotarispenerimaId" name="kirimnotaris_penerima" placeholder="" maxlength="30">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="prodcatID" class="col-12 col-form-label">&nbsp;</label>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- <div class="card">
+                                <div class="card-header">
+                                    Posisi Berkas AJB
+                                </div>
+                                <div class="card-block">
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <div class="form-group row">
+                                                <div class="radio col-8">
+                                                    <label><input type="radio" id="posisi_berkasa_CSL" name="posisi_berkasa" value="CSL"> Berkas masih di CS Legal mulai tanggal :</label> 
+                                                </div>
+                                                <div class="col-4">
+                                                    <input type="date" max="2100-12-31" min="1987-01-01" class="form-control" name="posisiberkascs_date">
+                                          
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="radio col-8">
+                                                    <label><input type="radio" id="posisi_berkasa_BOL" name="posisi_berkasa" value="BOL"> Berkas ada di Back Office Legal mulai tanggal :</label> 
+                                                </div>
+                                                <div class="col-4">
+                                                     <input type="date" max="2100-12-31" min="1987-01-01" class="form-control" name="posisiberkasbackoffice_date">
+                                        
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="radio col-8">
+                                                    <label><input type="radio" id="posisi_berkasa_CLK" name="posisi_berkasa" value="CLK"> Ceklist Keuangan Mulai Tanggal :</label> 
+                                                </div>
+                                                <div class="col-4">
+                                                  
+                                                    <input type="date" max="2100-12-31" min="1987-01-01" class="form-control" name="posisiberkascekfinance_date">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="radio col-8">
+                                                    <label><input type="radio" id="posisi_berkasa_OAS" name="posisi_berkasa" value="OAS"> Order Ambil Sertifikat Asli Mulai tanggal :</label> 
+                                                </div>
+                                                <div class="col-4">
+                                    
+                                                     <input type="date" max="2100-12-31" min="1987-01-01" class="form-control" name="posisiberkasambilsertifikat_date">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="radio col-8">
+                                                    <label><input type="radio" id="posisi_berkasa_BKN" name="posisi_berkasa" value="BKN"> Berkas sudah dikirim di Notaris pada tanggal :</label> 
+                                                </div>
+                                                <div class="col-4">
+                                                    <input type="date"  max="2100-12-31" min="1987-01-01" class="form-control" name="posisiberkaskirimnotaris_date">
+                                         
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="radio col-8">
+                                                    <label><input type="radio" id="posisi_berkasa_TTN" name="posisi_berkasa" value="TTN"> Sudah Tanda Tangan di notaris pada tanggal :</label> 
+                                                </div>
+                                                <div class="col-4">
+                                                    <button type="button" class="btn btn-primary btn-sm">Proses</button>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-4">
+                                            &nbsp;
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+
+
+
+
+
+
+
+
+                                </div>
+                            </div> -->
+
+                        </form>
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="formPaySaveId" disabled >Save</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

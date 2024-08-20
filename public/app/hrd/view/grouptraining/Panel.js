@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.grouptraining.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.grouptraining.Grid','Hrd.view.grouptraining.FormSearch','Hrd.view.grouptraining.FormData'],
+    alias:'widget.grouptrainingpanel',
+    itemId:'GrouptrainingPanel',
+    gridPanelName:'grouptraininggrid',
+    formSearchPanelName:'grouptrainingformsearch',
+    formDataName:'grouptrainingformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

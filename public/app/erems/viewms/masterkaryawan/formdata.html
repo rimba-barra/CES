@@ -1,0 +1,53 @@
+<br>
+<div class="container" id="masterkaryawanFormPrintoutID">
+    <div class="apli_container_alert" id="masterkaryawanAlertID" style="display:none;">
+    </div>
+    <form action="" id="masterkaryawanFormPrintoutformID" class="">
+        <input type="hidden" name="action" value="{{action}}" >
+        <input type="hidden" name="employee_id" value="{{employee_id}}" >
+        <div class="apli_container_toolbottom">
+            <div class="apli_container_toolbottom_inside" style="margin-left: -16px;margin-right: -17px;margin-top: 8px;border-right: 0px;">
+                <button type="button" class="btn btn-primary btn-sm" id="masterkaryawanFormDatasaveID">Save</button>
+                <button type="button" class="btn btn-primary btn-sm" id="masterkaryawanFormDatacancel">Cancel</button>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="mkFormNamaID" class="col-sm-2 col-form-label col-form-label-sm">Nama Karyawan</label>
+            <div class="col-sm-10">
+                <input type="text" id="mkFormNamaID" class="form-control form-control-sm" name="employee_name" value="{{employee_name}}"  placeholder="Nama Karyawan" minlength="2" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="mkFormPosID" class="col-sm-2 col-form-label col-form-label-sm">Jabatan</label>
+            <div class="col-sm-10">
+                <select class="form-control form-control-sm" name="position_position_id" id="mkFormPosID" required>
+                    <option value="7">SALES</option>
+                    <option value="8">COLLECTOR</option>
+                    <option value="9">SVY</option>
+                    <option value="26">PENGAWAS</option>
+                    <option value="263">UPLINE</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="mkFormTelpID" class="col-sm-2 col-form-label col-form-label-sm">Nomor telepon</label>
+            <div class="col-sm-10">
+                <input type="number" id="mkFormTelpID" class="form-control form-control-sm" name="phone_number" value="{{phone_number}}"  placeholder="Nomor Telepon">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="mkFormNoRekID" class="col-sm-2 col-form-label col-form-label-sm">Nomor Rekening</label>
+            <div class="col-sm-10">
+                <input type="number" id="mkFormNoRekID" class="form-control form-control-sm" name="nomor_rekening" value="{{nomor_rekening}}"  placeholder="Nomor Rekening">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="mkFormAddID" class="col-sm-2 col-form-label col-form-label-sm">Alamat</label>
+            <div class="col-sm-10">
+                <textarea class="form-control form-control-sm" id="mkFormAddID" name="address" maxlength="250">{{address}}</textarea>
+            </div>
+        </div>
+        <br/>
+        <br/>
+    </form>
+</div>

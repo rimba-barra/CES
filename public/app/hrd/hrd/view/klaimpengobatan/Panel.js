@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.klaimpengobatan.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.klaimpengobatan.Grid','Hrd.view.klaimpengobatan.FormSearch','Hrd.view.klaimpengobatan.FormData'],
+    alias:'widget.klaimpengobatanpanel',
+    itemId:'KlaimpengobatanPanel',
+    gridPanelName:'klaimpengobatangrid',
+    formSearchPanelName:'klaimpengobatanformsearch',
+    formDataName:'klaimpengobatanformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

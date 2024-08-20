@@ -1,0 +1,26 @@
+Ext.define('Cashier.model.Typeloan', {
+    extend: 'Ext.data.Model',
+    alias: 'model.typeloanmodel',
+    idProperty: 'typeloan_id',
+    fields: [
+        {name: 'typeloan_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'projectcode', type: 'string'},
+        {name: 'projectname', type: 'string'},      
+        {name: 'pt_id', type: 'int'},
+        {name: 'ptcode', type: 'string'},
+        {name: 'ptname', type: 'string'},
+        {name: 'code', type: 'string'},
+        {name: 'typeloanprefix', type: 'string'},
+        {name: 'flag_interest', type: 'int'},
+        {name: 'typeinterest', type: 'string'},
+        {name: 'description', type: 'string'},
+        {name: 'active', type: 'bit'},
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'modion', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'modiby', type: 'string'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'hideparam', type: 'string'},
+    ]
+});

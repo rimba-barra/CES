@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<StiSerializer version="1.02" type="Flex" application="StiReport">
+  <Dictionary Ref="1" isKey="true" type="Dictionary">
+    <Databases isList="true" count="1">
+      <GL Ref="2" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlDatabase">
+        <Alias>GL</Alias>
+        <ConnectionStringEncrypted>49Bla0YOWoViSbVUej1lP4sq18JmNZLNbAj9bHw9pGrCGNEC5kpLfUVsoQjhxKBuw8TR400V090=</ConnectionStringEncrypted>
+        <Name>GL</Name>
+      </GL>
+    </Databases>
+    <DataSources isList="true" count="10">
+      <accdebet1 Ref="3" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>accdebet1</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>accdebet1</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','D',1</SqlCommand>
+      </accdebet1>
+      <accdebet2 Ref="4" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>accdebet2</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>accdebet2</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','D',2</SqlCommand>
+      </accdebet2>
+      <accdebet3 Ref="5" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>accdebet3</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>accdebet3</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','D',3</SqlCommand>
+      </accdebet3>
+      <accdebet4 Ref="6" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>accdebet4</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>accdebet4</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','D',4</SqlCommand>
+      </accdebet4>
+      <acccredit1 Ref="7" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>acccredit1</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>acccredit1</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','C',1</SqlCommand>
+      </acccredit1>
+      <acccredit2 Ref="8" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>acccredit2</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>acccredit2</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','C',2</SqlCommand>
+      </acccredit2>
+      <acccredit3 Ref="9" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>acccredit3</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>acccredit3</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','C',3</SqlCommand>
+      </acccredit3>
+      <acccredit4 Ref="10" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>acccredit4</Alias>
+        <Columns isList="true" count="2">
+          <value>note,System.String</value>
+          <value>amountdata,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>acccredit4</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'I','C',4</SqlCommand>
+      </acccredit4>
+      <accdebettotal Ref="11" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>accdebettotal</Alias>
+        <Columns isList="true" count="2">
+          <value>accdesc,System.String</value>
+          <value>amounttotal,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>accdebettotal</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'T','D'</SqlCommand>
+      </accdebettotal>
+      <acccredittotal Ref="12" isKey="true" type="Stimulsoft.Report.Dictionary.StiSqlSource">
+        <Alias>acccredittotal</Alias>
+        <Columns isList="true" count="2">
+          <value>accdesc,System.String</value>
+          <value>amounttotal,System.Decimal</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>acccredittotal</Name>
+        <NameInSource>GL</NameInSource>
+        <Parameters isList="true" count="0"/>
+        <SqlCommand>exec sp_rptoffset {project_id},{pt_id},{user_id},'T','C'</SqlCommand>
+      </acccredittotal>
+    </DataSources>
+    <Relations isList="true" count="0"/>
+    <Report isRef="0"/>
+    <Variables isList="true" count="12">
+      <value>,filterdebet,filterdebet,System.String,,False,False</value>
+      <value>,project_name,project_name,System.String,,False,False</value>
+      <value>,pt_name,pt_name,System.String,,False,False</value>
+      <value>,tgl_sekarang,tgl_sekarang,System.String,,False,False</value>
+      <value>,time_sekarang,time_sekarang,System.String,,False,False</value>
+      <value>,userprint,userprint,System.String,,False,False</value>
+      <value>,project_id,project_id,System.Int32,,False,False</value>
+      <value>,pt_id,pt_id,System.Int32,,False,False</value>
+      <value>,periode,periode,System.String,,False,False</value>
+      <value>,cluster,cluster,System.String,,False,False</value>
+      <value>,filtercredit,filtercredit,System.String,,False,False</value>
+      <value>,user_id,user_id,System.Int32,,False,False</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0"/>
+  <MetaTags isList="true" count="0"/>
+  <Pages isList="true" count="1">
+    <Page1 Ref="13" isKey="true" type="Page">
+      <Border>None;Black;2;Solid;False;4;Black</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="1">
+        <DataBand1 Ref="14" isKey="true" type="DataBand">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0.4,16,0.6</ClientRectangle>
+          <Components isList="true" count="2">
+            <Text1 Ref="15" isKey="true" type="Text">
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>0,0,12.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0"/>
+              <Font>Arial,10</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text1</Name>
+              <Page isRef="13"/>
+              <Parent isRef="14"/>
+              <Text>{acccredit4.note}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text1>
+            <Text2 Ref="16" isKey="true" type="Text">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>12.4,0,3.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0"/>
+              <Font>Arial,10</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text2</Name>
+              <Page isRef="13"/>
+              <Parent isRef="14"/>
+              <Text>{acccredit4.amountdata}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextFormat Ref="17" isKey="true" type="NumberFormat">
+                <GroupSeparator>,</GroupSeparator>
+                <NegativePattern>1</NegativePattern>
+                <UseLocalSetting>False</UseLocalSetting>
+              </TextFormat>
+              <Type>Expression</Type>
+            </Text2>
+          </Components>
+          <Conditions isList="true" count="0"/>
+          <DataSourceName>acccredit4</DataSourceName>
+          <Filters isList="true" count="0"/>
+          <Name>DataBand1</Name>
+          <Page isRef="13"/>
+          <Parent isRef="13"/>
+          <Sort isList="true" count="0"/>
+        </DataBand1>
+      </Components>
+      <Conditions isList="true" count="0"/>
+      <Guid>02fdead0f72a1e254f7e09258a60cd42</Guid>
+      <Margins>1,1,1,1</Margins>
+      <Name>Page1</Name>
+      <PageHeight>29.7</PageHeight>
+      <PageWidth>18</PageWidth>
+      <Report isRef="0"/>
+      <Watermark Ref="18" isKey="true" type="Stimulsoft.Report.Components.StiWatermark">
+        <Font>Arial,100</Font>
+        <TextBrush>[50:0:0:0]</TextBrush>
+      </Watermark>
+    </Page1>
+  </Pages>
+  <PrinterSettings Ref="19" isKey="true" type="Stimulsoft.Report.Print.StiPrinterSettings"/>
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>09/08/2016 04:41:50 PM</ReportChanged>
+  <ReportCreated>09/08/2016 04:33:57 PM</ReportCreated>
+  <ReportFile>credit4.mrt</ReportFile>
+  <ReportGuid>328c67228c455318a173092cc0854884</ReportGuid>
+  <ReportName>Report</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2014.3</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="0"/>
+</StiSerializer>

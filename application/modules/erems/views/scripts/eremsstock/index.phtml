@@ -1,0 +1,139 @@
+<style type="text/css">
+	.table-stock td {
+		text-align: center;
+                background-color: red;
+	}
+	.table-stock {
+		border: 4px solid black;
+	}
+        .table-stock tr{
+		border: 4px solid black;
+	}
+        .table-stock td{
+		border: 4px solid black;
+	}
+        .table-stock th {
+                text-align: center;
+                background-color: gray;
+                border: 4px solid black;
+        }
+</style>
+<div class="mellong container-fluid">
+        <form id="formtablestock">
+
+            <input type="hidden" name="formorderajb_id" id="formorderajb_id">
+            <input type="hidden" name="purchaseletter_purchaseletter_id" id="purchaseletter_purchaseletter_id">
+            
+            <div class="col col-md-12 text-center" style="margin-bottom: 20px"> 
+                <i class="fas fa-square" style="font-size:20px;color:red"></i> <span style="margin-right: 10px"><b>: Sold</b> </span> 
+                <i class="fas fa-square" style="font-size:20px;color:green"></i> <span><b>: Available</b> </span>
+            </div>
+
+
+            <table class = "table table-stock">
+                    <tr>
+                            <th><b>Lt/No</b></th>
+                            <?php
+                                $nomor = $this->data['nomor'];
+                                $nomor2 = array();
+                                
+                                foreach ($nomor['data'] as $value){
+                                    array_push($nomor2,$value['nomor']);
+                            ?>
+                                <th><b><?php echo trim($value['nomor'])  ?></b></th>
+                            <?php
+                                }
+                            ?>
+                    </tr>
+                    <?php 
+                        $block = $this->data['block'];
+                        $detail = $this->data['detail'];
+                        $detail2 = array();
+                        $detail3 = array();
+
+//                        var_dump($block['data']);                        die();
+                        foreach ($block['data'] as $value) {
+                    ?>
+                        <tr>
+                            <td style="background-color: whitesmoke;"><b><?php echo $value['blok']; ?></b></td>
+                            <?php 
+                                foreach ($detail['data'] as $values){
+                                    if($value['blok'] == $values['blok']){
+                                        $b = array('cluster_id'=>$values['cluster_id']);
+                                        $tes = array(trim($values['nomor']),$values['unit_id'],$values['status']);
+                                        array_push($detail2, $tes);
+                                        array_push($detail3, trim($values['nomor']));
+//                                        $detail2=$values['nomor'];
+//                                            $detail2[$values['nomor']]=$b;
+                                    }
+                                }
+                                
+//                                var_dump($detail2);
+//                                echo '<br>';
+//                                var_dump($detail3);
+//                                die();
+                                
+                                foreach ($nomor['data'] as $val) {
+                                    
+                                    if(in_array(trim($val['nomor']), $detail3)){
+//                                        var_dump('wew'.$val['nomor']);
+                                        foreach ($detail2 as $data){
+//                                        var_dump($data[0]);die();
+                                    
+                                            if (trim($val['nomor']) == $data[0]) {
+                                                if($data[2]==5){
+                            ?>
+                                                    <td class="btn-detail" unit-id="<?php echo $data[1]; ?>"> <a href="" class="btn-detail" unit-id="<?php echo $data[1]; ?>" style="text-decoration: none;color:black; "><b><?php echo $val['nomor']; ?></b></a></td>
+                            <?php
+                                            
+                                                }
+                                                else
+                                                {
+                            ?>
+                                                    <td class=" btn-detail" style="background-color: green;" unit-id="<?php echo $data[1]; ?>"><a href="" class="btn-detail" unit-id="<?php echo $data[1]; ?>" style="text-decoration: none;color:black; "><b><?php echo $val['nomor']; ?></b></a></td>
+                            <?php
+                                                }
+                                            
+                                            }
+                                        }
+                                    }
+                                    else { 
+                            ?>
+                                            <td style="background-color: whitesmoke;"><b></b></td>
+                            <?php
+                                        
+                                    }
+                                }
+                                
+                                $detail2 = array();
+                                $detail3 = array();
+                            }
+                            ?>
+                        </tr>
+                        
+                    
+            </table>
+
+        </form>
+    
+        <div class="modal" id="modal-detail" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index: 99999;">
+            <div class="modal-dialog modal-lg modal-ku">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Detail Table Stock</h4>
+                        <button type="button" class="close btn-sm btn-close-detail" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body kotak_modal_body">
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button" class="btn btn-primary btn-sm" id="formPaySaveId" disabled >Save</button>-->
+                        <button type="button" class="btn btn-danger btn-sm btn-close-detail" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</div>

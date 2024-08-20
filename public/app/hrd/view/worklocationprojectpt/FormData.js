@@ -1,0 +1,67 @@
+Ext.define('Hrd.view.worklocationprojectpt.FormData', {
+    alias: 'widget.worklocationprojectptformdata',
+    extend: 'Hrd.library.box.view.FormData',
+    requires: [],
+    frame: true,
+    autoScroll: true,
+    editedRow:-1,
+    deletedData:{},
+    initComponent: function() {
+        var me = this;
+
+        Ext.applyIf(me, {
+            defaults:{
+                xtype:'textfield'
+            },
+            items: [
+                {
+                    xtype:'hiddenfield',
+                    name:'worklocationprojectpt_id'
+                },
+
+                {
+                    xtype: 'combobox',
+                    fieldLabel: 'WorkLocation',
+                    name: 'worklocation_id',
+                    width:400,
+                    displayField: 'worklocation',
+                    valueField: 'worklocation_id',
+                },
+
+                {
+                    xtype: 'combobox',
+                    name: 'projectpt_id',
+                    fieldLabel: 'Projectpt',
+                    width:400,
+                    displayField: 'project_name',
+                    valueField: 'projectpt_id',
+                    readOnly: false,
+                    allowBlank: true,
+                    matchFieldWidth: false,
+                    selectOnFocus :true,
+                    queryMode: 'local',
+                    tpl: Ext.create('Ext.XTemplate',
+                    '<table class="x-grid-table" width="500px" >',
+                      '<tr class="x-grid-row">',
+                          '<th width="100px"><div class="x-column-header x-column-header-inner">Project Name</div></th>',
+                          '<th width="100px"><div class="x-column-header x-column-header-inner">Pt Name</div></th>',
+                      '</tr>',
+                      '<tpl for=".">',
+                          '<tr class="x-boundlist-item">',
+                              '<td ><div class="x-grid-cell x-grid-cell-inner">{project_name}</div></td>',
+                                '<td><div class="x-grid-cell x-grid-cell-inner">{pt_name}</div></td>',                              
+                            '</tr>',
+                        '</tpl>',
+                    '</table>'
+                    )
+                }
+       
+                
+                
+            ],
+            dockedItems: me.generateDockedItem()
+        });
+
+        me.callParent(arguments);
+    }
+});

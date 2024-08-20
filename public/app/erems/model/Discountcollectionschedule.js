@@ -1,0 +1,33 @@
+Ext.define('Erems.model.Discountcollectionschedule', {
+    extend: 'Ext.data.Model',
+    alias: 'model.discountcollectionschedulemodel',
+    idProperty: 'schedule_id',
+    fields: [
+		{name: 'schedule_id', type: 'int'},
+		{name: 'scheduletype_id', type: 'int'},
+		{name: 'purchaseletter_id', type: 'int'},		
+		{name: 'description', type: 'string'},
+		{name: 'termin', type: 'int'},
+		{name: 'duedate', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'amount', type: 'decimal'},
+		{name: 'remaining_balance', type: 'decimal'},
+		{name: 'sourcemoney_id', type: 'int'},
+		{name: 'intersetflag', type: 'string'},
+		{name: 'interset', type: 'decimal'},
+		{name: 'remaining_interest', type: 'decimal'},
+		{name: 'recomendationdate', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'denda', type: 'decimal'},
+		{name: 'respon_note', type: 'string'},
+		{name: 'total_denda', type: 'decimal'},
+		{name: 'remaining_denda', type: 'decimal'},
+		{name: 'discount_persen', type: 'decimal'},
+		{name: 'discount', type: 'decimal'},
+		{name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'addby', type: 'int'},
+		{name: 'deleted', type: 'boolean'},
+		{name: 'scheduletype', type: 'string'},
+		{name: 'queue', type: 'int'},
+		{name: 'is_approve', type: 'boolean'},
+		{name: 'scheduletype_description', type: 'string'}
+    ]
+});

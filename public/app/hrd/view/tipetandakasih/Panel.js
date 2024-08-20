@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.tipetandakasih.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.tipetandakasih.Grid','Hrd.view.tipetandakasih.FormSearch','Hrd.view.tipetandakasih.FormData'],
+    alias:'widget.tipetandakasihpanel',
+    itemId:'TipetandakasihPanel',
+    gridPanelName:'tipetandakasihgrid',
+    formSearchPanelName:'tipetandakasihformsearch',
+    formDataName:'tipetandakasihformdata',
+});

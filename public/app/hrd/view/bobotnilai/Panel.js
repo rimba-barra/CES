@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.bobotnilai.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.bobotnilai.Grid','Hrd.view.bobotnilai.FormSearch','Hrd.view.bobotnilai.FormData'],
+    alias:'widget.bobotnilaipanel',
+    itemId:'BobotnilaiPanel',
+    gridPanelName:'bobotnilaigrid',
+    formSearchPanelName:'bobotnilaiformsearch',
+    formDataName:'bobotnilaiformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

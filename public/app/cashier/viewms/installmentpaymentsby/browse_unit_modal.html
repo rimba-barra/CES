@@ -1,0 +1,212 @@
+<style>
+    
+    
+//added semy 12/122017
+ .table-fixedx {
+        width: 100%;
+    }
+
+    .table-fixedx thead, .table-fixedx tbody, .table-fixedx tr, .table-fixedx td, .table-fixedx th { display: block; }
+
+    .table-fixedx tr:after {
+        content: ' ';
+        display: block;
+        visibility: hidden;
+        clear: both;
+    }
+    .table-fixedx tbody tr:hover,.table-striped tbody tr:hover { 
+        background-color: #E9ECEF;
+    }
+
+    .table-fixedx thead th {
+        height: 30px;
+
+        /*text-align: left;*/
+    }
+
+    .table-fixedx tbody {
+        height: 185px;
+        overflow-y: auto;
+        
+    }
+    
+    .table-fixedx::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+    }
+
+    
+    .table-fixedx thead {
+        /* fallback */
+    }
+
+
+    .table-fixedx tbody td,.table-fixedx thead th {
+       /* width: 19.2%; */
+        float: left;
+    }
+
+    .mysuper_paging a{
+        border: 1px solid #007BFF;
+        padding: 2px;
+        margin-top: 5px;
+    }
+
+    .mysuper_paging a:hover{
+        text-decoration: none;
+    }
+
+    .mysuper_paging{
+        border-top: 1px solid #E9ECEF;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .mysuper_paging span.text{
+        margin-top: 5px;
+        padding: 2px;
+        border: 1px solid white;
+    }
+    .mysuper_paging span.total_records{
+        float: right;
+    }
+    .kotak_pencarian{
+        
+        background-color: #FAFAFA;
+        padding-top: 10px;
+        padding-right: 0;
+        
+    }
+    .kotak_modal_body{
+        padding: 0;
+    }
+    .modal-ku .modal-content .modal-header .modal-title{
+        font-weight: bold;
+    }
+    .kotak_modal_body .containerSearch {
+        overflow-x: hidden; 
+    }
+    .formku_search{
+        height: 229px;
+        overflow-y: auto;
+        border-bottom: 1px solid #E9ECEF;
+        margin-bottom: 5px;
+        position: relative;
+    }
+    .formku_search .label{
+        background-color:#007bff;
+        color:#fff;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    .floatingText {
+        background-color:#007bff;
+        color:#fff;
+        width: 20px;
+        cursor: pointer;
+    }
+    .floatingText:hover {
+        opacity: 0.8;
+    }
+    .floatingText div {
+        padding: 3px;
+        width:5px;
+        word-wrap: break-word;
+        font-size: 24px;
+        font-family: monospace; /* this is just for good looks */
+    }
+    #sidebarCari {
+            background-color:#FAFAFA;
+            -webkit-transition: margin 0.3s ease;
+            -moz-transition: margin 0.3s ease;
+            -o-transition: margin 0.3s ease;
+            transition: margin 0.3s ease;
+    }
+    .collapsedCari {
+            display:none; /* hide it for small displays */
+    }
+    @media (min-width: 992px) {
+            .collapsedCari {
+                    display: block;
+                    margin-left: -25%; /* same width as sidebar */
+            }
+    }
+
+//ended semy 12/122017
+    
+</style>
+<!-- Modal -->
+<div id="myModalBrowseUnitID" class="modal fade" role="dialog" style="z-index:1000000">
+    <div class="modal-dialog modal-lg modal-ku">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sold Unit List</h4>
+                    <button type="button" class="close btn-sm" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="container containerSearch">
+                    <div class="row" >
+                        
+                        
+                        
+                        
+                        <div class="col-3 kotak_pencarian collapsedCari" id="sidebarCari">
+                            <form role="form" style="padding-right: 15px;" autocomplete="off">
+                                <div class="formku_search">
+                                    <div class="form-group form-group-sm">
+                                        <div class="label closeSearchBox">Unit Number</div>
+                                        <input class="form-control input-sm" name="unit_number" placeholder="Unit Number">
+
+                                    </div>
+                                    
+                                </div>
+
+                                <button  class="btn btn-primary btn-sm" name="submit_search">Search</button>
+                                <button class="btn btn-default btn-sm closeSearchBox" type="button" name="">Close</button>
+                            </form>
+                        </div>
+                        
+                        
+                        <div id="searchSideId" class="floatingText toggle-sidebar"> 
+                                <div>SEARCH</div>
+                        </div>
+                            
+                       
+                        
+                        <div class="col-8  pull-right" id="contentRight" >
+                            
+                             
+                            
+                          
+                            <table id="plUnitListId" class="table table-sm table-striped table-fixedx table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th style="width:30px;"><span class="text">No.</span></th>
+                                        <th style='width:80px;'><span class="text">Unit Number</span></th>
+                                        <th style='width:100px;'><span class="text">Cluster</span></th>
+                                        <th style='width:100px;'><span class="text">Type</span></th>
+                                        <th><span class="text">&nbsp;</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    &nbsp;   
+                                </tbody>
+                            </table>
+                            <div class="mysuper_paging"> 
+                                <a href="#" class="first"> << </a><a href="#" class="prev"> < </a> <span class="text current_page">0</span> of <span class="text total_page">0</span><a href="#" class="next"> > </a><a href="#" class="last"> >> </a>
+                                <span class="total_records">Total Record: 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

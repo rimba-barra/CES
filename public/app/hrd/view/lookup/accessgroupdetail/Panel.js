@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.accessgroupdetail.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.accessgroupdetail.Grid','Hrd.view.lookup.accessgroupdetail.FormSearch'],
+    alias:'widget.lookupaccessgroupdetailpanel',
+    itemId:'LookupaccessgroupdetailPanel',
+    height:500,
+    gridPanelName:'lookupaccessgroupdetailgrid',
+    formSearchPanelName:'lookupaccessgroupdetailformsearch'
+});

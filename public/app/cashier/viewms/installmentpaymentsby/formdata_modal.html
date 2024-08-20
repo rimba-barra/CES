@@ -1,0 +1,929 @@
+
+<div id="myModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static" tabindex="-1"  style="z-index:999999" >
+    <div class="modal-dialog modal-lg modal-ku">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Create New Payment</h4>
+                    <button type="button" class="close btn-sm" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="mellong">
+                    <div class="container my-container" >
+
+                        <form id="formdataId" autocomplete="off">
+
+                            <input type="hidden" name="purchaseletter_id" id="purchaseletterId">
+                             <input type="hidden" id="coa_id" name="coa_id" >
+                             <input type="hidden" id="voucherprefix_id" name="voucherprefix_id" >
+                             <input type="hidden" id="prefix_voucher" name="prefix_voucher" >
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Unit
+                                </div>
+                                <div class="card-block">
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="ptID" class="col-4 col-form-label">PT</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" id="ptID" name="pt_name" placeholder="PT" disabled>
+                                                    <input type="hidden" id="pt_id" name="pt_pt_id" >
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="prodcatID" class="col-4 col-form-label">Product Category</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" id="prodcatID" name="productcategory_productcategory" placeholder="Product Category" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="clustercodeID" class="col-4 col-form-label">Kawasan / Cluster</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="clustercodeID" name="cluster_code" placeholder="c Code" disabled>
+                                                </div>
+                                                <div class="col-5">
+                                                    <input type="text" class="form-control form-control-disabled" id="clusterclusterId" name="cluster_cluster" placeholder="c Name" disabled>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="tipeId" class="col-4 col-form-label">Type</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" name="type_name" id="tipeId" placeholder="Type" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="blockCodeId" class="col-4 col-form-label">Block</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="blockCodeId" name="block_code" placeholder="Code" disabled>
+                                                </div>
+                                                <div class="col-5">
+                                                    <input type="text" class="form-control form-control-disabled" id="blockblockId" name="block_block" placeholder="Block" disabled>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="landSizeId" class="col-4 col-form-label">Land Size</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="landSizeId" name="unit_land_size" placeholder="Land Size" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2</label>
+                                                <label for="longId" class="col-2 col-form-label" style="text-align: right;">Long</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="longId" name="unit_long" placeholder="m2" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="unitnumberID" class="col-4 col-form-label">Kavling / Unit Number</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="unitnumberID" name="unit_unit_number" placeholder="Unit Number" disabled>
+                                                </div>
+                                                <div class="col-4">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="browseUnitBtnID" disabled>Browse Unit</button>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="buildingSizeId" class="col-4 col-form-label">Building Size</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="buildingSizeId" name="unit_building_size" placeholder="Building Size" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2</label>
+                                                <label for="widthId" class="col-2 col-form-label" style="text-align: right;">Width</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="widthId" name="unit_width" placeholder="Width" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-5">
+                                            &nbsp;
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="kelebihantanahId" class="col-4 col-form-label">Kelebihan Tanah</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="kelebihantanahId" name="unit_kelebihan" placeholder="Kelebihan Tanah" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2 </label>
+                                                <label for="floorID" class="col-2 col-form-label" style="text-align: right;">Floor</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="floorID" name="unit_floor"  placeholder="Floor" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Purchaseletter
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="purchaseNoId" class="col-4 col-form-label">Purchaseletter No.</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" id="purchaseNoId" name="purchaseletter_purchaseletter_no" placeholder="Purchaseletter No" disabled>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="purchasDateId" class="col-5 col-form-label">Purchaseletter Date</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control form-control-disabled" id="purchasDateId" name="purchaseletter_purchase_date" placeholder="Purchaseletter Date" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="priceTypeId" class="col-4 col-form-label">Price Type</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled" id="priceTypeId" name="pricetype_pricetype" placeholder="State" disabled>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="serahTerimaId" class="col-5 col-form-label"> R Serah Terima</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control form-control-disabled" id="serahTerimaId" name="purchaseletter_rencana_serahterima_date" placeholder="R Serah Terima" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="totalPriceId" class="col-4 col-form-label">Total Price</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" style="text-align: left;" id="totalPriceId" name="purchaseletter_harga_total_jual" placeholder="Total Price" disabled>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-5">
+                                            &nbsp;
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Konsumen
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-9">
+
+                                            <div class="form-group row">
+                                                <label for="cusID" class="col-2 col-form-label">Customer ID</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusID" name="customer_customer_id" placeholder="Customer Id" disabled>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="cusNameId" class="col-2 col-form-label">Customer Name</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusNameId" name="customer_name" placeholder="Customer Name" disabled>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="form-group row" style="margin-bottom: 17px;">
+                                                <label for="cusAddressID" class="col-2 col-form-label">Address</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+
+                                                    <textarea class="form-control form-control-disabled" id="cusAddressID" name="customer_address" disabled>
+                                                        
+                                                    </textarea>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusCityId" class="col-2 col-form-label">City</label>
+                                                <div class="col-4" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusCityId" name="city_city_name" placeholder="City" disabled>
+                                                </div>
+
+                                                <label for="cuszipcodeID" class="col-2 col-form-label">Zip Code</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="cuszipcodeID" name="customer_zipcode" placeholder="Zipcode" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusHomePhoneID" class="col-2 col-form-label">Home Phone</label>
+                                                <div class="col-4" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusHomePhoneID" name="customer_home_phone" placeholder="Home Phone" disabled>
+                                                </div>
+
+                                                <label for="cusMobilePhoneID" class="col-2 col-form-label">Mobile Phone</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusMobilePhoneID" name="customer_mobile_phone" placeholder="Mobile Phone" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusOfficePhoneID" class="col-2 col-form-label">Office Phone</label>
+                                                <div class="col-4" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusOfficePhoneID" name="customer_office_phone" placeholder="Office Phone" disabled>
+                                                </div>
+
+                                                <label for="cusFaxId" class="col-2 col-form-label">Fax</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusFaxId" name="customer_fax" placeholder="Fax" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusKTPNumberID" class="col-2 col-form-label">KTP Number</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusKTPNumberID" name="customer_KTP_number" placeholder="KTP Number" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusNPWPID" class="col-2 col-form-label">NPWP Number</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusNPWPID" name="customer_NPWP" placeholder="NPWP Number" disabled>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="cusEmailAddressID" class="col-2 col-form-label">Email Address</label>
+                                                <div class="col-10" style="padding-left: 28px;">
+                                                    <input type="text" class="form-control form-control-disabled" id="cusEmailAddressID" name="customer_email" placeholder="Email Address" disabled>
+                                                </div>
+
+
+                                            </div>
+
+
+
+
+
+
+
+
+                                        </div>
+
+                                        <div class="col-2">
+                                            <div class="my-foto">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Pembayaran
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <div class="form-group row">
+                                                <label for="payNoID" class="col-3 col-form-label">Payment No</label>
+                                                <div class="col-9" style="    padding-left: 4px;">
+                                                    <input type="text" class="form-control" id="payNoID" name="payment_no" placeholder="Payment No">
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+
+                                        <div class="col-4">
+                                            
+                                            <div class="form-group row">
+                                                <label for="payDateID" class="col-5 col-form-label">Payment Date</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control" name="payment_date" data-toggle="datepicker" id="payDateID" placeholder="Payment Date">
+                                                
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                         
+                                            
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <div class="form-group row">
+                                                <label for="paymethodID" class="col-3 col-form-label">Payment Method</label>
+                                                <div class="col-9" style="    padding-left: 4px;">
+                                                    <select class="form-control" id="paymethodID" name="paymentmethod_paymentmethod_id" style="height:26px;">
+
+                                                    </select>
+
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+
+                                        <div class="col-4">
+                                            <div class="form-group row">
+                                                <label for="duedateID" class="col-5 col-form-label">Due Date</label>
+                                                <div class="col-7">
+                                                    <input type="text" data-toggle="datepicker"  class="form-control date" id="duedateID" name="duedate" placeholder="Due Date">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <div class="form-group row">
+                                                <label for="refernoID" class="col-2 col-form-label">Reference No</label>
+                                                <div class="col-10" style="    padding-left: 56px;">
+                                                    <input type="text" class="form-control" id="refernoID" name="reference_no" placeholder="Reference No">
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+
+                                        <div class="col-4">
+                                            <div class="form-group row">
+                                                <label for="cairdateID" class="col-5 col-form-label">Cair Date</label>
+                                                <div class="col-7">
+                                                    <input type="text"  data-toggle="datepicker" class="form-control date" name="cair_date" id="cairdateID" placeholder="Cair Date">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <div class="form-group row">
+                                                <label for="receNoID" class="col-2 col-form-label">Receipt No</label>
+                                                <div class="col-10" style="    padding-left: 56px;">
+                                                    <input type="text" class="form-control" id="receNoID" name="receipt_no" placeholder="Receipt No">
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+
+                                        <div class="col-4">
+                                            <div class="form-group row">
+                                                <label for="novouceFinID" class="col-5 col-form-label">No. Voucher Finance</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control" id="novouceFinID" name="voucher_no" placeholder="No. Voucher Finance" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="cdn" id="cdn1" value="1"> Credit Note
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="cdn" id="cdn2" value="2"> Debit Note
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline disabled">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="cdn" id="cdn3" value="3" checked> None
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div id="rowScheduleList" class="row">
+                                        <div class="col-12">
+                                            <table id="ipScheduleList" class="table table-sm table-striped table-fixedx">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:30px;"><span class="text">No.</span></th>
+                                                        <th style="width:100px;"><span class="text">Due Date</span></th>
+                                                        <th style="width:100px;"><span class="text">Type</span></th>
+                                                        <th style="width:100px;"><span class="text">Termin</span></th>
+                                                        <th style="width:100px;"><span class="text">Amount</span></th>
+                                                        <th style="width:115px;"><span class="text">Remaining Balance</span></th>
+                                                        <th style="width:100px;"><span class="text">Old Payment</span></th>
+                                                        <th style="width:100px;"><span class="text">New Payment</span></th>
+                                                        <th style="width:100px;"><span class="text">Denda</span></th>
+                                                        <th><span class="text"> - </span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    &nbsp;   
+                                                </tbody>
+                                            </table>
+                                            <div class="mysuper_paging"> 
+                                                <a href="#" class="first"> << </a><a href="#" class="prev"> < </a> <span class="text current_page">0</span> of <span class="text total_page">0</span><a href="#" class="next"> > </a><a href="#" class="last"> >> </a>
+                                                <span class="total_records">Total Record: 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="padding-top: 245px;">
+                                        <div class="col-7">
+                                            <div class="form-group row">
+                                                <label for="notesID" class="col-2 col-form-label">Notes</label>
+                                                <div class="col-10" style="    padding-left: 56px;">
+                                                    <textarea class="form-control" id="notesID" name="note" rows="9" cols="200">
+                                                        
+                                                    </textarea>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="totalDendaID" class="col-3 col-form-label">Total Denda</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" name="denda" id="totalDendaID" placeholder="Total Denda" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="paymentID" class="col-3 col-form-label">Payment</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" name="payment" id="paymentID" placeholder="Payment" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="admFeeID" class="col-3 col-form-label">Adm Fee</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control abcmoney" name="admin_fee" id="admFeeID" placeholder="Adm Fee"> 
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="cdnvalueID" class="col-3 col-form-label">CD / DN Value</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" name="cdn_value" id="cdnvalueID" placeholder="CD / DN Value" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="totalPaymentID" class="col-3 col-form-label">Total Payment</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" name="total_payment" id="totalPaymentID" placeholder="Total Payment" readonly>
+                                                </div>
+                                                
+                                                   
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    
+
+
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Informasi Cash/Bank Cashier
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="acceptDateId" class="col-4 col-form-label">Accept Date</label>
+                                                <div class="col-8">
+                                                   <input type="text" data-toggle="datepicker" class="form-control "  name="paymentcashier_accept_date" id="acceptDateId" placeholder="Accept Date">
+                                                  </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                       
+                                        
+                                        <div class="col-5">
+                                        
+                                            
+                                             <div class="form-group row" >
+                                                <label for="groupTransId" class="col-4 col-form-label">Group Trans </label>
+                                                 <div class="col-8">
+                                                     <select class="form-control" style="height:26px;" id="groupTransId"  name="paymentcashier_grouptrans_id" disabled>
+                                                         
+                                                 
+                                                </select>
+                                                 </div>
+                                              </div>
+
+
+                                        </div>
+                                        
+
+                                    </div>
+                                    <div class="row">
+                                        
+                                         <div class="col-5">
+                                          
+                                         
+                                             <div class="form-group row" >
+                                                <label for="kasbankId" class="col-4 col-form-label">Payment Type </label>
+                                                 <div class="col-8">
+                                                     <select class="form-control" style="height:26px;" id="kasbankId"  name="paymentcashier_kasbank" >
+                                                   <option value="">-</option>
+                                                         <option value="K">KAS</option>
+                                                  <option value="B">BANK</option>
+                                                </select>
+                                                 </div>
+                                              </div>
+                                             
+                                        </div>
+                                        
+                                        
+                                       
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="form-group row">
+                                                <label for="trans_no" class="col-4 col-form-label"> Transaction No.</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control form-control-disabled" id="trans_no" name="paymentcashier_transno" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            
+                                        
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        
+                                         <div class="col-5">
+                                             
+                                       
+                                             
+                                             <div class="form-group row" >
+                                                <label for="departementId" class="col-4 col-form-label">Departement</label>
+                                                 <div class="col-8">
+                                                     <select class="form-control" style="height:26px;" id="departementId"  name="paymentcashier_department_id" disabled>
+
+                                                </select>
+                                                 </div>
+                                              </div>
+                                             
+                                        </div>
+                                        
+                                        <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        
+                                        <div class="col-5">
+                                            &nbsp;
+                                        </div>
+                                        
+                                     
+                                        
+                                        
+                                         <div class="col-5" id="prefix_cashs">
+                                             
+         
+                                             <div class="form-group row" >
+                                                <label for="prefix_cash" class="col-4 col-form-label">Prefix Cash</label>
+                                                 <div class="col-8">
+                                                     <select class="form-control" style="height:26px;" id="prefix_cash"  name="paymentcashier_prefix_id" disabled>
+                                                    <option value="">-</option>
+                                                </select>
+                                                 </div>
+                                              </div>
+                                             
+                                             
+                                             
+                                          </div>
+                                        
+                                        <div class="col-5" id="prefix_banks">
+                                            
+                       
+                                              <div class="form-group row" >
+                                                <label for="prefix_bank" class="col-4 col-form-label">Prefix Bank</label>
+                                                 <div class="col-8">
+                                                     <select class="form-control" style="height:26px;" id="prefix_bank"  name="paymentcashier_prefix_id_bank" disabled>
+                                                      <option value="">-</option>    
+                                                </select>
+                                                 </div>
+                                              </div>
+                                             
+                                            
+                                          </div>
+                                        
+                                        
+                                        <div class="col-5">
+                                            &nbsp;
+                                        </div>
+                                        
+                                          <div class="col-1">
+                                            &nbsp;
+                                        </div>
+                                        
+                                        <div class="col-5">
+                                            &nbsp;
+                                        </div>
+                                        
+                                       
+                                    </div>
+
+                                    <div class="col-5">
+                                            &nbsp;
+                                        </div>
+                                    
+                                    <br style="clear:both">
+                                    <br style="clear:both">
+                                    
+                                    <div class="col-4">
+                                                    <button type="button" style="cursor:pointer" class="btn btn-primary btn-sm" id="generateBtnId" disabled>Generate Template</button>
+                                    </div>
+                               
+                                    <div id="rowJurnalList" class="row ">
+                                        <div class="col-12">
+                                            <table id="ipJurnalList" class="table table-sm table-striped table-fixedx ">
+                                                <thead>
+                                                    <tr>
+                                                        <th   style="width:30px;"><span class="text">No.</span></th>
+                                                        <th style="width:100px;" ><span class="text">Code</span></th>
+                                                        <th style="width:200px;"><span class="text">Name</span></th>
+                                                        <th style="width:100px;"><span class="text">Dataflow</span></th>
+                                                        <th style="width:100px;"><span class="text">Description</span></th>
+                                                        <th style="width:120px;"><span class="text">Percent</span></th>
+                                                        <th style="width:120px;" class="abcmoney"><span class="text">Amount </span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    &nbsp;   
+                                                </tbody>
+                                            </table>
+                                            <div class="mysuper_paging"> 
+                                                <a href="#" class="first"> << </a><a href="#" class="prev"> < </a> <span class="text current_page">0</span> of <span class="text total_page">0</span><a href="#" class="next"> > </a><a href="#" class="last"> >> </a>
+                                                <span class="total_records">Total Record: 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    
+                                   
+                                    
+                                    
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                   
+                                    
+                                    
+                                     <div class="row">
+                                        
+                                        <div class="col-4" id="prefix_cash">
+                                            <div class="form-group row">
+                                                <label for="headerId" class="col-4 col-form-label">Header</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="headerId" name="header" placeholder="Auto Value" disabled>
+                                                </div>
+
+                                            </div>
+                                          </div>
+                                        
+                                        <div class="col-4" id="prefix_cash">
+                                            <div class="form-group row">
+                                                <label for="detailId" class="col-4 col-form-label">Detail</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="detailId" name="detail" placeholder="Auto Value" disabled>
+                                                </div>
+
+                                            </div>
+                                          </div>
+                                        
+                                        <div class="col-4" id="prefix_cash">
+                                            <div class="form-group row">
+                                                <label for="balanceId" class="col-4 col-form-label">Balance</label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="balanceId" name="balance" placeholder="Auto Value" disabled>
+                                                </div>
+
+                                            </div>
+                                          </div>
+                                        
+                                    </div>
+                                   
+                                    
+                                    
+                                </div>
+                            </div>
+                            
+                            
+                            
+                           
+                            
+                        </form>
+                        
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="formPaySaveId" disabled >Save</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

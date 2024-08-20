@@ -1,0 +1,133 @@
+<?php
+
+require_once dirname(__DIR__) . '../library/apli/ApliMasterController.php';
+
+class Master_MasterptController extends ApliMasterController {
+
+    public function init() {
+       $this->setDao(new Master_Models_Dao_MultiProjectDao());
+       $this->setValidator(new Master_Models_Validator_MultiProjectValidator());
+       $this->setObject(new Master_Models_Master_MultiProject());
+       $validator = $this->getValidator();
+       $validator->controller = $this;
+    }
+    
+    public function allRead() {
+       
+        $params = $this->getRequest()->getPost();
+        $cashierReq = Apli::getRequest($params);
+        $session = Apli::getSession();
+        $dm = new Master_Box_Models_App_Hermes_DataModel();
+        $dm->setDataList(new Master_Box_Models_App_DataListCreator('', 'pt', array(), array("deletedRows")));
+        $objectCreator = $this->getObject();
+        $objectCreator->setProjectPt($session->getProject(), $session->getPt());
+        $dao = $this->getDao();
+        $dm->setObject( $objectCreator);
+        $dm->setDao( $dao);
+        $hasil = $dao->getByProjectPtWithPageSearch($objectCreator, $cashierReq, $session);
+        $dm->setHasil($hasil);
+        $dl = $dm->getDataList();
+        $dl->setDataDao($hasil);
+        $hasilData = Apli::prosesDao($dm->getDataList());
+        return array(
+            "model" => Apli::generateExtJSModel($dm->getDataList()),
+            "data" => $hasilData["data"],
+            "totalRow" => $hasilData["row"]
+        );
+    }
+
+    public function detailRead() {
+
+        $params = $this->getRequest()->getPost();
+        $session = Apli::getSession();
+        $request = Apli::getRequest($params);
+        $dao = $this->getDao();
+        $userHasil = $dao->getCustomRead('user', $request, $session);
+        $projectHasil = $dao->getCustomRead('project', $request, $session);
+        $userModel = Apli::generateExtJSModelDirect('user');
+        $projectModel = Apli::generateExtJSModelDirect('project');
+
+        return array(
+            "data" => array(
+                "user" => array(
+                    "model" => $userModel,
+                    "data" => $userHasil[0]
+                ),
+                "project" => array(
+                    "model" => $projectModel,
+                    "data" => $projectHasil[0]
+                ),
+                "ptid" => $session->getPt()->getId()
+            ),
+        );
+    }
+
+    public function mainCreate() {
+
+        $this->allRead();
+        $params = $this->getRequest()->getPost();
+        $request = Apli::getRequest($params);
+        $data = Apli::getAppdata($params);
+        $session = Apli::getSession();
+        $objectCreator = $this->getObject();
+        Master_Box_Tools::setArrayTable($objectCreator, $data);
+        $objectCreator->setAddBy($session->getUser()->getId());
+        $objectCreator->setProjectPt($session->getProject(), $session->getPt());
+        $validator = $this->getValidator();
+        $validator->appRequest = $request;
+        $validator->session = $session;
+        $validator->action = $this->getRequest()->getActionName();
+        $validator->controller = $this;
+        $validator->run($objectCreator);
+        return array(
+            "success" => $validator->getStatus(),
+            "msg" => $validator->getMsg()
+        );
+    }
+
+    public function mainUpdate() {
+        $params = $this->getRequest()->getPost();
+        $request = Apli::getRequest($params);
+        $session = Apli::getSession();
+        $objectCreator = $this->getObject();
+        $objectCreator->setProjectPt($session->getProject(), $session->getPt());
+        $validator = $this->getValidator();
+        $validator->appRequest = $request;
+        $validator->session = $session;
+        $validator->action = $this->getRequest()->getActionName();
+        $validator->run($objectCreator);
+        return array(
+            "success" => $validator->getStatus(),
+            "msg" => $validator->getMsg()
+        );
+    }
+
+    public function mainDelete() {
+        $params = $this->getRequest()->getPost();
+        $session = Apli::getSession();
+        $request = Apli::getRequest($params);
+        $data = json_decode($params['data'], true);
+        $user = $session->getUser()->getId();
+        $deletedId = array();
+        if (count($data) !== count($data, COUNT_RECURSIVE)) {
+            foreach ($data as $row => $index) {
+                $deletedId[$row] = $index['multiproject_id'];
+            }
+            $send = implode('~', $deletedId);
+        } else {
+            $send = $data['multiproject_id'];
+        }
+        $dao = $this->getDao();
+        $hasil = $dao->deleteData($user, $send, $request);
+        if ($hasil) {
+            $status = TRUE;
+        } else {
+            $status = FALSE;
+        }
+        return array(
+            "success" => $status,
+            "total" => $hasil
+        );
+    }
+
+}

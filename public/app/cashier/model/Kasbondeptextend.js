@@ -1,0 +1,41 @@
+Ext.define('Cashier.model.Kasbondeptextend', {
+    extend: 'Ext.data.Model',
+    alias: 'model.kasbondeptextendmodel',
+    idProperty: 'kasbon_extension_id',
+    fields: [
+        {name: 'kasbon_extension_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'kasbondept_id', type: 'int'},
+        {name: 'reason', type: 'string'},
+         {name: 'voucher_no', type: 'string'},
+          {name: 'description', type: 'string'},
+        {name: 'status', type: 'string'},
+        {name: 'extension_days', type: 'int'},
+        {name: 'approval_date', type: 'date', dateFormat: 'Y-m-d'},
+        {name: 'first_claim_date', type: 'date', dateFormat: 'Y-m-d'},
+        {name: 'first_project_claim_date', type: 'date', dateFormat: 'Y-m-d'},
+        {name: 'approval_by', type: 'string'}, 
+        {name: 'approval_notes', type : 'string'},
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'deleteon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'deleteby', type: 'string'},
+        {name: 'hideparam', type: 'string'},
+        {name: 'amount', type: 'number'},
+        {name: 'remainingkasbon', type: 'number'},
+        {name: 'last_claim_date', type: 'date', dateFormat: 'Y-m-d'},
+        {name: 'last_project_claim_date', type: 'date', dateFormat: 'Y-m-d'},
+        {name: 'max_extension', type: 'int'},
+        {name: 'addby_id', type: 'int'},
+        {name: 'projectname', type: 'string'},
+        {name: 'ptname', type: 'string'},
+        {name: 'department', type: 'string'},
+        {name: 'employee_name', type: 'string'},
+         {name: 'approveby_id', type: 'int'},
+         {name : 'counter_extension', type: 'int'}
+
+
+    ]
+});

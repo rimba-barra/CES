@@ -1,0 +1,32 @@
+Ext.define('Erems.model.Complaintdetail', {
+    extend: 'Ext.data.Model',
+    alias: 'model.complaintdetailmodel',
+    idProperty: 'aftersales_complaint_id',
+    fields: [
+		{name: 'aftersales_complaint_id', type: 'int'},
+		{name: 'aftersales_id', type: 'int'},
+		{name: 'unit_id', type: 'int'},
+		{name: 'complaint_no', type: 'string'},
+		{name: 'complainttype_id', type: 'int'},
+		{name: 'pengawas_id', type: 'int'},
+		{name: 'contractor_id', type: 'int'},
+		{name: 'complaint_date', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'complaintstatus_id', type: 'int'},
+		{name: 'estimation', type: 'int'},
+		{name: 'start_date', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'end_date', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'detail_complaint', type: 'string'},
+		{name: 'respon_user', type: 'string'},
+		{name: 'respon_date', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'respon_note', type: 'string'},
+		{name: 'complainttype', type: 'string'},
+		{name: 'complaintstatus', type: 'string'},
+		{name: 'contractorname', type: 'string'},
+		{name: 'pengawas_name', type: 'string'},
+		{name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+		{name: 'addby', type: 'int'},
+		{name: 'deleted', type: 'boolean'},
+		{name: 'data_images' , type:'auto'},
+		{name: 'temp_id_detail' , type:'string'}
+    ]
+});

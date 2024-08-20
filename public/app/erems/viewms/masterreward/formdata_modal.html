@@ -1,0 +1,92 @@
+<div class="modal" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index: 99999;" abc-action="create"> 
+ 	<div class="modal-dialog modal-lg modal-ku" style="width: 500px;margin: auto;"> 
+		 
+	<!-- Modal content--> 
+	<div class="modal-content"> 
+	   <div class="modal-header"> 
+		   <h4 class="modal-title">Form REWARD</h4> 
+		   <button type="button" class="close btn-sm" data-dismiss="modal">&times;</button> 
+		</div> 
+		<div class="modal-body kotak_modal_body"> 
+		   	<div class="mellong"> 
+			   	<div class="container my-container" style="padding: 7px 25px;"> 
+				   	<form id="formMasterrewardID"> 
+					   <input type="hidden" name="reward_id" > 
+					   <div class="row"> 
+						   <div class="col-12"> 
+							   <div class="form-group row"> 
+								   	<label for="code_ID" class="col-4 col-form-label">Code</label> 
+								   <div class="col-3"> 
+									   <input type="text" class="form-control" id="code_ID" name="code" placeholder="Code"> 
+								   </div> 
+								   <div class="col-5"> 
+									  <div class="form-check form-check-inline" style="padding-right: 12px; float: right;">
+										<input class="form-check-input" type="checkbox" id="is_over_target" name="is_over_target" value="1">
+										<label class="form-check-label" style="padding-left: 0px; padding-top: 2px;">Over Target</label>
+									  </div>
+								   </div> 
+							   </div> 
+						   </div> 
+					   </div> 
+					   <div class="row"> 
+						   <div class="col-12"> 
+							   <div class="form-group row"> 
+								   <label for="group_id_ID" class="col-4 col-form-label">Group</label> 
+								   <div class="col-5"> 
+									 
+									   <select name="group_id" class="form-control" id="group_id_ID" name="group_id" style="height: 28px;">
+										   <option value="0">Reward Sales</option>
+										   <option value="1">Reward Tambahan</option>
+										   <option value="2">Reward Customer</option>
+									   </select>
+								   </div> 
+								   
+							   </div> 
+						   </div> 
+					   </div> 
+					   <div class="row"> 
+						   <div class="col-12"> 
+							   <div class="form-group row"> 
+								   <label for="name_ID" class="col-4 col-form-label">Reward Name</label> 
+								   <div class="col-7"> 
+									   <input type="text" class="form-control" id="name_ID" name="name" placeholder="Reward Name"> 
+								   </div> 
+								   
+							   </div> 
+						   </div> 
+					   </div> 
+					  <!--  <div class="row"> 
+						   <div class="col-12"> 
+							   <div class="form-group row"> 
+								   <label for="active_ID" class="col-4 col-form-label">Active</label> 
+								   <div class="col-7"> 
+									   <input type="checkbox" id="active_ID" name="Active" value="1" style="margin-top: 7px;">
+								   </div> 
+								   
+							   </div> 
+						   </div> 
+					   </div>  -->
+					   <input type="hidden" name="Active" value="1">
+					   <div class="row"> 
+						   <div class="col-12"> 
+							   <div class="form-group row"> 
+								   <label for="generate_notes_ID" class="col-4 col-form-label">Generate Notes</label> 
+								   <div class="col-8"> 
+									   <textarea class="form-control" id="generate_notes_ID" name="generate_notes" rows="3"></textarea>
+								   </div> 
+							   </div> 
+						   </div> 
+					   </div> 
+				   </form> 
+			   </div>  
+		   </div> 
+	   </div> 
+	   
+   </div> 
+   <div class="modal-footer"> 
+	   <button type="button" class="btn btn-primary btn-sm" abc-action="save">Save</button> 
+	   <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button> 
+   </div> 
+ </div> 
+ 
+ </div> 

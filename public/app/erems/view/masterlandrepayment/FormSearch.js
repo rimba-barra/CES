@@ -1,0 +1,28 @@
+Ext.define('Erems.view.masterlandrepayment.FormSearch',{
+    extend:'Erems.library.template.view.FormSearch',
+    alias:'widget.masterlandrepaymentformsearch',
+    initComponent: function() {
+        var me = this;
+
+        Ext.applyIf(me, {
+            defaults: me.generateDefaults(),
+            items: [
+                {
+                    xtype: 'textfield',
+					fieldLabel: 'Code',
+                    itemId: 'code',
+                    name: 'code'
+                },							
+                {
+                    xtype: 'textfield',
+					fieldLabel: 'Name',
+                    itemId: 'keterangan',
+                    name: 'keterangan'
+                },
+            ],
+            dockedItems: me.generateDockedItems()
+        });
+
+        me.callParent(arguments);
+    }
+});

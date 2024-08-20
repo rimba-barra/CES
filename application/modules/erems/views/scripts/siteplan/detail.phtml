@@ -1,0 +1,248 @@
+
+<div class="modal-dialog modal-lg modal-ku">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Detail Table Stock</h4>
+            <button type="button" class="close btn-sm" data-dismiss="modal">&times;</button>
+
+        </div>
+        <div class="modal-body kotak_modal_body">
+            <div class="mellong">
+                <div class="container my-container" >
+
+                    <form id="formFormOrderAjbId">
+
+                        <input type="hidden" name="formorderajb_id" id="formorderajb_id">
+                        <input type="hidden" name="purchaseletter_purchaseletter_id" id="purchaseletter_purchaseletter_id">
+                        <?php
+                            $result = $this->data['dtl']['data'][0];
+                        ?>
+                        <div class="card">
+                            <div class="card-header">
+                                Unit Information
+                            </div>
+                            <div class="card-block">
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group row">
+                                            <label for="ptID" class="col-3 col-form-label">PT</label>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control form-control-disabled" id="ptID" name="pt_name" placeholder="PT" value="<?php echo $result['pt_name']; ?>" disabled>
+                                            </div>
+
+                                        </div>
+                                        
+                                        <div class="form-group row">
+                                            <label for="clustercodeID" class="col-3 col-form-label">Kawasan / Cluster</label>
+                                            <div class="col-3">
+                                                <input type="text" class="form-control form-control-disabled" id="clustercodeID" name="cluster_code" placeholder="Cluster Code" value="<?php echo $result['cluster_code']; ?>" disabled>
+                                            </div>
+                                            <div class="col-5">
+                                                <input type="text" class="form-control form-control-disabled" id="clusterclusterId" name="cluster_cluster" placeholder="Cluster Name" value="<?php echo $result['cluster_cluster']; ?>" disabled>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group row">
+                                            <label for="blockCodeId" class="col-3 col-form-label">Block</label>
+                                            <div class="col-3">
+                                                <input type="text" class="form-control form-control-disabled" id="blockCodeId" name="block_code" placeholder="Code" value="<?php echo $result['block_code']; ?>" disabled>
+                                            </div>
+                                            <div class="col-5">
+                                                <input type="text" class="form-control form-control-disabled" id="blockblockId" name="block_block" placeholder="Block" value="<?php echo $result['block_block']; ?>" disabled>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group row">
+                                            <label for="unitnumberID" class="col-3 col-form-label">Kavling / Unit Number</label>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control form-control-disabled" id="unitnumberID" name="unit_unit_number" placeholder="Unit Number" value="<?php echo $result['unit_unit_number']; ?>" disabled required>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-group row">
+                                            <label for="tipeId" class="col-3 col-form-label">Type</label>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control form-control-disabled" name="type_name" id="tipeId" placeholder="Type" value="<?php echo $result['productcategory']; ?>" disabled>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group row">
+                                            <label for="landSizeId" class="col-3 col-form-label">Land Size</label>
+                                            <div class="col-2">
+                                                <input type="text" class="form-control form-control-disabled" id="landSizeId" name="unit_land_size" placeholder="Land Size" value="<?php echo $result['unit_land_size']; ?>" disabled>
+                                            </div>
+                                            <label class="col-1 col-form-label">m2</label>
+                                            <label for="longId" class="col-2 col-form-label" style="text-align: right;">Long</label>
+                                            <div class="col-2">
+                                                <input type="text" class="form-control form-control-disabled" id="longId" name="unit_long" placeholder="m2" value="<?php echo $result['long']; ?>" disabled>
+                                            </div>
+                                            <label class="col-1 col-form-label">m</label>
+                                        </div>
+                                        
+                                        <div class="form-group row">
+                                            <label for="buildingSizeId" class="col-3 col-form-label">Building Size</label>
+                                            <div class="col-2">
+                                                <input type="text" class="form-control form-control-disabled" id="buildingSizeId" name="unit_building_size" placeholder="Building Size" value="<?php echo $result['unit_building_size']; ?>" disabled>
+                                            </div>
+                                            <label class="col-1 col-form-label">m2</label>
+                                            <label for="widthId" class="col-2 col-form-label" style="text-align: right;">Width</label>
+                                            <div class="col-2">
+                                                <input type="text" class="form-control form-control-disabled" id="widthId" name="unit_width" placeholder="Width" value="<?php echo $result['width']; ?>" disabled>
+                                            </div>
+                                            <label class="col-1 col-form-label">m</label>
+                                        </div>
+                                        
+                                        <div class="form-group row">
+                                            <label for="kelebihantanahId" class="col-3 col-form-label">Kelebihan Tanah</label>
+                                            <div class="col-2">
+                                                <input type="text" class="form-control form-control-disabled" id="kelebihantanahId" name="unit_kelebihan" placeholder="Kelebihan Tanah" value="<?php echo $result['unit_kelebihan']; ?>" disabled>
+                                            </div>
+                                            <label class="col-1 col-form-label">m2 </label>
+<!--                                            <label for="floorID" class="col-2 col-form-label" style="text-align: right;">Floor</label>
+                                            <div class="col-2">
+                                                <input type="text" class="form-control form-control-disabled" id="floorID" name="unit_floor"  placeholder="Floor" value="<?php //echo $result['unit_unit_number']; ?>" disabled>
+                                            </div>
+                                            <label class="col-1 col-form-label">&nbsp;</label>-->
+                                        </div>
+                                        
+                                        
+                                    </div>
+
+                                </div>
+                                
+                                <div class="row">
+                                        &nbsp;
+                                </div>
+                                <div class="row">
+                                    &nbsp;
+                                </div>
+                                <div class="row">
+                                    &nbsp;
+                                </div>
+                                
+
+                                
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="card">
+                            <div class="card-header">
+                                Purchaseletter Information
+                            </div>
+                            <div class="card-block">
+                                <div class="row">
+                                    <div class="col-6">
+
+                                        <div class="form-group row">
+                                            <label for="purchaseletterNo" class="col-3 col-form-label">Purchaseletter No</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="purchaseletterNo" name="purchaseletter_no" value="<?php echo $result['purchaseletter_no']; ?>" placeholder="Purchaseletter No" disabled>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cusNameId" class="col-3 col-form-label">Customer Name</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="cusNameId" name="pengalihanhak_name" value="<?php echo $result['customer_name']; ?>" placeholder="Customer Name" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="salesman" class="col-3 col-form-label">Salesman</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="salesman" name="salesman" value="<?php echo $result['employee_name']; ?>" placeholder="Salesman" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cara_bayar" class="col-3 col-form-label">Cara Bayar</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="cara_bayar" name="cara_bayar" value="<?php echo $result['pricetype']; ?>" placeholder="Cara Bayar" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="email" class="col-3 col-form-label">Email</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="email" name="email" value="<?php echo $result['email']; ?>" placeholder="Email" disabled>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-group row">
+                                            <label for="PurchaseletterDate" class="col-3 col-form-label">Purchaseletter Date</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="PurchaseletterDate" name="Purchaseletter_date" value="<?php echo date('d-m-Y',strtotime($result['purchase_date']));  ?>" placeholder="Purchaseletter Date" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="telephone" class="col-3 col-form-label">Telephone</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="telephone" name="telephone" value="<?php echo $result['home_phone']; ?>" placeholder="Telephone" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="mobile_phone" class="col-3 col-form-label">Mobile Phone</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="mobile_phone" name="mobile_phone" value="<?php echo $result['mobile_phone']; ?>" placeholder="Mobile Phone" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="bank" class="col-3 col-form-label">Bank</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="bank" name="bank" value="<?php echo $result['bank_name']; ?>" placeholder="Bank" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="harga_total_jual" class="col-3 col-form-label">Harga Total Jual</label>
+                                            <div class="col-8" style="padding-left: 28px;">
+                                                <input type="text" class="form-control form-control-disabled" id="harga_total_jual" name="harga_total_jual" value="<?php echo number_format($result['harga_total_jual'],0,"",".") ; ?>" placeholder="Harga Total Jual" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                        &nbsp;
+                                </div>
+                                <div class="row">
+                                    &nbsp;
+                                </div>
+                                <div class="row">
+                                    &nbsp;
+                                </div>
+                                <div class="row">
+                                    &nbsp;
+                                </div>
+                                <div class="row">
+                                    &nbsp;
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div> 
+            </div>
+        </div>
+        <div class="modal-footer">
+            <?php 
+                if ($result['status_unit'] == 3) {
+            ?>
+                <!--<button type="button" class="btn btn-primary btn-sm" id="btn-purchaseletter" unit-id ="<?php// echo $result['unit_unit_id']; ?>" >Purchase Letter</button>-->
+            <?php
+                }
+            ?>
+            <button type="button" class="btn btn-danger btn-sm" id="btn-cancel-pl" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+</div>

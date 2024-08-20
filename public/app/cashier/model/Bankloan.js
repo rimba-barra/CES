@@ -1,0 +1,26 @@
+Ext.define('Cashier.model.Bankloan', {
+    extend: 'Ext.data.Model',
+    alias: 'model.bankloanmodel',
+    idProperty: 'bank_loan_id',
+    fields: [
+        {name: 'bank_loan_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'bulan', type: 'int'},
+        {name: 'tahun', type: 'int'},
+        {name: 'periode', type: 'string'},
+        {name: 'pt_name', type: 'string'},
+        {name: 'subholding', type: 'string'},
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'modion', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'modiby', type: 'string'},
+        {name: 'inactiveon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'inactiveby', type: 'string'},
+        {name: 'deleteon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'deleteby', type: 'string'},
+        {name: 'active', type: 'boolean'},
+        {name: 'deleted', type: 'boolean'},
+        {name: 'hideparam', type: 'string'},
+    ]
+});

@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.rangkingpa.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.rangkingpa.Grid','Hrd.view.rangkingpa.FormSearch','Hrd.view.rangkingpa.FormData'],
+    alias:'widget.rangkingpapanel',
+    itemId:'RangkingpaPanel',
+    gridPanelName:'rangkingpagrid',
+    formSearchPanelName:'rangkingpaformsearch',
+    formDataName:'rangkingpaformdata',
+});

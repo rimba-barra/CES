@@ -1,0 +1,45 @@
+<script type="text/javascript">/*<![CDATA[*/desktop.menubar.add([{xtype: 'box', autoEl: {tag: 'img', src: '<?php echo $this->currentmoduleicon; ?>', title: '<?php echo $this->info['apps_name']; ?>', style: 'width:16px;height:16px;margin-right:7px;'}}, {xtype: 'tbseparator'}]);desktop.menubar.add(<?php echo $this->menu; ?>);
+    apps.gid = '<?php echo $this->currentgroup; ?>';
+    apps.projectpt = '<?php echo $this->currentprojectpt; ?>';
+    apps.project = '<?php echo $this->currentproject; ?>';
+    apps.pt = '<?php echo $this->currentpt; ?>';
+    var _Apps, acts =<?php echo $this->actions; ?>, objs =<?php echo $this->objects; ?>;
+    Ext.Loader.setConfig({disableCaching: true, enabled: true, paths: {<?php echo $this->appsdepend; ?>}});
+    Ext.require(['Main.library.*']);
+    Ext.application({name: '<?php echo ucfirst($this->info['apps_module']); ?>', appFolder: 'app/<?php echo $this->info['apps_module']; ?>', controllers:<?php echo $this->controllers; ?>, init: function () {
+            _Apps = this;
+            desktop.menubar.setVisible(true);
+            Ext.fly('apps-title').update('<?php echo $this->info['apps_name']; ?>');
+            Ext.fly('apps-ver').update('<?php echo $this->info['apps_version']; ?>');
+            Ext.fly('project-pt').update('<?php echo $this->info['project_pt_name']; ?>');
+            Ext.fly('group').update('<?php echo $this->info['group_name']; ?>');
+            desktop.body.unmask();
+            /*start added by ahmad riadi for popup module 04-10-2017  */
+            $.ajax({
+                type: "POST",
+                url: 'main/popup/read',
+                data: {},
+                dataType: 'json',
+                success: function (response)
+                {
+                    var result, total, data, user_id;
+                    total = response.total;
+                    data = response.data;
+                    user_id = response.user_id;
+                    if (total > 0) {
+                        $.each(data, function (index, value) {
+                            openPage({
+                                itemId: value.widget,
+                                id: value.widget,
+                                title: value.popupname,
+                                controller: value.controller,
+                                widget: value.widget,
+                                content: Ext.create(value.widget),
+                            });
+                        });
+                    }
+                }
+            });
+            /*end added by ahmad riadi for popup module 04-10-2017  */
+        }});/*]]>*/
+</script>

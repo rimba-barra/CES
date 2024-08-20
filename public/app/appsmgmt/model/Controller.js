@@ -1,0 +1,1 @@
+Ext.define('Appsmgmt.model.Controller',{extend:'Ext.data.Model',alias:'model.ControllerModel',idProperty:'controller_id',fields:[{name:'controller_id',type:'int'},{name:'controller_name',type:'string'},{name:'apps_id',type:'int'},{name:'description',type:'string'},{name:'active',type:'boolean'},{name:'apps_name',type:'string'},{name:'default_actions',type:'boolean'}]});

@@ -1,0 +1,25 @@
+Ext.define('Cashier.model.Writeoff', {
+    extend: 'Ext.data.Model',
+    alias: 'model.writeoffmodel',
+    idProperty: 'purchaseletter_id',
+    fields: [
+        {name: 'writeoff_id', type: 'int'},
+        {name: 'writeoffdetail_id', type: 'int'},
+        {name: 'projectpt_id', type: 'int'},
+        {name: 'pt_name', type: 'string'},
+        {name: 'project_name', type: 'string'},
+        {name: 'purchaseletter_no', type: 'string'},
+        {name: 'writeoff_no', type: 'string'},
+        {name: 'user_fullname', type: 'string'},
+        {name: 'schedule_description', type: 'string'},
+        {name: 'note', type: 'string'},
+        {name: 'writeoff', type: 'money'},
+        {name: 'addon', type: 'date',  dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'cluster_cluster', type: 'string'},
+        {name: 'cluster_code', type: 'string'},
+        {name: 'block_block', type: 'string'},
+        {name: 'customer_name', type: 'string'},
+        {name: 'status', type: 'string'},
+        {name: 'unit_number', type: 'string'},
+    ]
+});

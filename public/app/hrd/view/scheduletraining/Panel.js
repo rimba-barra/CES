@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.scheduletraining.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.scheduletraining.Grid','Hrd.view.scheduletraining.FormSearch','Hrd.view.scheduletraining.FormData'],
+    alias:'widget.scheduletrainingpanel',
+    itemId:'ScheduletrainingPanel',
+    gridPanelName:'scheduletraininggrid',
+    formSearchPanelName:'scheduletrainingformsearch',
+    formDataName:'scheduletrainingformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

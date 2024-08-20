@@ -1,0 +1,232 @@
+Ext.define('Erems.view.generalsalesreport.FormData', {
+    extend: 'Erems.library.template.view.FormData',
+    alias: 'widget.generalsalesreportformdata',
+    requires: ['Erems.library.template.view.combobox.Cluster2', 'Erems.library.template.view.combobox.Type',
+        'Erems.library.template.view.combobox.Productcategory',
+        'Erems.library.template.component.Buildingclasscombobox'],
+    frame: true,
+    autoScroll: true,
+    bodyBorder: true,
+    bodyStyle: 'border-top:none;border-left:none;border-right:none;',
+    initComponent: function() {
+        var me = this;
+
+        Ext.applyIf(me, {
+            dockedItems: me.generateDockedItems(),
+            items: [
+                {
+                    xtype:'hiddenfield',
+                    name:'project_id'
+                },
+                {
+                    xtype:'hiddenfield',
+                    name:'pt_id'
+                },
+                {
+                    xtype:'hiddenfield',
+                    name:'Project'
+                },
+                {
+                    xtype:'hiddenfield',
+                    name:'Pt'
+                },
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype:'datefield',
+                            fieldLabel: 'Purchase letter Date',
+                            flex:1
+                        },
+                        {
+                            xtype:'label',
+                            text:'to',
+                            width:20
+                            
+                        },
+                        {
+                            xtype:'datefield',
+                            fieldLabel: '',
+                            flex:1
+                        }
+                    ]
+                },
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'buildingclasscombobox',
+                            name: 'buildingclass',
+                            reportParams: true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_buildingclass',
+                            checked: true,
+                            inputValue: '1',
+                            uncheckedValue: '0',
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                },
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'cbcluster2',
+                            name: 'cluster_id',
+                            reportParams: true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_cluster',
+                            inputValue: '1',
+                            uncheckedValue: '0',
+                            checked: true,
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                }
+
+                , {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'cbtype',
+                            name: 'type_id',
+                           // bindPrefixName: "Townplanningreport",
+                           // storeUrl: 'townplanningreport',
+                            reportParams: true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_type',
+                            inputValue: '1',
+                            uncheckedValue: '0',
+                            checked: true,
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                },
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    margin: '0 0 5px 0',
+                    defaults: {
+                        margin: '0 20px 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'cbproductcategory',
+                            name: 'productcategory_id',
+                            reportParams: true
+                        },
+                        {
+                            xtype: 'checkboxfield',
+                            fieldLabel: '',
+                            name: 'cbf_productcategory',
+                            inputValue: '1',
+                            checked: true,
+                            uncheckedValue: '0',
+                            margin: '0 5px 0 0',
+                            width: 20
+                        },
+                        {
+                            xtype: 'label',
+                            text: 'ALL'
+                        }
+                    ]
+                },
+                {
+                    xtype: 'radiogroup',
+                    fieldLabel: 'Group by',
+                    // Arrange radio buttons into two columns, distributed vertically
+                    itemId: 'groupBy',
+                    vertical: false,
+                    items: [
+                        {boxLabel: 'Salesman', name: 'Groupby', inputValue:"salesman",checked: true},
+                        {boxLabel: 'Club Citra', name: 'Groupby', inputValue:"club citra"},
+                        {boxLabel: 'Cara Bayar', name: 'Groupby', inputValue:"cara bayar"}
+                    ]
+                }
+            ]
+
+        });
+
+        me.callParent(arguments);
+    },
+    generateDockedItems: function() {
+        var dockedItems = [
+            {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                layout: {
+                    padding: 6,
+                    type: 'hbox'
+                },
+                items: [
+                    {
+                        xtype: 'button',
+                        action: 'process',
+                        itemId: 'btnSearch',
+                        padding: 5,
+                        width: 75,
+                        iconCls: 'icon-search',
+                        disabled:true,
+                        text: 'Process'
+                    },
+                    {
+                        xtype: 'button',
+                        action: 'reset',
+                        itemId: 'btnReset',
+                        padding: 5,
+                        width: 75,
+                        iconCls: 'icon-reset',
+                        text: 'Reset'
+                    }
+                ]
+            }
+        ];
+        return dockedItems;
+    }
+});
+

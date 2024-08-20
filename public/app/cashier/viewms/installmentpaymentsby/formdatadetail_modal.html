@@ -1,0 +1,70 @@
+<div id="myModalFormDetail" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index:1000000">
+    <div class="modal-dialog modal-md modal-ku" style="width: 500px;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Pay</h4>
+                    <button type="button" class="close btn-sm" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="mellong">
+                    <div class="container my-container" style="padding: 9px 27px;height:250px;">
+
+                        <form autocomplete="off">
+                            <input type="hidden"  name="schedule_id" id="scheduleIdID">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group row">
+                                        <label for="amountId" class="col-4 col-form-label">Amount : </label>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-disabled abcmoney" name="amount" id="amountId" placeholder="Amount" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group row">
+                                        <label for="remainingbalanceID" class="col-4 col-form-label">Remaining Balance : </label>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-disabled abcmoney" name="remaining_balance" id="remainingbalanceID" placeholder="Remaining Balance" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group row">
+                                        <label for="paymentID" class="col-4 col-form-label">Payment : </label>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control abcmoney" name="payment_payment" id="paymentID" placeholder="Enter Payment">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                            
+                            <div class="row">
+                                <div class="col-12 pull-right">
+                                    <button type="button" class="btn btn-default btn-sm" id="fullPaymentId">Full Payment</button>
+                                    <button type="button" class="btn btn-default btn-sm" id="halfPaymentId">Half Payment</button>
+                                </div>
+                                </div>
+
+                        </form>
+
+
+
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="submitPayId">Submit</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

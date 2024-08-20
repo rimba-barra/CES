@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.polashift.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.polashift.Grid','Hrd.view.polashift.FormSearch','Hrd.view.polashift.FormData'],
+    alias:'widget.polashiftpanel',
+    itemId:'PolashiftPanel',
+    gridPanelName:'polashiftgrid',
+    formSearchPanelName:'polashiftformsearch',
+    formDataName:'polashiftformdata',
+});

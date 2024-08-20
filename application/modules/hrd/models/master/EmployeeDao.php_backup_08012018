@@ -1,0 +1,625 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of EmployeeDao
+ *
+ * @author MIS
+ */
+class Hrd_Models_Master_EmployeeDao extends Box_Models_App_AbDao {
+   
+   /* added by ahmad riadi 29-09-2017 */	
+   public function getdatabyEmail($email) {
+        $hasil = 0;
+        $hasil = $this->dbTable->SPExecute('sp_employee_byemail_read',$email);
+        return $hasil;
+    }
+
+
+    public function save(Hrd_Models_Master_EmployeePersonal $em) {
+        $hasil = 0;
+
+        $this->setHireDate($em);
+        $this->countChilds($em);
+        
+        
+        
+       
+
+
+        //$hasil = $this->dbTable->SPUpdate('sp_employee_create', $em->getAddBy(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getBirthPlace(), $em->getBirthDate(), $em->getReligion()->getId(), $em->getSex(), $em->getAddress(), $em->getDepartment()->getId(), $em->getDivision()->getId(), $em->getGroup()->getId(), $em->getGroupPosition()->getId(), $em->getPosition()->getId(), $em->getStatus()->getId(), $em->getStatusInformation()->getHireDate(), $em->getStatusInformation()->getAssignationDate(), $em->getStatusInformation()->getContractKe(), $em->getStatusInformation()->getContractStart(), $em->getStatusInformation()->getContractEnd(), $em->getStatusInformation()->getTemporaryKe(), $em->getStatusInformation()->getTemporaryStart(), $em->getStatusInformation()->getTemporaryEnd(), $em->getPhoneNumber()->getNumber(), $em->getNik(), $em->getKtp()->getNomor(), $em->getBloodGroup()->getId(), $em->getMarriage()->getId(), $em->getChildCount(), $em->getKtp()->getAddress(), $em->getLastEducation()->getId(), $em->getNpwp(), $em->getPhoneNumber()->getMobile(), $em->getEmail(), $em->getPassport(), $em->getNikGroup(), $em->getMarriageDate(), $em->getFingerPrintCode(), $em->getActived(), $em->getReportTo()->getId(), $em->getAlokasiBiaya()->getId(),$em->getJobfunction()->getId(),$em->getNomorRekening(),$em->getNamaRekening(),$em->getBankRekening(),$em->getStatus()->getId(),$em->getEmailCiputra());
+        /* edited by ahmad riadi 21-06-2017 */
+	 $hasil = $this->dbTable->SPUpdate('sp_employee_create', 
+                                            $em->getAddBy(),
+                                            $em->getProject()->getId(),
+                                            $em->getPt()->getId(),
+                                            $em->getName(), 
+                                            $em->getBirthPlace(),
+                                            $em->getBirthDate(), 
+                                            $em->getReligion()->getId(), 
+                                            $em->getSex(),
+                                            $em->getAddress(), 
+                                            $em->getDepartment()->getId(),
+                                            $em->getDivision()->getId(),
+                                            $em->getGroup()->getId(), 
+                                            $em->getGroupPosition()->getId(), 
+                                            $em->getPosition()->getId(),
+                                            $em->getStatus()->getId(),
+                                            $em->getStatusInformation()->getHireDate(),
+                                            $em->getStatusInformation()->getAssignationDate(),
+                                            $em->getStatusInformation()->getContractKe(), 
+                                            $em->getStatusInformation()->getContractStart(),
+                                            $em->getStatusInformation()->getContractEnd(), 
+                                            $em->getStatusInformation()->getTemporaryKe(), 
+                                            $em->getStatusInformation()->getTemporaryStart(), 
+                                            $em->getStatusInformation()->getTemporaryEnd(),
+                                            $em->getPhoneNumber()->getNumber(), 
+                                            $em->getNik(), 
+                                            $em->getKtp()->getNomor(),
+                                            $em->getBloodGroup()->getId(),
+                                            $em->getMarriage()->getId(), 
+                                            $em->getChildCount(),
+                                            $em->getKtp()->getAddress(), 
+                                            $em->getLastEducation()->getId(),
+                                            $em->getNpwp(),
+                                            $em->getPhoneNumber()->getMobile(),
+                                            $em->getEmail(),
+                                            $em->getPassport(),
+                                            $em->getNikGroup(), 
+                                            $em->getMarriageDate(),
+                                            $em->getFingerPrintCode(),
+                                            $em->getActived(),
+                                            $em->getReportTo()->getId(),
+                                            $em->getAlokasiBiaya()->getId(),
+                                            $em->getJobfunction()->getId(),
+                                            $em->getNomorRekening(),
+                                            $em->getNamaRekening(),
+                                            $em->getBankRekening(),
+                                            $em->getStatus()->getId(),
+                                            $em->getEmailCiputra(),
+                                            $em->getJobfamily()->getId(),
+                                            $em->getBanding()->getId()
+                                           
+                                );
+
+
+	$insertedId = (int) $hasil; /* employee id */
+         if ($insertedId > 0) {
+             $em->setId($hasil);
+            // var_dump($em->getId())
+             $this->storeEmgContact($em);
+         // $this->storeRelation($em);	
+	    $this->storeMultiposition($em);		
+          }
+
+         
+
+
+        return $insertedId;
+    }
+
+  
+  
+    public function getAllByIds($ids) {
+        $hasil = 0;
+
+        $hasil = $this->dbTable->SPExecute('sp_employee_bylist_id_read',$ids);
+
+        return $hasil;
+    }
+  
+
+   public function getAllB(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_EmployeePersonal $em) {
+        $obj_setup = new Hrd_Models_General_Setup();
+        $hasil = 0;
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), intval($em->getDepartment()->getId()) == 999 ? "" : intval($em->getDepartment()->getId()), $em->getActived());
+        $data = $obj_setup->clean_blackdiamondquestion($hasil[1]);
+        $hasil = array(array(array("totalRow" => $hasil[0][0]['totalRow'])), $data);
+        return $hasil;
+    }	
+
+    //
+    public function checkFingePrintCode(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+
+        $hasil = $this->dbTable->SPExecute('sp_fingeprintcodeexist_read', $em->getFingerPrintCode());
+
+        return $hasil;
+    }
+
+    public function checkFingePrintCodePP(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+
+        $hasil = $this->dbTable->SPExecute('sp_fingeprintcodeexist_read', $em->getFingerPrintCode(), $em->getProject()->getId(), $em->getPt()->getId());
+
+        return $hasil;
+    }
+
+    public function checkNIK(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+
+        $hasil = $this->dbTable->SPExecute('sp_employeenikexist_read', $em->getNik(), $em->getProject()->getId(), $em->getPt()->getId());
+
+
+
+        return $hasil;
+    }
+
+    public function update(Hrd_Models_Master_EmployeePersonal $em) {
+        $hasil = 0;
+        if ($em->getId() == 0) {
+            return $hasil;
+        }
+
+        $this->setHireDate($em);
+        $this->countChilds($em);
+
+
+ 
+
+
+        //$hasil = $this->dbTable->SPUpdate('sp_employee_update', $em->getAddBy(), $em->getId(), $em->getName(), $em->getBirthPlace(), $em->getBirthDate(), $em->getReligion()->getId(), $em->getSex(), $em->getAddress(), $em->getPhoneNumber()->getNumber(), $em->getStatus()->getId(), $em->getStatusInformation()->getHireDate(), $em->getStatusInformation()->getAssignationDate(), $em->getStatusInformation()->getContractKe(), $em->getStatusInformation()->getContractStart(), $em->getStatusInformation()->getContractEnd(), $em->getStatusInformation()->getTemporaryKe(), $em->getStatusInformation()->getTemporaryStart(), $em->getStatusInformation()->getTemporaryEnd(), $em->getDepartment()->getId(), $em->getDivision()->getId(), $em->getPosition()->getId(), $em->getGroupPosition()->getId(), $em->getGroup()->getId(), $em->getNik(), $em->getKtp()->getNomor(), $em->getBloodGroup()->getId(), $em->getMarriage()->getId(), $em->getChildCount(), $em->getKtp()->getAddress(), $em->getLastEducation()->getId(), $em->getNpwp(), $em->getPhoneNumber()->getMobile(), $em->getEmail(), $em->getPassport(), $em->getNikGroup(), $em->getActived(), $em->getNonActiveDate(), $em->getMarriageDate(), $em->getFingerPrintCode(), $em->getReportTo()->getId(), $em->getAlokasiBiaya()->getId(),$em->getJobfunction()->getId(),$em->getAlasanResign(),$em->getNomorRekening(),$em->getNamaRekening(),$em->getBankRekening(),$em->getEmailCiputra());
+	/* edited by ahmad riadi 21-06-2017*/
+
+	  $hasil = $this->dbTable->SPUpdate('sp_employee_update', 
+                                            $em->getAddBy(), 
+                                            $em->getId(), 
+                                            $em->getName(),
+                                            $em->getBirthPlace(),
+                                            $em->getBirthDate(),
+                                            $em->getReligion()->getId(), 
+                                            $em->getSex(),
+                                            $em->getAddress(),
+                                            $em->getPhoneNumber()->getNumber(),
+                                            $em->getStatus()->getId(),
+                                            $em->getStatusInformation()->getHireDate(),
+                                            $em->getStatusInformation()->getAssignationDate(),
+                                            $em->getStatusInformation()->getContractKe(),
+                                            $em->getStatusInformation()->getContractStart(),
+                                            $em->getStatusInformation()->getContractEnd(),
+                                            $em->getStatusInformation()->getTemporaryKe(),
+                                            $em->getStatusInformation()->getTemporaryStart(), 
+                                            $em->getStatusInformation()->getTemporaryEnd(),
+                                            $em->getDepartment()->getId(), 
+                                            $em->getDivision()->getId(), 
+                                            $em->getPosition()->getId(),
+                                            $em->getGroupPosition()->getId(), 
+                                            $em->getGroup()->getId(),
+                                            $em->getNik(), 
+                                            $em->getKtp()->getNomor(), 
+                                            $em->getBloodGroup()->getId(),
+                                            $em->getMarriage()->getId(), 
+                                            $em->getChildCount(),
+                                            $em->getKtp()->getAddress(), 
+                                            $em->getLastEducation()->getId(), 
+                                            $em->getNpwp(),
+                                            $em->getPhoneNumber()->getMobile(),
+                                            $em->getEmail(), 
+                                            $em->getPassport(),
+                                            $em->getNikGroup(), 
+                                            $em->getActived(), 
+                                            $em->getNonActiveDate(),
+                                            $em->getMarriageDate(),
+                                            $em->getFingerPrintCode(),
+                                            $em->getReportTo()->getId(),
+                                            $em->getAlokasiBiaya()->getId(),
+                                            $em->getJobfunction()->getId(),
+                                            $em->getAlasanResign(),
+                                            $em->getNomorRekening(),
+                                            $em->getNamaRekening(),
+                                            $em->getBankRekening(),
+                                            $em->getEmailCiputra(),
+                                            $em->getJobfamily()->getId(),
+                                            $em->getBanding()->getId() 
+                                            
+                );
+
+
+
+        $this->storeRelation($em);
+	$this->storeMultiposition($em);
+
+	$intranetmodel = new Hrd_Models_Intranet_Employee();
+	$intranetmodel->Authorizeuser($em->getId());
+
+        return $hasil;
+    }
+
+    public function getAll(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+
+
+
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName());
+
+
+        return $hasil;
+    }
+
+
+  /*
+    public function getAllB(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_EmployeePersonal $em) {
+        $hasil = 0;
+
+
+
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), intval($em->getDepartment()->getId()) == 999 ? "" : intval($em->getDepartment()->getId()), $em->getActived());
+
+
+        return $hasil;
+    }
+  */
+
+    public function getAllWOPL(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+
+
+
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', 1, 9999, $em->getProject()->getId(), $em->getPt()->getId(), $em->getName());
+
+
+        return $hasil;
+    }
+
+    public function updatePhoto(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+
+        $hasil = $this->dbTable->SPUpdate('sp_employeephoto_update', $em->getModiBy(), $em->getId(), $em->getPhoto());
+
+
+        return $hasil;
+    }
+
+    public function updateDokoumen(Hrd_Models_Master_Employee $em, $jenisDoc, $dokumen) {
+        $hasil = 0;
+
+        $hasil = $this->dbTable->SPUpdate('sp_employeedocument_update', $em->getModiBy(), $em->getId(), $jenisDoc, $dokumen);
+
+
+        return $hasil;
+    }
+
+    /* @param Hrd_Models_Master_EmployeePersonal */
+
+	
+    /*
+    public function getAllEP(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_EmployeePersonal $em) {
+        $hasil = 0;
+
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), $em->getDepartment()->getId());
+
+        return $hasil;
+    }
+    */
+
+
+    /* start edited by ahmad riadi 09-06-2017 */	
+    public function getAllEP(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_EmployeePersonal $em) {
+        $obj_setup = new Hrd_Models_General_Setup();
+        $hasil = 0;   
+	$r->setPage(1);
+        $r->setLimit(99999999);
+   
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), $em->getDepartment()->getId());
+        $data = $obj_setup->clean_blackdiamondquestion($hasil[1]);
+        $hasil = array(array(array("totalRow" => $hasil[0][0]['totalRow'])), $data);
+        return $hasil;
+    }
+  
+
+    /* start added by ahmad riadi 26-10-2017 */	
+    public function getAllForMultiplemodule(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_EmployeePersonal $em) {
+        //jangan di rubah limitnya
+        $obj_setup = new Hrd_Models_General_Setup();
+        $hasil = 0;   	   
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), $em->getDepartment()->getId());
+        $data = $obj_setup->clean_blackdiamondquestion($hasil[1]);
+        $hasil = array(array(array("totalRow" => $hasil[0][0]['totalRow'])), $data);
+        return $hasil;
+    }
+
+
+    public function getAllEPReportto(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_EmployeePersonal $em) {
+        $obj_setup = new Hrd_Models_General_Setup();
+        $hasil = 0;   
+	$r->setPage(1);
+        $r->setLimit(99999999);
+   
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), $em->getDepartment()->getId(),1);
+        $data = $obj_setup->clean_blackdiamondquestion($hasil[1]);
+        $hasil = array(array(array("totalRow" => $hasil[0][0]['totalRow'])), $data);
+        return $hasil;
+    }	
+
+    /* end edited by ahmad riadi 09-06-2017 */	
+	
+
+    public function getAllEPJustActive(Box_Models_App_HasilRequestRead $r, Hrd_Models_Master_EmployeePersonal $em) {
+        $hasil = 0;
+
+
+
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', $r->getPage(), $r->getLimit(), $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), intval($em->getDepartment()->getId()) == 999 ? "" : intval($em->getDepartment()->getId()), 1);
+
+
+
+        return $hasil;
+    }
+
+    public function getAllEPJustActiveWOPL(Hrd_Models_Master_EmployeePersonal $em) {
+        $hasil = 0;
+
+
+
+        $hasil = $this->dbTable->SPExecute('sp_employee_read', 1, 99999, $em->getProject()->getId(), $em->getPt()->getId(), $em->getName(), $em->getNik(), intval($em->getDepartment()->getId()) == 999 ? "" : intval($em->getDepartment()->getId()), 1);
+
+
+
+        return $hasil;
+    }
+    
+    private function storeEmgContact(Hrd_Models_Master_EmployeePersonal $em){
+        /* store emgcontact */
+
+        $em->setSelectedRelation("emgcontact");
+        $ed = $em->getDCResult();
+        
+      
+     
+
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_relation_create', $em->getAddBy(), $em->getId(), $ed["relation_id"], $ed["name"], $ed["birth_date"], $ed["address"], $ed["job"], $ed["last_education"], $ed["relationtype_id"], $ed["sex"], $ed["birth_place"], $ed["deleted"], $ed["phone_number"], '', '', '', '', '', $ed["relation_name"], $ed["rip_date"]);
+        }
+    }
+
+    private function storeRelation(Hrd_Models_Master_Employee $em) {
+
+
+        $em->setSelectedRelation("skills");
+        $ed = $em->getDCResult();
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_potency_create', $em->getAddBy(), $em->getId(), $ed["employeepotency_id"], $ed["potency_id"], $ed["list"], $ed["value"], $ed["is_active"]);
+        }
+
+
+        $em->setSelectedRelation("organizations");
+        $ed = $em->getDCResult();
+
+
+
+        if ($ed) {
+            if (count($ed) > 0) {
+                $hasil = $this->dbTable->SPUpdate('sp_organization_create', $em->getAddBy(), $em->getId(), $ed["organization_id"], $ed["organization"], $ed["position"], $ed["start_year"], $ed["end_year"], $ed["deleted"]);
+            }
+        }
+
+
+
+
+
+        $em->setSelectedRelation("educations");
+        $ed = $em->getDCResult();
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_educationhistory_create', $em->getAddBy(), $em->getId(), $ed["educationhistory_id"], $ed["stage"], $ed["start_year"], $ed["end_year"], $ed["school"], $ed["subjected"], $ed["deleted"], $ed["ijasah"]);
+        }
+
+
+
+        /* store spouse, father , mother info */
+
+        /* temp mark 30 maret 2016 */
+
+        $em->setSelectedRelation("relation");
+        $ed = $em->getDCResult();
+
+       
+        /// check jika ada edit/add spouse
+        $tipeRelasi = $ed["relationtype_id"];
+        $tipeRelasi = explode("~", $tipeRelasi);
+        if (in_array("3", $tipeRelasi)) {
+            if (count($ed) > 0) {
+                if (strlen($ed["relation_id"]) > 0) {
+                    $hasil = $this->dbTable->SPUpdate('sp_relation_create', $em->getAddBy(), $em->getId(), $ed["relation_id"], $ed["name"], $ed["birth_date"], $ed["address"], $ed["job"], $ed["last_education"], $ed["relationtype_id"], $ed["sex"], $ed["birth_place"], $ed["deleted"], $ed["phone_number"], $ed["hp_number"], $ed["company_name"], $ed["company_line_of_business"], $ed["company_address"], $ed["company_phone"], '', $ed["rip_date"]);
+                }
+            }
+        }else{
+            if (count($ed) > 0) {
+                if (strlen($ed["relation_id"]) > 0) {
+                    $hasil = $this->dbTable->SPUpdate('sp_relation_create', $em->getAddBy(), $em->getId(), $ed["relation_id"], $ed["name"], $ed["birth_date"], $ed["address"], $ed["job"], $ed["last_education"], $ed["relationtype_id"], $ed["sex"], $ed["birth_place"], $ed["deleted"], '','', '','', '','', '', $ed["rip_date"]);
+                }
+            } 
+        }
+
+
+
+
+
+
+
+
+
+        /* end temp mark 30 maret 2016 */
+
+
+
+        /* store childs */
+
+        $em->setSelectedRelation("childs");
+        $ed = $em->getDCResult();
+
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_relation_create', $em->getAddBy(), $em->getId(), $ed["relation_id"], $ed["name"], $ed["birth_date"], $ed["address"], $ed["job"], $ed["last_education"], $ed["relationtype_id"], $ed["sex"], $ed["birth_place"], $ed["deleted"], '', '', '', '', '', '', '', $ed["rip_date"]);
+        }
+
+        $hasil = $this->dbTable->SPUpdate('sp_relationchild_update', $em->getId(), Box_Config::getv("RT_CHILD"));
+
+        /* store emgcontact */
+
+        $em->setSelectedRelation("emgcontact");
+        $ed = $em->getDCResult();
+
+
+
+
+
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_relation_create', $em->getAddBy(), $em->getId(), $ed["relation_id"], $ed["name"], $ed["birth_date"], $ed["address"], $ed["job"], $ed["last_education"], $ed["relationtype_id"], $ed["sex"], $ed["birth_place"], $ed["deleted"], $ed["phone_number"], '', '', '', '', '', $ed["relation_name"], $ed["rip_date"]);
+        }
+
+
+
+
+        /* store saudara */
+
+
+
+
+        $em->setSelectedRelation("saudaras");
+        $ed = $em->getDCResult();
+
+
+
+
+
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_relation_create', $em->getAddBy(), $em->getId(), $ed["relation_id"], $ed["name"], $ed["birth_date"], $ed["address"], $ed["job"], $ed["last_education"], $ed["relationtype_id"], $ed["sex"], $ed["birth_place"], $ed["deleted"], '', '', '', '', '', '', $ed["relation_name"], $ed["rip_date"]);
+        }
+
+
+
+        /* store job histor */
+
+        $em->setSelectedRelation("jobhistories");
+        $ed = $em->getDCResult();
+
+
+
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_jobhistory_create', $em->getAddBy(), $em->getId(), $ed["jobhistory_id"], $ed["company_name"], $ed["division"], $ed["position"], $ed["start_date"], $ed["end_date"], $ed["line_of_business"],$ed["lamakerja"],$ed["deleted"]);
+        }
+
+        /* store trainings */
+
+        $em->setSelectedRelation("trainings");
+        $ed = $em->getDCResult();
+
+
+
+
+
+        if (count($ed) > 0) {
+            $hasil = $this->dbTable->SPUpdate('sp_training_create', $em->getAddBy(), $em->getId(), $ed["traininghistory_id"], $ed["training"], $ed["organizer"], $ed["city_name"], $ed["years"], $ed["deleted"], $ed["sertifikat"]);
+        }
+    }
+
+    public function lookupemployee(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+        $hasil = $this->dbTable->SPExecute('sp_report_lookemployee', $em->getName(), $em->getProject()->getId(), $em->getPt()->getId());
+        return $hasil;
+    }
+
+    public function lookupemployee2(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+        $hasil = $this->dbTable->SPExecute('sp_report_lookemployee', $em->getName(), $em->getProject()->getId(), $em->getPt()->getId());
+        return $hasil;
+    }
+
+    public function getRelation(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+        $hasil = $this->dbTable->SPExecute('sp_relation_read', $em->getId());
+        return $hasil[0];
+    }
+
+    public function getDetail(Hrd_Models_Master_Employee $em) {
+        $hasil = 0;
+        $hasil = $this->dbTable->SPExecute('sp_employeedetail_read', $em->getId());
+        return $hasil;
+    }
+
+    private function setHireDate(Hrd_Models_Master_EmployeePersonal $em) {
+        $statusId = $em->getStatus()->getId();
+        if ($statusId == Box_Config::STATUS_CONTRACT || $statusId == Box_Config::STATUS_CANDIDATE) {
+            $em->getStatusInformation()->setHireDate($em->getStatusInformation()->getContractStart());
+        } else if ($statusId == Box_Config::STATUS_DAILY_CONTRACT || $statusId == Box_Config::STATUS_DAILY_PERMANENT || $statusId == Box_Config::STATUS_DAILY_TEMPORARY) {
+            $em->getStatusInformation()->setHireDate($em->getStatusInformation()->getTemporaryStart());
+        }
+    }
+
+    private function countChilds(Hrd_Models_Master_EmployeePersonal $em) {
+        /// get child count
+        $em->setSelectedRelation("childs");
+        $childCount = 0;
+        $ed = $em->getDCResult();
+        if ($ed) {
+
+            foreach ($ed as $key => $value) {
+                if ($key == "relation_id") {
+
+                    $data = explode("~", $value);
+                    foreach ($data as $id) {
+                        if (intval($id) > 0) {
+                            $childCount +=1;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        $em->setChildCount($childCount);
+    }
+
+   /* start added by ahmad riadi 20-06-2017 */	
+    public function getDatareportto($params) {       
+        $obj_setup = new Hrd_Models_General_Setup();
+        $hasil = 0;      
+        $obj_setup->_storeprocedure = 'sp_employeefilter_read';
+        $params['page']=1;
+        $params['limit']=999999999;    
+        $obj_setup->_project_id = $params['project_id'];
+        $obj_setup->_pt_id = $params['pt_id'];
+        $obj_setup->_param = $params;
+        $hasil = $obj_setup->executeSP();
+
+	//print_r($hasil);
+        $data = $obj_setup->clean_blackdiamondquestion($hasil[1]);
+        $hasil = array(array(array("totalRow" => $hasil[0][0]['totalRow'])), $data);
+        return $hasil;
+    }
+    /* end added by ahmad riadi 20-06-2017 */	
+
+
+
+  private function storeMultiposition(Hrd_Models_Master_EmployeePersonal $em) {
+        $data = $em->getDatamultiposition();
+        if (!empty($data)) {
+            $obj = new Hrd_Models_Master_Multiposition();
+            $dao = new Hrd_Models_Master_MultipositionDao();
+            foreach ($data as $row) {
+                $id = $row['employee_multiposition_id'];
+                
+                $obj->setArrayTable($row);
+                if ($id > 0) {
+                    //update                    
+                    $dao->update($obj);
+                } else {
+                    //create
+                    if ($row['statedata'] !== 'delete') {
+                        $dao->save($obj);
+                    }
+                }
+            }
+        } else {
+            //echo 'kosong';
+        }
+    }
+
+
+
+}
+
+?>

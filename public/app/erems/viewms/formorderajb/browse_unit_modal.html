@@ -1,0 +1,60 @@
+<!-- Modal -->
+<div id="myModalBrowseUnitID" class="modal fade" role="dialog" style="z-index: 100000;">
+    <div class="modal-dialog modal-lg modal-ku">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sold Unit List</h4>
+                    <button type="button" class="close btn-sm" id="modal-close" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-4 kotak_pencarian">
+                            <form role="form" style="padding-right: 15px;">
+                                <div class="formku_search">
+                                    <div class="form-group form-group-sm">
+                                        <label>Unit Number</label>
+                                        <input class="form-control input-sm" name="unit_number" placeholder="Unit Number">
+
+                                    </div>
+                                    
+                                </div>
+
+                                <button class="btn btn-primary btn-sm" name="submit_search">Search</button>
+                                <button class="btn btn-default btn-sm" name="submit_reset">Reset</button>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <table id="plUnitListId" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width:30px;padding-bottom: 0px;padding-top: 0px;">No.</th>
+                                        <th style='padding-bottom: 0px;padding-top: 0px;'>Unit Number</th>
+                                        <th style='padding-bottom: 0px;padding-top: 0px;'>Cluster</th>
+                                        <th style='padding-bottom: 0px;padding-top: 0px;'>Type</th>
+                                        <th style='padding-bottom: 0px;padding-top: 0px;'>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    &nbsp;   
+                                </tbody>
+                            </table>
+                            <div class="mysuper_paging"> 
+                                <a href="#" class="first"></a><a href="#" class="prev"></a> <span id="current_page" class="text current_page">0</span> of <span id="total_page" class="text total_page">0</span><a href="#" class="next"></a><a href="#" class="last"></a>
+                                <span id="total_records" class="total_records">Total Record: 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

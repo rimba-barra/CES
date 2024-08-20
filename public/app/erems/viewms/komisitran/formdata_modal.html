@@ -1,0 +1,496 @@
+<div class="modal" role="dialog" data-keyboard="false" data-backdrop="static" style="z-index: 99999;" abc-action="create">
+    <div class="modal-dialog modal-lg modal-ku" style="width: 950px;margin: auto;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span class="icon icon-form-add">&nbsp;</span><span class="teks">Form Permintaan Komisi</span></h4>
+				<button type="button" class="close btn-sm x-tool x-tool-close" data-dismiss="modal">&nbsp;</button>
+            </div>
+            <div class="modal-body kotak_modal_body">
+                <div class="mellong">
+                    <div class="container my-container" style="padding: 7px 8px;width: 932px;">
+
+                        <form id="formKomisiTranID">
+                            <!-- <form id="formMasterKomisiID"> -->
+
+                            <input type="hidden" name="komisitran_id" >
+                            <input type="hidden" name="purchaseletter_purchaseletter_id" >
+                            <input type="hidden" name="komisi_komisi_id" >
+                            <input type="hidden" name="pph" >
+                            <input type="hidden" name="pphpt" >
+                            <input type="hidden" name="ppn" >
+                            <div class="card">
+                                <div class="card-header">
+                                    KAVLING / RUMAH
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="cluster_code_ID" class="col-3 col-form-label">Kawasan</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="cluster_code_ID" name="cluster_code" placeholder="" disabled>
+                                                </div>
+                                                <div class="col-1">
+                                                    <button class="btn btn-sm btn-primary" id="ktBrowsePLID">Browse</button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control form-control-disabled" id="cluster_cluster_ID" name="cluster_cluster" placeholder="" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="unit_unit_number_ID" class="col-3 col-form-label">Blok <span style="color:red;">*</span></label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="unit_unit_number_ID" name="unit_unit_number" placeholder="" disabled>
+                                                </div>
+                                                <label for="unit_land_size_ID" class="col-2 col-form-label">Tanah</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="unit_land_size_ID" name="unit_land_size" placeholder="" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="pt_name_ID" class="col-3 col-form-label">PT</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="pt_name_ID" name="pt_name" placeholder="" disabled>
+                                                </div>
+                                                <label for="unit_kelebihan_ID" class="col-2 col-form-label">Kelebihan Tanah</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="unit_kelebihan_ID" name="unit_kelebihan" placeholder="" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="productcategory_productcategory_ID" class="col-3 col-form-label">Type</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="productcategory_productcategory_ID" name="productcategory_productcategory" placeholder="" disabled>
+                                                </div>
+                                                <label for="unit_building_size_ID" class="col-2 col-form-label">Bangunan</label>
+                                                <div class="col-2">
+                                                    <input type="text" class="form-control form-control-disabled" id="unit_building_size_ID" name="unit_building_size" placeholder="" disabled>
+                                                </div>
+                                                <label class="col-1 col-form-label">m2</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    PEMBELI
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="purchaseletter_purchase_date_ID" class="col-3 col-form-label">Tgl / No. SP</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled abcdate" id="purchaseletter_ppurchase_date_ID" name="purchaseletter_purchase_date" placeholder="" disabled>
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control form-control-disabled" id="purchaseletter_purchaseletter_no_ID" name="purchaseletter_purchaseletter_no" placeholder="" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="customer_name_ID" class="col-3 col-form-label">Nama Pembeli</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled" id="customer_name_ID" name="customer_name" placeholder="" disabled>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="height:55px;">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="customer_address_ID" class="col-3 col-form-label">Alamat</label>
+                                                <div class="col-9">
+                                                    <textarea class="form-control form-control-disabled" id="customer_address_ID" name="customer_address" readonly></textarea>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="pricetype_pricetype_ID" class="col-3 col-form-label">Pendanaan</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="pricetype_pricetype_ID" name="pricetype_pricetype" placeholder="" disabled>
+                                                </div>
+                                                <label for="tanggal_akad_ID" class="col-2 col-form-label">Tgl. Akad</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="tanggal_akad_ID" name="tanggal_akad" placeholder="" disabled>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="price_harga_neto_ID" class="col-3 col-form-label">Harga Netto</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="price_harga_neto_ID" name="price_harga_neto" placeholder="" disabled>
+                                                </div>
+                                                <label for="price_harga_jual_ID" class="col-2 col-form-label">Harga Jual</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled abcmoney" id="price_harga_jual_ID" name="price_harga_jual" placeholder="" disabled>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="total_bayar_ID" class="col-3 col-form-label">Total Bayar</label>
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="total_bayar_ID" name="total_bayar" placeholder="" disabled>
+                                                </div>
+                                                <label for="tanggal_bayar_terakhir_ID" class="col-2 col-form-label">Tgl. Bayar</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="tanggal_bayar_terakhir_ID" name="tanggal_bayar_terakhir" placeholder="" disabled>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="salesman_employee_name_ID" class="col-3 col-form-label">Nama Sales</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled" id="salesman_employee_name_ID" name="salesman_employee_name" placeholder="" disabled>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="clubcitra_member_code_ID" class="col-3 col-form-label">Nama Member</label>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="clubcitra_member_code_ID" name="clubcitra_member_code" placeholder="" disabled>
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control form-control-disabled" id="clubcitra_member_ID" name="clubcitra_member" placeholder="" disabled>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="mkt_bayangan_ID" class="col-3 col-form-label">Mkt. Bayangan</label>
+                                                <div class="col-9">
+                                                    <input type="text" class="form-control form-control-disabled" id="mkt_bayangan_ID" name="mkt_bayangan" placeholder="" disabled>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    KLAIM KOMISI
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label class="col-3 col-form-label">Harga Netto Klaim</label>
+                                                <label for="harganetto_klaim_ID" class="col-1 col-form-label">Rp.</label>
+                                                <div class="col-8">
+                                                    <input type="text" class="form-control abcmoney" id="harganetto_klaim_ID" name="harganetto_klaim" placeholder="">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="komisi_code_ID" class="col-3 col-form-label">Parameter Komisi <span style="color:red;">*</span></label>
+                                                <div class="col-1">
+                                                    <input type="text" class="form-control form-control-disabled" id="komisi_code_ID" name="komisi_code" placeholder="" disabled>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button class="btn btn-sm btn-primary" id="ktBrowseMasterID">Browse</button>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <input type="text" class="form-control form-control-disabled" id="komisi_nama_ID" name="komisi_nama" placeholder="" disabled>
+                                                </div>
+                                                <label for="ptID" class="col-1 col-form-label">/</label>
+                                                <div class="col-1">
+                                                    <input type="text" class="form-control form-control-disabled" id="komisihitung_code_ID" name="komisihitung_code" placeholder="" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table class="table borderless">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Penerima Komisi</th>
+                                                <th scope="col">%</th>
+                                                <th scope="col">Nilai Komisi</th>
+                                                <th scope="col">PPN</th>
+                                                <th scope="col">DPP</th>
+                                                <th scope="col">&nbsp;</th>
+                                                <th scope="col">PPh Perorangan</th>
+                                                <th scope="col">PPh PT</th>
+                                                <th scope="col">Nilai Dibayar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Komisi Ybs</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_ybs" field="ybs" readonly/></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_ybs" field="ybs" readonly/></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_ybs" field="ybs" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_ybs" field="ybs" readonly/> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_ybs" field="ybs"/></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_ybs" field="ybs"/></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_ybs" field="ybs" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Komisi Sales</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_sales" field="sales" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_sales" field="sales" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_sales" field="sales" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_sales" field="sales" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_sales" field="sales" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_sales" field="sales" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_sales" field="sales" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Komisi Sales CO</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_sales_co" field="sales_co" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_sales_co" field="sales_co" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_sales_co" field="sales_co" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_sales_co" field="sales_co" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_sales_co" field="sales_co" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_sales_co" field="sales_co" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_sales_co" field="sales_co" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Marketing Bayangan</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_marketing_bayangan" field="marketing_bayangan" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_marketing_bayangan" field="marketing_bayangan" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_marketing_bayangan" field="marketing_bayangan"/></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_marketing_bayangan" field="marketing_bayangan" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_marketing_bayangan" field="marketing_bayangan" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_marketing_bayangan" field="marketing_bayangan" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_marketing_bayangan" field="marketing_bayangan" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Komisi Head Sales</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_head_sales" field="head_sales" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_head_sales" field="head_sales" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_head_sales" field="head_sales" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_head_sales" field="head_sales" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_head_sales" field="head_sales" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_head_sales" field="head_sales" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_head_sales" field="head_sales" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Head Adm</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_head_adm" field="head_adm" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_head_adm" field="head_adm" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_head_adm" field="head_adm"/></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_head_adm" field="head_adm" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_head_adm" field="head_adm" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_head_adm" field="head_adm" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_head_adm" field="head_adm" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Komisi Team</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_team" field="team" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_team" field="team" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_team" field="team" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_team" field="team" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_team" field="team" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_team" field="team" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_team" field="team" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Komisi Kas</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_kas" field="kas" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_kas" field="kas" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_kas" field="kas" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_kas" field="kas" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_kas" field="kas" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_kas" field="kas" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_kas" field="kas" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Komisi Manager Mkt</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_manager_marketing" field="manager_marketing" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_manager_marketing" field="manager_marketing" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_manager_marketing" field="manager_marketing" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_manager_marketing" field="manager_marketing" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_manager_marketing" field="manager_marketing" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_manager_marketing" field="manager_marketing" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_manager_marketing" field="manager_marketing" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Komisi Manager Mkt 2</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_manager_marketing2" field="manager_marketing2" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_manager_marketing2" field="manager_marketing2" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_manager_marketing2" field="manager_marketing2" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_manager_marketing2" field="manager_marketing2" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_manager_marketing2" field="manager_marketing2" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_manager_marketing2" field="manager_marketing2" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_manager_marketing2" field="manager_marketing2" readonly /></td>
+                                            </tr>
+											<tr>
+                                                <td>Komisi GM Sales Mkt</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_gm_sales_marketing" field="gm_sales_marketing" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_gm_sales_marketing" field="gm_sales_marketing" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_gm_sales_marketing" field="gm_sales_marketing" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_gm_sales_marketing" field="gm_sales_marketing" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_gm_sales_marketing" field="gm_sales_marketing" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_gm_sales_marketing" field="gm_sales_marketing" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_gm_sales_marketing" field="gm_sales_marketing" readonly /></td>
+                                            </tr>
+											<tr>
+                                                <td>Komisi Ass. Dir Sales Mkt</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_assdir_sales_marketing" field="assdir_sales_marketing" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_assdir_sales_marketing" field="assdir_sales_marketing" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_assdir_sales_marketing" field="assdir_sales_marketing" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_assdir_sales_marketing" field="assdir_sales_marketing" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_assdir_sales_marketing" field="assdir_sales_marketing" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_assdir_sales_marketing" field="assdir_sales_marketing" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_assdir_sales_marketing" field="assdir_sales_marketing" readonly /></td>
+                                            </tr>
+											<tr>
+                                                <td>Komisi Support Proyek</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_support_proyek" field="support_proyek" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_support_proyek" field="support_proyek" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_support_proyek" field="support_proyek" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_support_proyek" field="support_proyek" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_support_proyek" field="support_proyek" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_support_proyek" field="support_proyek" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_support_proyek" field="support_proyek" readonly /></td>
+                                            </tr>
+											<tr>
+                                                <td>Komisi Support 1</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_support1" field="support1" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_support1" field="support1" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_support1" field="support1" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_support1" field="support1" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_support1" field="support1" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_support1" field="support1" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_support1" field="support1" readonly /></td>
+                                            </tr>
+											<tr>
+                                                <td>Komisi GM Sales Mkt 1</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisi_gm_sales_marketing1" field="gm_sales_marketing1" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisinilai_gm_sales_marketing1" field="gm_sales_marketing1" readonly /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisippn_gm_sales_marketing1" field="gm_sales_marketing1" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisidpp_gm_sales_marketing1" field="gm_sales_marketing1" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipph_gm_sales_marketing1" field="gm_sales_marketing1" /></td>
+                                                <td><input class="form-control abcmoney" type="text" name="komisipphpt_gm_sales_marketing1" field="gm_sales_marketing1" /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="komisibayar_gm_sales_marketing1" field="gm_sales_marketing1" readonly /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+
+                                                <td colspan="7"><hr/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="total_komisipersen" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="total_komisinilai" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="total_komisippn" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="total_komisidpp" readonly /> </td>
+                                                <td>&nbsp;</td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="total_komisipph" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="total_komisipphpt" readonly /></td>
+                                                <td><input class="form-control abcmoney form-control-disabled" type="text" name="total_komisibayar" readonly /></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="ptID" class="col-2 col-form-label">Tanggal Komisi</label>
+                                                <div class="col-2">
+                                                    <input type="date" class="form-control abcdate" id="ptID" name="komisitran_date" placeholder="">
+                                                </div>
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control form-control-disabled" id="ptID" name="komisitran_no" placeholder="" readonly>
+                                                </div>
+                                                <div class="col-5">&nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+                        </form>
+                    </div> 
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <div class="inside-footer">
+				<button type="button" class="btn btn-sm" abc-action="save"><span class="icon icon-save">&nbsp;</span>Save</button>
+                <button type="button" class="btn btn-sm" data-dismiss="modal"><span class="icon icon-cancel">&nbsp;</span>Close</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</div>

@@ -1,0 +1,11 @@
+Ext.define('Cashier.view.listuserrole.Panel',{
+    extend:'Cashier.library.template.view.Panel',
+    requires:[
+        'Cashier.view.listuserrole.Grid',
+        'Cashier.view.listuserrole.FormSearch'
+    ],
+    alias:'widget.listuserrolepanel',
+    itemId:'ListuserrolePanel',
+    gridPanelName:'listuserrolegrid',
+    formSearchPanelName:'listuserroleformsearch',
+});

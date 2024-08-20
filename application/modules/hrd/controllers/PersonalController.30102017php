@@ -1,0 +1,513 @@
+<?php
+
+
+class Hrd_PersonalController extends Box_Models_App_Hermes_AbstractController {
+
+    protected function testingFlag() {
+        return FALSE;
+    }
+
+    public function allRead() {
+
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'employeeb', array('religion', 'department', 'bloodgroup', 'education', 'marriagestatus'), array());
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $employee = new Hrd_Models_Employee_Employee();
+        $data = $this->getAppData();
+        $employee->setArrayTable($this->getAppData());
+        $employee->setProject($this->getAppSession()->getProject());
+        $employee->setPt($this->getAppSession()->getPt());
+
+
+        $hasil = $dao->getAllB($this->getAppRequest(), $employee);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function parameterRead() {
+		
+		$pma = new Hrd_Models_App_Mastertable_Position();
+        $pp = $pma->prosesDataWithSession($this->getAppSession(), TRUE);
+		
+	
+		
+	
+
+        $ma = new Hrd_Models_App_Mastertable_AlokasiBiaya();
+        $aa = $ma->prosesDataWithSession($this->getAppSession(), TRUE);
+		
+		
+
+        $dma = new Hrd_Models_App_Mastertable_Department();
+        $dd = $dma->prosesDataWithSession($this->getAppSession(), TRUE);
+		
+        
+		
+		
+
+        $gpma = new Hrd_Models_App_Mastertable_Groupposition();
+        $gpp = $gpma->prosesDataWithSession($this->getAppSession(), TRUE);
+
+        $goma = new Hrd_Models_App_Mastertable_Group();
+        $gg = $goma->prosesDataWithSession($this->getAppSession(), TRUE);
+
+        $dima = new Hrd_Models_App_Mastertable_Division();
+        $did = $dima->prosesDataWithSession($this->getAppSession(), TRUE);
+       
+        
+        
+        /// job function
+		
+        $jfd = new Hrd_Models_Master_JobFunctionDao();
+        $jf = new Hrd_Models_Master_JobFunction();
+        $jfh = $jfd->getAllWOPL($jf);
+        $jdf = Box_Tools::toObjectResult($jfh, new Hrd_Models_Master_JobFunction());
+		
+	
+	/* start added by ahmad riadi 21-06-2017 */
+        $m_banding = new Hrd_Models_App_Mastertable_Banding();
+        $data_banding = $m_banding->prosesDataWithSession($this->getAppSession(), TRUE);
+        
+        $m_jobfamily = new Hrd_Models_App_Mastertable_JobFamily();
+        $data_jobfamily = $m_jobfamily->prosesDataWithSession($this->getAppSession(), TRUE);
+         /* end added by ahmad riadi 21-06-2017 */	
+		
+        
+
+        $hasil = TRUE;
+
+        $arrayRespon = array(
+            "HASIL" => $hasil);
+        //return Box_Tools::instantRead($arrayRespon, array($aa, $dd, $pp, $gpp, $gg, $did,$jdf));
+	 /* edited by ahmad riadi 21-06-2017 */
+        return Box_Tools::instantRead($arrayRespon, array($aa, $dd, $pp, $gpp, $gg, $did, $jdf,$data_banding,$data_jobfamily));
+	  //return Box_Tools::instantRead($arrayRespon, array($pp));
+	  //return Box_Tools::instantRead($arrayRespon);
+    }
+
+    public function employeereportoRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'employee', array('department'), array());
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $employee = new Hrd_Models_Master_EmployeePersonal();
+        //$employee->setArrayTable($this->getAppData());
+        $this->setArrayTable($employee, $this->getAppData());
+
+        $employee->setProject($this->getAppSession()->getProject());
+        $employee->setPt($this->getAppSession()->getPt());
+        //$hasil = $dao->getAllEP($this->getAppRequest(), $employee);	
+	$hasil = $dao->getAllEPReportto($this->getAppRequest(), $employee);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function detailRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'employeepersonal', array('religion', 'department','jobfunction','jobfamily','banding', 'bloodgroup', 'education', 'marriagestatus', 'spouse', 'division', 'position', 'group', 'groupposition', 'employeestatus', 'statusinformation', 'reportto', 'alokasibiaya', array("relation", "mother_"), array("relation", "father_")), array("detail", "educations", "relation", "saudaras", "childs", "emgcontact", "jobhistories", "trainings", "deleted", "skills", "organizations"));
+        //$dao = new Erems_Models_Payment_Dao();
+        $employee = new Hrd_Models_Master_EmployeePersonal();
+
+        $employee->setArrayTable($this->getAppData());
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $hasil = $dao->getDetail($employee);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function maindetailRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'employeepersonal', array('religion', 'department','jobfunction','jobfamily','banding', 'bloodgroup', 'education', 'marriagestatus', 'spouse', 'division', 'position', 'group', 'groupposition', 'employeestatus', 'statusinformation', array("relation", "mother_"), array("relation", "father_")), array("detail", "educations", "relation", "saudaras", "childs","emgcontact", "jobhistories", "trainings", "deleted", "skills", "organizations"));
+        //$dao = new Erems_Models_Payment_Dao();
+        $employee = new Hrd_Models_Master_EmployeePersonal();
+
+        $employee->setArrayTable($this->getAppData());
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $hasil = $dao->getDetail($employee);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function tandakasihRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'tandakasihtran', array(), array());
+        $dao = new Hrd_Models_Tandakasih_Dao();
+        $data = $this->getAppData();
+
+
+        $hasil = $dao->getAllByEmployeeWOPL(intval($data["employee_id"]), $this->getAppSession()->getProject()->getId(), $this->getAppSession()->getPt()->getId());
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function educationRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'educationhistory', array(), array());
+        $dao = new Hrd_Models_Master_GeneralDao();
+        $employee = new Hrd_Models_Master_Employee();
+        $employee->setArrayTable($this->getAppData());
+        $hasil = $dao->getEduHistory($employee, $this->getAppRequest());
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }
+
+    public function trainingRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'training', array(), array());
+        $dao = new Hrd_Models_Master_GeneralDao();
+        $employee = new Hrd_Models_Master_Employee();
+        $employee->setArrayTable($this->getAppData());
+        $hasil = $dao->getTrainingHistory($employee, $this->getAppRequest());
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+
+        return $dm;
+    }
+
+    public function jobhistoryRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'jobhistory', array(), array());
+        $dao = new Hrd_Models_Master_GeneralDao();
+        $employee = new Hrd_Models_Master_Employee();
+        $employee->setArrayTable($this->getAppData());
+        $hasil = $dao->getJobstory($employee, $this->getAppRequest());
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+
+        return $dm;
+    }
+
+    public function saudaraRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'saudara', array('education'), array());
+        $dao = new Hrd_Models_Master_RelationDao();
+        $saudara = new Hrd_Models_Master_Saudara();
+        $data = $this->getAppData();
+        $employee = new Hrd_Models_Master_Employee();
+        $employee->setArrayTable($this->getAppData());
+        //   $payment->setArrayTable($this->getAppData());
+        $hasil = $dao->getAll($this->getAppRequest(), $employee->getId(), $saudara);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+
+        return $dm;
+    }
+
+    public function organizationRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'organization', array(), array());
+        $dao = new Hrd_Models_Organization_Dao();
+        $em = new Hrd_Models_Master_Employee();
+        $em->setArrayTable($this->getAppData());
+        $hasil = $dao->getAllByEmployee($em);
+        //$hasil = array();
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+
+        return $dm;
+    }
+
+    public function childRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'child', array('education'), array());
+        $dao = new Hrd_Models_Master_RelationDao();
+        $child = new Hrd_Models_Master_Child();
+        $data = $this->getAppData();
+        $employee = new Hrd_Models_Master_Employee();
+        $employee->setArrayTable($this->getAppData());
+        //   $payment->setArrayTable($this->getAppData());
+        $hasil = $dao->getAll($this->getAppRequest(), $employee->getId(), $child);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+
+        return $dm;
+    }
+
+    public function emgcontactRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'emgcontact', array('education'), array());
+        $dao = new Hrd_Models_Master_RelationDao();
+        $child = new Hrd_Models_Master_EmergencyContact();
+        $data = $this->getAppData();
+        $employee = new Hrd_Models_Master_Employee();
+        $employee->setArrayTable($this->getAppData());
+        //   $payment->setArrayTable($this->getAppData());
+        $hasil = $dao->getAll($this->getAppRequest(), $employee->getId(), $child);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+
+        return $dm;
+    }
+
+    public function potencyRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'potencytran', array(), array());
+        $dao = new Hrd_Models_Potency_Dao();
+        $em = new Hrd_Models_Master_Employee();
+        $em->setArrayTable($this->getAppData());
+
+
+        //   $payment->setArrayTable($this->getAppData());
+        $hasil = $dao->getAllByEmployee($em);
+
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+
+        return $dm;
+    }
+
+    public function mainCreate() {
+
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $employee = new Hrd_Models_Master_EmployeePersonal();
+        $validator = new Hrd_Models_Master_EmployeeValidator();
+        $validator->setDataParams($this->getAppData());
+        $dm->setDao(new Hrd_Models_Master_EmployeeDao());
+        $dm->setValidator($validator);
+        $dm->setObject($employee);
+
+        return $dm;
+    }
+
+    public function uploadRead() {
+
+        $ses = $this->getAppSession();
+
+
+        $data = $this->getAppData();
+
+        $msg = '???';
+        $success = FALSE;
+        $modeUpload = $data["type"];
+        $nik = trim($data["nik"]);
+        $emplyoeeId = intval($data["employee_id"]);
+        $fileName = "";
+        $fileUpload = NULL;
+        if (strlen($nik) > 0 && $emplyoeeId > 0) {
+            if ($modeUpload == "FOTO") {
+                $fileUpload = new Box_Models_App_FileUpload("/" . Box_Config::PERSONAL_FOTO_PATH, "personal_" . $ses->getProject()->getId() . "_" . $ses->getPt()->getId() . "_" . $nik . "_" . time(), "jpg,JPG,png");
+
+                $fileUpload->run();
+                if (!$fileUpload->isSuccess()) {
+                    $msg = $fileUpload->getErrorMsg();
+                } else {
+                    $dao = new Hrd_Models_Master_EmployeeDao();
+
+
+                    // seluruh informasi karyawan lama
+                    $oldEmployee = new Hrd_Models_Master_Employee();
+                    $oldEmployee->setId($emplyoeeId);
+                    $oldEmployee = Box_Tools::toObjects("employee", $dao->getDetail($oldEmployee), TRUE);
+
+
+
+                    $em = new Hrd_Models_Master_Employee();
+                    $em->setId($emplyoeeId);
+                    $em->setPhoto($fileUpload->getFileName());
+                    $em->setModiBy($this->getAppSession()->getUser()->getId());
+                    $hasilUpdate = $dao->updatePhoto($em);
+
+                    /// hapus foto lama jika ada
+                    if (strlen($oldEmployee->getPhoto()) > 0) {
+                        $fileOld = Box_Models_App_FileUpload::getFilePath(Box_Config::PERSONAL_FOTO_PATH, $oldEmployee->getPhoto());
+
+                        if (file_exists($fileOld)) {
+                            unlink($fileOld);
+                        }
+                    }
+
+
+
+                    $fileName = $fileUpload->getFileName();
+                    if ($hasilUpdate) {
+                        $success = TRUE;
+                        $msg = $fileName;
+                    } else {
+                        $msg = "Error pada saat simpan data";
+                    }
+                }
+            }else if (                       
+                        $modeUpload=='KK'||
+                        $modeUpload=='KTP'||
+                        $modeUpload=='NPWP'||
+                        $modeUpload=='IJAZAH'||
+                        $modeUpload=='JAMSOSTEK'||
+                        $modeUpload=='BPJS_PP'||
+                        $modeUpload=='BPJS_K'||
+                        $modeUpload=='BPJS_KK'||
+                        $modeUpload=='MANULIFE_P'||
+                        $modeUpload=='REKENING'
+               ) {
+                if ($_FILES["file_name"]["error"] > 0) {
+                    $msg = "Error karena file upload";
+                } else {
+                    $process = new Hrd_Models_Personaldocument();
+                    $result = $process->processdoc($_FILES, $data);
+                    $msg = $result['msg'];
+                    $success = $result['success'];
+                }
+
+		
+	    /*else if($modeUpload == "KK" || $modeUpload == "KTP" || $modeUpload == "NPWP" || $modeUpload == "JAMSOSTEK"){
+                
+                $fileUpload = new Box_Models_App_FileUpload("/public/app/hrd/uploads/personal/dokumen_".  strtolower($modeUpload)."/", "personal_".strtolower($modeUpload)."_" . $ses->getProject()->getId() . "_" . $ses->getPt()->getId() . "_" . $nik, "pdf");
+
+                $fileUpload->run();
+                if (!$fileUpload->isSuccess()) {
+                    $msg = $fileUpload->getErrorMsg();
+                } else {
+                    $dao = new Hrd_Models_Master_EmployeeDao();
+
+
+                    $hasilUpdate = FALSE;
+
+                    $em = new Hrd_Models_Master_Employee();
+                    $em->setId($emplyoeeId);
+                  
+                    $em->setModiBy($this->getAppSession()->getUser()->getId());
+                    $hasilUpdate = $dao->updateDokoumen($em,$modeUpload,$fileUpload->getFileName());
+
+
+
+                    $fileName = $fileUpload->getFileName();
+                    if ($hasilUpdate) {
+                        $success = TRUE;
+                        $msg = $fileName;
+                    } else {
+                        $msg = "Error pada saat simpan data";
+                    }
+                }
+	    */	
+            }else if($modeUpload == "IJASAH" || $modeUpload == "SERTIFIKAT"){
+                
+                $fileUpload = new Box_Models_App_FileUpload("/public/app/hrd/uploads/personal/dokumen_".strtolower($modeUpload)."/", "personal_".strtolower($modeUpload)."_" . $ses->getProject()->getId() . "_" . $ses->getPt()->getId() . "_" . $nik .'_'.time(), "pdf");
+
+                $fileUpload->run();
+                if (!$fileUpload->isSuccess()) {
+                    $msg = $fileUpload->getErrorMsg();
+                } else {
+                    $dao = new Hrd_Models_Master_EmployeeDao();
+
+
+                    $hasilUpdate = TRUE;
+
+                    $em = new Hrd_Models_Master_Employee();
+                    $em->setId($emplyoeeId);
+                  
+                   // $em->setModiBy($this->getAppSession()->getUser()->getId());
+                  //  $hasilUpdate = $dao->updateDokoumen($em,$modeUpload,$fileUpload->getFileName());
+
+
+
+                    $fileName = $fileUpload->getFileName();
+                    if ($hasilUpdate) {
+                        $success = TRUE;
+                        $msg = $fileName;
+                    } else {
+                        $msg = "Error pada saat simpan data";
+                    }
+                }
+            }
+        } else {
+            $msg = "Employee not valid";
+        }
+
+
+        $arrayRespon = array("HASIL" => $success, "MSG" => $msg);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+    protected function getDefaultProcessor() {
+        return new Hrd_Models_App_Box_EmployeeProcessor();
+    }
+
+    public function confCreate($obj, $app) {
+        //$obj->setFlag(Erems_Models_App_Config::getv("PAYMENTFLAG_OTHERS")); 
+    }
+
+   /* start added by ahmad riadi 20-06-2017 */
+
+    public function getsubholdingRead() {
+        $setup = new Hrd_Models_General_Setup();
+        $result = $setup->get_subholding();
+        $arrayRespon = array("success" => true, "data" => $result);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+
+
+    public function getprojectRead() {
+        $setup = new Hrd_Models_General_Setup();
+        $result = $setup->get_project();
+        $arrayRespon = array("success" => true, "data" => $result);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+    public function getptRead() {
+         $setup = new Hrd_Models_General_Setup();
+         $result = $setup->get_pt();
+          $arrayRespon = array("success" => true, "data" => $result);
+          return Box_Tools::instantRead($arrayRespon);
+
+    }
+    public function employeereportofilterRead() {
+        $dm = new Box_Models_App_Hermes_DataModel();
+        $dataList = new Box_Models_App_DataListCreator('', 'employee', array(), array());
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $employee = new Hrd_Models_Master_EmployeePersonal();
+        $params = $this->getAppData();
+        $this->setArrayTable($employee, $params);
+        $hasil = $dao->getDatareportto($params);
+        $dm->setDataList($dataList);
+        $dm->setHasil($hasil);
+        return $dm;
+    }	
+    /* end added by ahmad riadi 20-06-2017 */
+
+ 
+    /* start  added by ahmad riadi 17-07-2017 */
+     public function documentRead() {
+        $setup = new Hrd_Models_General_Setup();
+        $dao = new Hrd_Models_Master_EmployeeDao();
+        $params = $this->getAppData();
+        $ids = $params['employee_id'];
+        $result = $dao->getAllByIds($ids);
+        $arrayRespon = array("success" => true, "data" => $result);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+    /* end  added by ahmad riadi 17-07-2017 */
+
+
+
+  /* start added by ahmad riadi 22-09-2017 */
+  public function validateemailofficeRead() {
+        $setup = new Hrd_Models_General_Setup();
+        $params = $this->getAppData();
+        $setup->_tabledata = $setup->_m_employee;
+        $result = $setup->getdata_standard(array("email_ciputra" => $params['email_ciputra']));
+        $counter = 0;
+        $data = null;
+        if (!empty($result[0])) {
+            $counter = count($result[0][0]);
+            $data = $result[0][0];
+        }
+        $arrayRespon = array("success" => true, "data" => $data, "counter" => $counter);
+        return Box_Tools::instantRead($arrayRespon);
+    }
+  /* end added by ahmad riadi 22-09-2017 */
+
+
+
+
+
+}
+
+?>

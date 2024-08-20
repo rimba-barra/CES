@@ -1,0 +1,27 @@
+Ext.define('Cashier.model.Masterfixedasset', {
+    extend: 'Ext.data.Model',
+    alias: 'model.masterfixedassetmodel',
+    idProperty: 'fixedasset_id',
+    fields: [
+        {name: 'fixedasset_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'project_name', type: 'string'},
+        {name: 'pt_name', type: 'string'},
+        {name: 'voucher_date', type: 'date'},
+        {name: 'voucher_no', type: 'string'},
+        {name: 'coa', type: 'string'},
+        {name: 'description', type: 'string'},
+        {name: 'amount', type: 'number'},
+        {name: 'month_lifetime', type: 'int'},
+        {name: 'active', type: 'tinyint'},
+        {name: 'addby', type: 'int'},
+        {name: 'user_id', type: 'string'},
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'sell_date', type: 'date', dateFormat: 'Y-m-d'},
+        {name: 'src_voucher_no', type: 'string'},
+        {name: 'src_description', type: 'string'},
+        {name: 'status', type: 'string'},
+        {name: 'hideparam', type: 'string'},
+    ]
+});

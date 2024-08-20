@@ -1,0 +1,53 @@
+Ext.define('Erems.model.Masterkoefisien', {
+    extend: 'Ext.data.Model',
+    alias: 'model.masterkoefisienmodel',
+    idProperty: 'koefisien_id',
+    fields: [
+        {name: 'koefisien_id', type: 'int'},
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'pricetype_id', type: 'int'},
+        {name: 'pricetype', type: 'string'},
+        {name: 'pricelist', type: 'string'},
+        {name: 'koefisien', type: 'desimal'},
+        {name: 'asuransi_nominal_persen', type: 'int'},
+        {name: 'is_biaya_asuransi', type: 'int'},
+        {name: 'biaya_asuransi', type: 'desimal'},
+        {name: 'bphtb_nominal_persen', type: 'int'},
+        {name: 'is_biaya_bphtb', type: 'int'},
+        {name: 'biaya_bphtb', type: 'desimal'},
+        {name: 'bbn_nominal_persen', type: 'int'},
+        {name: 'is_biaya_bbn', type: 'int'},
+        {name: 'biaya_bbn', type: 'desimal'},
+        {name: 'ajb_nominal_persen', type: 'int'},
+        {name: 'is_biaya_ajb', type: 'int'},
+        {name: 'biaya_ajb', type: 'desimal'},
+        {name: 'administrasi_nominal_persen', type: 'int'},
+        {name: 'is_biaya_administrasi', type: 'int'},
+        {name: 'biaya_administrasi', type: 'desimal'},
+        {name: 'tandajadi_nominal_persen', type: 'int'},
+        {name: 'tandajadi', type: 'desimal'},
+        {name: 'is_dp_awal', type: 'int'},
+        {name: 'persentase_dp', type: 'desimal'},
+        {name: 'um_inh_scheduletype', type: 'int'},
+        {name: 'um_inh_persen', type: 'desimal'},
+        {name: 'um_inh_termin', type: 'desimal'},
+        {name: 'detail', type: 'object'},
+
+        {name: 'admsubsidi_nominal_persen', type: 'int'},
+        {name: 'is_biaya_admsubsidi', type: 'int'},
+        {name: 'biaya_admsubsidi', type: 'desimal'},
+
+        {name: 'pmutu_nominal_persen', type: 'int'},
+        {name: 'is_biaya_pmutu', type: 'int'},
+        {name: 'biaya_pmutu', type: 'desimal'},
+        
+        {name: 'paket_tambahan_nominal_persen', type: 'int'},
+        {name: 'is_biaya_paket_tambahan', type: 'int'},
+        {name: 'biaya_paket_tambahan', type: 'desimal'},
+
+        // added by rico 18102021
+        {name: 'disc_pembayaran', type: 'desimal'},
+        {name: 'collection_fee', type: 'desimal'},
+    ]
+});

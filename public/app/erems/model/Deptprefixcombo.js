@@ -1,0 +1,27 @@
+Ext.define('Erems.model.Deptprefixcombo', {
+    extend: 'Ext.data.Model',
+    alias: 'model.deptprefixcombomodel',
+    idProperty: 'department_id',
+    fields: [
+        {name: 'project_id', type: 'int'},
+        {name: 'pt_id', type: 'int'},
+        {name: 'department_id', type: 'int'},
+        {name: 'deptprefix_id', type: 'int'},
+        {name: 'deptprefixdetail_id', type: 'int'},
+        {name: 'projectcode', type: 'string'},       
+        {name: 'ptcode', type: 'string'},    
+        {name: 'deptcode', type: 'string'},    
+        {name: 'projectname', type: 'string'},       
+        {name: 'ptname', type: 'string'},  
+        {name: 'department', type: 'string'},  
+        {name: 'deptprefix', type: 'string'},  
+        {name: 'description', type: 'string'},  
+        {name: 'active', type: 'bit'},       
+        {name: 'addon', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'addby', type: 'string'},
+        {name: 'modion', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+        {name: 'modiby', type: 'string'},
+        {name: 'deleted', type: 'bit'},
+        {name: 'hideparam', type: 'string'},
+    ]
+});

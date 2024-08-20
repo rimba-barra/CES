@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.komponengaji.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.komponengaji.Grid','Hrd.view.komponengaji.FormSearch','Hrd.view.komponengaji.FormData'],
+    alias:'widget.komponengajipanel',
+    itemId:'KomponengajiPanel',
+    gridPanelName:'komponengajigrid',
+    formSearchPanelName:'komponengajiformsearch',
+    formDataName:'komponengajiformdata',
+});

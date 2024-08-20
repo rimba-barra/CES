@@ -1,0 +1,11 @@
+Ext.define('Hrd.view.overtimeindex.Panel',{
+    extend:'Hrd.library.box.view.directviewinput.Panel',
+    requires:['Hrd.view.overtimeindex.Grid','Hrd.view.overtimeindex.FormSearch','Hrd.view.overtimeindex.FormData'],
+    alias:'widget.overtimeindexpanel',
+    itemId:'OvertimeindexPanel',
+    gridPanelName:'overtimeindexgrid',
+    formSearchPanelName:'overtimeindexformsearch',
+    formDataName:'overtimeindexformdata',
+    formDataWidth:'100%',
+     fsCollapsed:false,
+});

@@ -1,0 +1,53 @@
+<div id="logintitle" class="front-title" style="margin-bottom:20px;padding-bottom:10px;padding-left:3px;">Force Logout</div>
+<?php if (isset($this->pesan)) { ?>
+	<p style="color:red;text-align: center;"><?php echo $this->pesan; ?></p>
+<?php } ?>
+
+<form name="frmforcelogout" id="frmforcelogout">
+	<table cellspacing="0" cellpadding="3" align="center" border="0">
+		<tr>
+			<td width="60">User</td>
+			<td>
+				<input type="hidden" name="action" id="action" value="force"/>
+				<input type="text" name="usr" id="usr" size="35"/>
+			</td>
+		</tr>
+		<tr>
+			<td width="60">Password</td>
+			<td><input type="password" name="pas" id="pas" size="35"/></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="padding-top:20px;">
+				<span class="link small" id="lnkback" style="margin-top:10px;float:left">Back to Login Form</span>
+				<input type="button" value="Force Logout" name="btnforcelogout" id="btnforcelogout" style="width:80px;height:30px;font-size:0.9em;float:right;" />				
+			</td>
+		</tr>
+	</table>
+</form>
+<script type="text/javascript">
+	var submitForce = function (stat) {
+		var emptyField = 0, emptyFieldIndex;
+		if ($.trim($('#frmforcelogout :input:eq(0)').val()) == '') {
+			emptyFieldIndex = 0;
+			emptyField++;
+		} else if ($('#frmforcelogout :input:eq(1)').val() == '') {
+			emptyFieldIndex = 1;
+			emptyField++;
+		}
+		if (emptyField) {
+			if (stat) {
+				alert('Form is not completed !');
+			}
+			$('#frmforcelogout :input:eq(' + emptyFieldIndex + ')').focus();
+		} else {
+			loadBasePage({actionName: 'forcelogout', method: 'POST', data: '#frmforcelogout'});
+		}
+	};
+
+	$('#frmforcelogout :input:not(#btnforcelogout)').keydown(function(e){ if (e.which=='13'){ submitForce(0); } });
+	$('#btnforcelogout').addClass('ptr').click(function(){ submitForce(1); });
+	
+	$('#lnkback').click(function () {
+		loadBasePage({actionName: 'login'});
+	});
+</script>

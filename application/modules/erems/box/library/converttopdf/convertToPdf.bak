@@ -1,0 +1,3 @@
+D:\LibreOfficePortable\App\libreoffice\program\soffice.exe --headless -convert-to pdf --outdir %2 %1
+
+D:\LibreOfficePortable_S_24.2.0\App\libreoffice\program\soffice.exe --headless --convert-to "pdf:writer_pdf_Export:{\"SelectPdfVersion\":{\"type\":\"long\",\"value\":\"0\"}}" --outdir %2 %1 nofirststartwizard

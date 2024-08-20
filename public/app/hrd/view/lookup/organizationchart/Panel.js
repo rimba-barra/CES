@@ -1,0 +1,9 @@
+Ext.define('Hrd.view.lookup.organizationchart.Panel',{
+    extend:'Hrd.library.box.view.Panel',
+    requires:['Hrd.view.lookup.organizationchart.Grid','Hrd.view.lookup.organizationchart.FormSearch'],
+    alias:'widget.lookuporganizationchartpanel',
+    itemId:'LookuporganizationchartPanel',
+    height:500,
+    gridPanelName:'lookuporganizationchartgrid',
+    formSearchPanelName:'lookuporganizationchartformsearch'
+});

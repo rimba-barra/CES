@@ -1,0 +1,2081 @@
+Ext.define('Hrd.controller.Personal', {
+    extend: 'Hrd.library.box.controller.Controllerfdv2',
+    alias: 'controller.Personal',
+    requires: ['Hrd.library.box.tools.StoreProcessor', 'Hrd.library.box.tools.EventSelector1b',
+        'Hrd.library.box.tools.SimpleGridControl',
+        'Hrd.library.box.tools.SimpleGridControlUploadFile',
+        'Hrd.library.box.tools.Tools',
+        'Hrd.template.combobox.Year', //edited by ahmad riadi 2017-06-05
+        'Hrd.template.combobox.Projectcombobox', //added by ahmad riadi 2017-06-09
+        'Hrd.template.combobox.Ptcombobox', //added by ahmad riadi 2017-06-09
+	'Hrd.template.combobox.Subholdingcombobox', //added by ahmad riadi 2017-09-11
+
+
+    ],
+    //start added by ahmad riadi 2017-06-09
+    stores: [
+        'Project',
+        'Pt',
+	'Subholding',
+	
+    ],
+    models: [
+        'Project',
+        'Pt',
+	'Subholding',
+
+
+    ],
+    //end added by ahmad riadi 2017-06-09
+    views: ['personal.Panel', 'personal.Grid', 'personal.FormSearch', 'personal.FormData'],
+    comboBoxIdEl: [],
+    controllerName: 'personal',
+    fieldName: 'employee_id',
+    fillForm: null,
+    formWidth: 800,
+    alreadyInit: false,
+     /* start added by ahmad riadi 12-07-2017 */
+      typedoc: null,
+    /* end added by ahmad riadi 12-07-2017 */	
+    refs: [
+        {
+            ref: 'grid',
+            selector: 'personalgrid'
+        },
+        {
+            ref: 'formsearch',
+            selector: 'personalformsearch'
+        },
+        {
+            ref: 'formdata',
+            selector: 'personalformdata'
+        },
+        {
+            ref: 'grideducation',
+            selector: 'personaleducationgrid'
+        },
+        {
+            ref: 'gridsaudara',
+            selector: 'personalsaudaragrid'
+        },
+        {
+            ref: 'gridchild',
+            selector: 'personalchildgrid'
+        },
+        {
+            ref: 'gridemgcontact',
+            selector: 'personalemegergencycontactgrid'
+        },
+        {
+            ref: 'gridtraining',
+            selector: 'personalcoursegrid'
+        },
+        {
+            ref: 'gridjobs',
+            selector: 'personalcompanygrid'
+        },
+        {
+            ref: 'gridorganization',
+            selector: 'personalorganizationgrid'
+        },
+        {
+            ref: 'panel',
+            selector: 'personalpanel'
+        },
+        {
+            ref: 'gridlookupe',
+            selector: 'lookuppersonalgrid'
+        },
+        {
+            ref: 'gridtandakasih',
+            selector: 'personaltandakasihgrid'
+        },
+        {
+            ref: 'formupload',
+            selector: 'personalformupload'
+        },
+        {
+            ref: 'formuploadijasah',
+            selector: '#PrsEducationGridIDFormId'
+        },
+        {
+            ref: 'formuploadsertifikat',
+            selector: '#PrsCourseGridIDFormId'
+        },
+        /* start added by ahmad riadi 09-06-2017*/
+        {
+            ref: 'formsearhcreportto',
+            selector: 'lookuppersonalformsearch'
+        }
+        /* end added by ahmad riadi 09-06-2017*/
+    ],
+    //unitFormula: null,
+    //storeProcess: 'Otherspaymentdatadetail',
+    bindPrefixName: 'Personal',
+    browseHandler: null,
+    localStore: {
+        selectedUnit: null,
+        customer: null,
+        price: null,
+        detail: null,
+        newdetail: null
+    },
+    saveStore: 'newdetail',
+    newButtonClicked: false,
+    skillList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    uploadFotoKlik: 0,
+    uploadDokumenKlik: 0,
+    saveClicked: false,
+   
+    constructor: function(configs) {
+        this.callParent(arguments);
+    },
+    init: function() {
+        var me = this;
+
+        if (me.alreadyInit) {
+            return;
+        }
+        me.alreadyInit = true;
+        console.log("INIT PERSONAL");
+
+        var newEvs = {};
+        var events = new Hrd.library.box.tools.EventSelector1b();
+        this.control(events.getEvents(me, me.controllerName));
+
+        // added 26 Agustus 2014
+        me.tools = new Hrd.library.box.tools.Tools({config: me.myConfig});
+
+        var sgc = new Hrd.library.box.tools.SimpleGridControlUploadFile({
+            _gridId: 'PrsEducationGridID',
+            _methodName: me.sgcPanel
+        });
+        this.control(sgc.getEvents(me, 'personaleducationgrid'));
+        var sgcSaudara = new Hrd.library.box.tools.SimpleGridControl({
+            _gridId: 'PrsSaudaraGridID',
+            _methodName: me.sgcPanel
+        });
+        this.control(sgcSaudara.getEvents(me, 'personalsaudaragrid'));
+        var sgcChild = new Hrd.library.box.tools.SimpleGridControl({
+            _gridId: 'PrsChildGridID',
+            _methodName: me.sgcPanel
+        });
+        this.control(sgcChild.getEvents(me, 'personalchildgrid'));
+        var sgcEmgContact = new Hrd.library.box.tools.SimpleGridControl({
+            _gridId: 'PrsEmegergencyContactGridID',
+            _methodName: me.sgcPanel
+        });
+        this.control(sgcEmgContact.getEvents(me, 'personalemegergencycontactgrid'));
+        var sgcCourse = new Hrd.library.box.tools.SimpleGridControlUploadFile({
+            _gridId: 'PrsCourseGridID',
+            _methodName: me.sgcPanel
+        });
+        this.control(sgcCourse.getEvents(me, 'personalcoursegrid'));
+
+        var sgcCompany = new Hrd.library.box.tools.SimpleGridControl({
+            _gridId: 'PrsCompanyGridID',
+            _methodName: me.sgcPanel
+        });
+        this.control(sgcCompany.getEvents(me, 'personalcompanygrid'));
+        var sgcOrg = new Hrd.library.box.tools.SimpleGridControl({
+            _gridId: 'PrsOrganizationGridID',
+            _methodName: me.sgcPanel
+        });
+
+
+        this.control(sgcOrg.getEvents(me, 'personalorganizationgrid'));
+
+
+        newEvs['personalformdata button[action=lookupreportto]'] = {
+            click: function(el, val) {
+                me.showLookupReportToWindow();
+            }
+        };
+        /* start edited by ahmad riadi 09-06-2017*/
+        newEvs['#personalPSLookupRewindow lookuppersonalgrid button[action=select]'] = {
+            click: function () {
+                me.selectEmployeeReportTo();
+            }
+
+        };
+        /* end edited by ahmad riadi 09-06-2017*/
+
+        newEvs['personalformdata [name=employeestatus_employeestatus_id]'] = {
+            change: function() {
+                me.employeeStatusOnChange();
+            }
+
+        };
+
+
+       /* start edited by ahmad riadi 18-09-2017*/
+        newEvs['personalformdata [name=email_ciputra]'] = {
+            blur: function () {
+                me.validateEmailoffice();
+            }
+        };
+        /* end edited by ahmad riadi 18-09-2017*/
+
+
+
+        /*
+         newEvs['personalformdata #file_foto'] = {
+         change: function(fld, a) {
+         
+         me.formUploadFoto(fld, a, 'FOTO');
+         }
+         };
+         */
+
+        newEvs['personalformdata button[action=upload_foto]'] = {
+            click: function(fld, a) {
+
+                me.showFormUpload("FOTO");
+            }
+        };
+
+        newEvs['personalformdata button[action=upload_file_kk]'] = {
+            click: function(fld, a) {
+
+                me.showFormUpload("KK");
+            }
+        };
+
+        newEvs['personalformdata button[action=upload_file_ktp]'] = {
+            click: function(fld, a) {
+
+                me.showFormUpload("KTP");
+            }
+        };
+
+        newEvs['personalformdata button[action=upload_file_npwp]'] = {
+            click: function(fld, a) {
+
+                me.showFormUpload("NPWP");
+            }
+        };
+
+        newEvs['personalformdata button[action=upload_file_jamsostek]'] = {
+            click: function(fld, a) {
+
+                me.showFormUpload("JAMSOSTEK");
+            }
+        };
+
+	/* start added by ahmad riadi 12-07-2017 */
+          /* start action upload */
+         newEvs['personalformdata button[action=upload_file_bpjs_pp]'] = {
+            click: function(fld, a) {
+                me.typedoc='BPJS_PP';
+                me.showFormUpload(me.typedoc);
+               
+            }
+        };  
+         newEvs['personalformdata button[action=upload_file_bpjs_k]'] = {
+            click: function(fld, a) {
+                me.typedoc='BPJS_K';
+                me.showFormUpload(me.typedoc);
+            }
+        };
+         newEvs['personalformdata button[action=upload_file_bpjs_kk]'] = {
+            click: function(fld, a) {
+                me.typedoc='BPJS_KK';
+                me.showFormUpload(me.typedoc);
+            }
+        };
+         newEvs['personalformdata button[action=upload_file_ijazah]'] = {
+            click: function(fld, a) {
+                me.typedoc='IJAZAH';
+                me.showFormUpload(me.typedoc);
+            }
+        };
+         newEvs['personalformdata button[action=upload_file_manulife_p]'] = {
+            click: function(fld, a) {
+                me.typedoc='MANULIFE_P';
+                me.showFormUpload(me.typedoc);
+            }
+        };
+         newEvs['personalformdata button[action=upload_file_rekening]'] = {
+            click: function(fld, a) {
+                me.typedoc='REKENING';
+                me.showFormUpload(me.typedoc);
+            }
+        };
+         /* end action upload */
+         /* start action view */
+         newEvs['personalformdata button[action=lihatdokumen_bpjs_pp]'] = {
+            click: function() {
+                me.viewdocFile("BPJS_PP");
+            }
+        };
+         newEvs['personalformdata button[action=lihatdokumen_bpjs_k]'] = {
+            click: function() {
+                me.viewdocFile("BPJS_K");
+            }
+        };
+        newEvs['personalformdata button[action=lihatdokumen_bpjs_kk]'] = {
+            click: function() {
+                me.viewdocFile("BPJS_KK");
+            }
+        };
+        newEvs['personalformdata button[action=lihatdokumen_ijazah]'] = {
+            click: function() {
+                me.viewdocFile("IJAZAH");
+            }
+        };        
+        newEvs['personalformdata button[action=lihatdokumen_manulife_p]'] = {
+            click: function() {
+                 me.viewdocFile("MANULIFE_P");
+            }
+        };
+         newEvs['personalformdata button[action=lihatdokumen_rekening]'] = {
+            click: function() {
+                me.viewdocFile("REKENING");
+            }
+        };
+         /* end action view */
+        /* end added by ahmad riadi 12-07-2017 */
+
+
+
+        newEvs['personalformupload #file_id'] = {
+            change: function(fld, a) {
+
+                me.formUploadFile(fld, a);
+            }
+        };
+
+        newEvs['personalformdata button[action=lihatdokumen_kk]'] = {
+            click: function() {
+                //me.lihatFile("KK");
+                me.viewdocFile("KK");
+            }
+        };
+
+        newEvs['personalformdata button[action=lihatdokumen_ktp]'] = {
+            click: function() {
+                //me.lihatFile("KTP");
+                me.viewdocFile("KTP");
+            }
+        };
+
+        newEvs['personalformdata button[action=lihatdokumen_npwp]'] = {
+            click: function() {
+                //me.lihatFile("NPWP");
+                me.viewdocFile("NPWP");
+            }
+        };
+
+        newEvs['personalformdata button[action=lihatdokumen_jamsostek]'] = {
+            click: function() {
+                //me.lihatFile("JAMSOSTEK");
+                me.viewdocFile("JAMSOSTEK");
+            }
+        };
+
+
+        newEvs['#PrsEducationGridIDFormId button[action=upload_document]'] = {
+            click: function() {
+
+                me.showFormUpload("IJASAH");
+            }
+        };
+
+        newEvs['#PrsEducationGridIDFormId button[action=lihat_dokumen]'] = {
+            click: function() {
+
+                me.lihatFileB("IJASAH");
+            }
+        };
+
+        newEvs['#PrsCourseGridIDFormId button[action=upload_document]'] = {
+            click: function() {
+
+                me.showFormUpload("SERTIFIKAT");
+            }
+        };
+
+        newEvs['#PrsCourseGridIDFormId button[action=lihat_dokumen]'] = {
+            click: function() {
+
+                me.lihatFileB("SERTIFIKAT");
+            }
+        };
+
+        newEvs['personalformdata [name=division_division_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("division", "division");
+            }
+        };
+
+        newEvs['personalformdata [name=department_department_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("department", "department");
+            }
+        };
+
+        newEvs['personalformdata [name=jobfunction_jobfunction_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("jobfunction", "jobfunction");
+            }
+        };
+        /* start added by ahmad riadi 21-06-2017 */
+        newEvs['personalformdata [name=jobfamily_jobfamily_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("jobfamily", "jobfamily");
+            }
+        };
+        newEvs['personalformdata [name=banding_banding_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("banding", "banding");
+            }
+        };
+         /* end added by ahmad riadi 21-06-2017 */
+         
+        newEvs['personalformdata [name=group_group_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("group", "group");
+            }
+        };
+
+        newEvs['personalformdata [name=groupposition_groupposition_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("groupposition", "groupposition");
+            }
+        };
+
+        newEvs['personalformdata [name=position_position_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("position", "description");
+            }
+        };
+
+        newEvs['personalformdata [name=alokasibiaya_alokasibiaya_id]'] = {
+            select: function() {
+                me.mypComboOnSelect("alokasibiaya", "name");
+            }
+        };
+        /* start added by ahmad riadi 09-06-2017*/
+        newEvs['lookuppersonalformsearch'] = {
+            afterrender: function () {
+                var me,form;
+                me = this;
+		 me.setStoreSubholding();
+                me.setStoreProject();
+                me.setStorePt();               
+            },
+           
+        };
+
+	 newEvs['lookuppersonalformsearch [name=subholding_id]'] = {
+            select: function () {
+                var me,form,subholding_id,store;
+                me = this;
+                form = me.getFormsearhcreportto();
+                subholding_id = form.down("[name=subholding_id]").getValue();
+                form.down("[name=project_id]").setValue(0);
+                form.down("[name=project_id]").setRawValue('');
+                form.down("[name=pt_id]").setValue(0);
+                form.down("[name=pt_id]").setRawValue('');
+                me.filterProjectbysubholding(subholding_id);
+            }
+        };
+
+        newEvs['lookuppersonalformsearch [name=project_id]'] = {
+            select: function () {
+                var me,form,project_id,store;
+                me = this;
+                form = me.getFormsearhcreportto();
+                project_id = form.down("[name=project_id]").getValue();
+                form.down("[name=pt_id]").setValue(0);
+                form.down("[name=pt_id]").setRawValue('');
+                me.filterPtbyproject(project_id);
+            }
+        };
+        newEvs['lookuppersonalformsearch button[action=search]'] = {
+            click: function () {
+                var me,form,pt_id,project_id,department_id,grid;
+                me = this;
+               form = me.getFormsearhcreportto();
+               if(form.down('[name=pt_id]').getValue()=='' || form.down('[name=pt_id]').getValue()==null){
+                   pt_id=0;
+               }else{
+                   pt_id=form.down('[name=pt_id]').getValue();
+               }
+               if(form.down('[name=project_id]').getValue()==null){
+                   project_id=0;
+               }else{
+                   project_id=form.down('[name=project_id]').getValue();
+               }
+               if(form.down('[name=department_department_id]').getValue()==null){
+                   department_id=0;
+               }else{
+                   department_id=form.down('[name=department_department_id]').getValue();
+               }               
+                
+                grid=me.getGridlookupe();
+                
+                grid.setLoading("Please wait...");
+                me.tools.ajax({
+                    params: {
+                        'employee_nik': form.down('[name=personal_nik]').getValue(),
+                        'employee_name': form.down('[name=personal_name]').getValue(),
+                        'project_id': project_id,
+                        'pt_id': pt_id,
+                        'department_id': department_id
+                    },
+                    success: function (data, model) {
+                        me.tools.wesea({data: data, model: model}, grid).grid();
+                        grid.setLoading(false);
+                    }
+                }).read('employeereportofilter');
+
+            }
+        };
+        newEvs['lookuppersonalformsearch button[action=reset]'] = {
+            click: function () {
+                var me,form,pt_id,project_id,department_id,grid;
+                me = this;
+               form = me.getFormsearhcreportto();                
+                grid=me.getGridlookupe();                
+                grid.setLoading("Please wait...");
+                me.tools.ajax({
+                    params: {
+                        'employee_nik': '',
+                        'employee_name': '',
+                        'project_id': apps.project,
+                        'pt_id': apps.pt,
+                        'department_id':0
+                    },
+                    success: function (data, model) {
+                        me.tools.wesea({data: data, model: model}, grid).grid();
+                        grid.setLoading(false);
+                    }
+                }).read('employeereportofilter');
+
+            }
+        };
+        /* end added by ahmad riadi 09-06-2017*/
+
+
+        //
+
+
+
+        //
+        if (typeof moment !== 'function') {
+
+
+            Ext.Loader.injectScriptElement(document.URL + 'app/hrd/library/moment.min.js', function() {
+                /// loaded
+
+
+
+            }, function() {
+                /// error
+            });
+        }
+
+        //
+        this.control(newEvs);
+
+
+    },
+    loadPage: function(store) {
+        var me = this;
+        var f = me.getFormdata();
+        store.loadPage(1, {
+            callback: function(rec, operation, success) {
+                var g = me.getGrid();
+                if (!g.getStore().modelExist) {
+
+                    g.attachModel(operation);
+                }
+
+
+                if (g.getStore().getCount() > 0) { // select first record
+                    g.getSelectionModel().select(0);
+                } else {
+
+
+
+                    me.tools.ajax({
+                        params: {
+                        },
+                        success: function(data, model) {
+                            me.tools.wesea(data.alokasibiaya, f.down("[name=alokasibiaya_alokasibiaya_id]")).comboBox();
+                            me.tools.wesea(data.department, me.getFormsearch().down("[name=department_department_id]")).comboBox(true);
+                            me.tools.wesea(data.position, f.down("[name=position_position_id]")).comboBox();
+                            me.tools.wesea(data.groupposition, f.down("[name=groupposition_groupposition_id]")).comboBox();
+                            me.tools.wesea(data.department, f.down("[name=department_department_id]")).comboBox();
+                            me.tools.wesea(data.group, f.down("[name=group_group_id]")).comboBox();
+                            me.tools.wesea(data.division, f.down("[name=division_division_id]")).comboBox();
+                            me.tools.wesea(data.jobfunction, f.down("[name=jobfunction_jobfunction_id]")).comboBox();
+                            /* start added by ahmad riadi 21-06-2017 */
+                            me.tools.wesea(data.jobfamily, f.down("[name=jobfamily_jobfamily_id]")).comboBox();
+                            me.tools.wesea(data.banding, f.down("[name=banding_banding_id]")).comboBox();
+                            /* end added by ahmad riadi 21-06-2017 */
+                        }
+                    }).read('parameter');
+
+                    Ext.MessageBox.alert('Alert', 'No record found. Please try again.', function() {
+
+
+                    });
+
+                }
+
+            }
+        });
+
+        // me.getGrid().xLoad();
+    },
+    mypComboOnSelect: function(name, fieldDisplay) {
+        var me = this;
+        var el = me.getFormdata().down("[name=" + name + "_" + name + "_id]");
+        var val = me.tools.comboHelper(el).getField(name + "_id", fieldDisplay);
+        me.getFormdata().down("[name=" + name + "_" + fieldDisplay + "]").setValue(val);
+    },
+    execAction: function(el, action, me) {
+        if (!action) {
+            action = '';
+        }
+        if (!me) {
+            me = this;
+        }
+
+        switch (action) {
+            case me.bindPrefixName + 'Create':
+                me.newRecord();
+               
+                break;
+            case me.bindPrefixName + 'Delete':
+                me.dataDestroy(el);
+                break;
+            case me.bindPrefixName + 'Print':
+                loadReport(el, 'tms/building/print');
+                break;
+        }
+    },
+    lihatFileB: function(modeName) {
+        var me = this;
+
+        var f = null;
+        if (modeName.toLowerCase() === "ijasah") {
+            f = me.getFormuploadijasah();
+        } else if (modeName.toLowerCase() === "sertifikat") {
+            f = me.getFormuploadsertifikat();
+        }
+
+
+        var fieldName = modeName.toLowerCase();
+
+        var el = f.down("[name=" + fieldName + "]");
+        if (!el) {
+            console.log("Tidak el :" + fieldName);
+            return;
+        }
+        var fileName = el.getValue();
+        console.log(fileName);
+        if (fileName.length > 0) {
+            window.open(document.URL + "app/hrd/uploads/personal/dokumen_" + modeName.toLowerCase() + "/" + fileName);
+
+        } else {
+            me.tools.alert.warning("Tidak ada file");
+        }
+    },
+    lihatFile: function(mode) {
+        var me = this;
+        var f = me.getFormdata();
+        var fieldName = "";
+        switch (mode) {
+            case 'KK':
+                fieldName = "dokumen_kk";
+                break;
+            case 'KTP':
+                fieldName = "dokumen_ktp";
+                break;
+            case 'NPWP':
+                fieldName = "dokumen_npwp";
+                break;
+            case 'JAMSOSTEK':
+                fieldName = "dokumen_jamsostek";
+                break;
+        }
+        var el = f.down("[name=" + fieldName + "]");
+        if (!el) {
+            console.log("Tidak el :" + fieldName);
+            return;
+        }
+        var fileName = el.getValue();
+        if (fileName.length > 0) {
+            window.open(document.URL + "app/hrd/uploads/personal/dokumen_" + mode.toLowerCase() + "/" + fileName);
+
+        } else {
+            me.tools.alert.warning("Tidak ada file");
+        }
+    },
+    showFormUpload: function(mode) {
+        var me = this;
+        var win = me.instantWindow("FormUpload", 400, "Upload file", "create", "personaluploadwindow");
+        var f = me.getFormupload();
+        f.down("[name=mode_name]").setValue(mode);
+    },
+    /*
+    formUploadFile: function(fld, a) {
+        var me = this;
+        var mainForm = me.getFormdata();
+
+        if (me.uploadFotoKlik === 0) {
+
+            var form = fld.up("form");
+            var p = me.getPanel();
+            var modeName = form.down("[name=mode_name]").getValue();
+            me.uploadFile({
+                form: form,
+                showalert: false,
+                params: {
+                    "type": modeName,
+                    "nik": me.getFormdata().down("[name=employee_nik]").getValue(),
+                    "employee_id": me.getFormdata().down("[name=employee_id]").getValue()
+                },
+                callback: {
+                    success: function(fn) {
+                        p.setLoading(false);
+                        //console.log(fn);
+                        if (modeName == "FOTO") {
+                            me.refreshPhotoInfo(fn);
+                        } else if (modeName == "IJASAH") {
+                            var myForm = me.getFormuploadijasah();
+                            myForm.down("[name=ijasah]").setValue(fn);
+                        } else if (modeName == "SERTIFIKAT") {
+                            var myForm = me.getFormuploadsertifikat();
+                            myForm.down("[name=sertifikat]").setValue(fn);
+                        } else {
+                            mainForm.down("[name=dokumen_" + modeName.toLowerCase() + "]").setValue(fn);
+                        }
+
+                        me.uploadFotoKlik = 0;
+
+                    },
+                    failure: function() {
+                        me.uploadFotoKlik = 0;
+                        p.setLoading(false);
+                    }
+                }
+            });
+
+            me.uploadFotoKlik = 1;
+        }
+
+
+    },
+   */
+      formUploadFile: function(fld, a) {       
+        var filedata,readeruploaddata,typefile;
+        var me = this;
+        var mainForm = me.getFormdata();
+        if (me.uploadFotoKlik === 0) {
+            var form = fld.up("form");
+            var p = me.getPanel();
+            var modeName = form.down("[name=mode_name]").getValue();
+            if(
+                    modeName=='KK'||
+                    modeName=='KTP'||
+                    modeName=='NPWP'||
+                    modeName=='JAMSOSTEK'||
+                    modeName=='BPJS_PP'||
+                    modeName=='BPJS_K'||
+                    modeName=='BPJS_KK'||
+                    modeName=='IJAZAH'||
+                    modeName=='MANULIFE_P'||
+                    modeName=='REKENING'
+                    
+               ){
+                filedata = form.getEl().down('input[type=file]').dom.files[0];
+                readeruploaddata = new Ext.data.reader.Array(filedata);
+                typefile = readeruploaddata['type'];
+                switch (typefile) {                    
+                    case 'application/pdf':
+                        me.prosesUpload(p,mainForm,form,modeName);
+                        break;
+                    default:
+                        Ext.Msg.alert('WARNING', 'Only PDF file will be processed..!');
+                }                
+            }else{
+                 me.prosesUpload(p,mainForm,form,modeName);
+            }          
+        }
+    },
+
+     prosesUpload: function (p,mainForm,form,modeName) {
+        var me;
+        me=this;
+        me.uploadFile({
+            form: form,
+            showalert: false,
+            params: {
+                "type": modeName,
+                "nik": me.getFormdata().down("[name=employee_nik]").getValue(),
+                "employee_id": me.getFormdata().down("[name=employee_id]").getValue()
+            },
+            callback: {
+                success: function (fn) {
+                    p.setLoading(false);
+                    //console.log(fn);
+                    if (modeName == "FOTO") {
+                        me.refreshPhotoInfo(fn);
+                    } else if (modeName == "IJASAH") {
+                        var myForm = me.getFormuploadijasah();
+                        myForm.down("[name=ijasah]").setValue(fn);
+                    } else if (modeName == "SERTIFIKAT") {
+                        var myForm = me.getFormuploadsertifikat();
+                        myForm.down("[name=sertifikat]").setValue(fn);
+                    } else {
+                        mainForm.down("[name=dokumen_" + modeName.toLowerCase() + "]").setValue(fn);
+                    }
+                    me.uploadFotoKlik = 0;
+                },
+                failure: function () {
+                    me.uploadFotoKlik = 0;
+                    p.setLoading(false);
+                }
+            }
+        });
+        me.uploadFotoKlik = 1;
+
+    },
+
+    refreshPhotoInfo: function(imageName) {
+        var me = this;
+        var form = me.getFormdata();
+        // form.down("[name=photo]").setValue(imageName);
+        //me.mt.customerPhoto(form.down("#photo_image"),imageName,me.myConfig.IMG_FOLDER);
+        var size = null;
+        var folder = "app/hrd/uploads/personal/foto/";
+        var s = size ? size : '200px 250px';
+
+
+	//start added by ahmad riadi 31-08-2017 
+       var  reportto_name = null;       
+       reportto_name= form.down("[name=reportto_name]").getValue();
+       if(reportto_name.length ==0){
+            form.down("[name=reportto_nik]").setValue('');
+       }
+       //end added by ahmad riadi 31-08-2017 
+
+        console.log("PHOTO");
+        console.log(imageName);
+
+        form.down("#photo_image").el.setStyle({backgroundImage: 'none'});
+        if (imageName.length > 0) {
+            form.down("#photo_image").el.setStyle({backgroundImage: 'url(' + folder + '' + imageName + ')', backgroundSize: s, backgroundRepeat: "no-repeat"});
+
+        }
+
+    },
+    formSearchAfterRender: function(el) {
+        var me = this;
+        //me.loadComboBoxStore(el);
+
+
+
+    },
+    employeeStatusOnChange: function() {
+        var me = this;
+        var f = me.getFormdata();
+        var vs = f.getForm().getValues();
+        var val = me.tools.intval(vs["employeestatus_employeestatus_id"]);
+        if (val === 1) {
+
+            f.down("[name=statusinformation_hire_date]").setReadOnly(false);
+            f.down("[name=statusinformation_assignation_date]").setReadOnly(false);
+
+            f.down("[name=statusinformation_contract_ke]").setReadOnly(true);
+            f.down("[name=statusinformation_contract_start]").setReadOnly(true);
+            f.down("[name=statusinformation_contract_end]").setReadOnly(true);
+
+            f.down("[name=statusinformation_temporary_ke]").setReadOnly(true);
+            f.down("[name=statusinformation_temporary_start]").setReadOnly(true);
+            f.down("[name=statusinformation_temporary_end]").setReadOnly(true);
+
+            f.down("[name=statusinformation_contract_ke]").setValue("");
+            f.down("[name=statusinformation_contract_start]").setValue("");
+            f.down("[name=statusinformation_contract_end]").setValue("");
+
+            f.down("[name=statusinformation_temporary_ke]").setValue("");
+            f.down("[name=statusinformation_temporary_start]").setValue("");
+            f.down("[name=statusinformation_temporary_end]").setValue("");
+
+
+
+        } else if (val === 2 || val === 3) {
+
+            f.down("[name=statusinformation_hire_date]").setReadOnly(true);
+            f.down("[name=statusinformation_assignation_date]").setReadOnly(true);
+
+            f.down("[name=statusinformation_contract_ke]").setReadOnly(false);
+            f.down("[name=statusinformation_contract_start]").setReadOnly(false);
+            f.down("[name=statusinformation_contract_end]").setReadOnly(false);
+
+            f.down("[name=statusinformation_temporary_ke]").setReadOnly(true);
+            f.down("[name=statusinformation_temporary_start]").setReadOnly(true);
+            f.down("[name=statusinformation_temporary_end]").setReadOnly(true);
+
+            f.down("[name=statusinformation_hire_date]").setValue("");
+            f.down("[name=statusinformation_assignation_date]").setValue("");
+
+            f.down("[name=statusinformation_temporary_ke]").setValue("");
+            f.down("[name=statusinformation_temporary_start]").setValue("");
+            f.down("[name=statusinformation_temporary_end]").setValue("");
+
+
+
+
+        } else {
+
+            f.down("[name=statusinformation_hire_date]").setReadOnly(true);
+            f.down("[name=statusinformation_assignation_date]").setReadOnly(true);
+
+            f.down("[name=statusinformation_contract_ke]").setReadOnly(true);
+            f.down("[name=statusinformation_contract_start]").setReadOnly(true);
+            f.down("[name=statusinformation_contract_end]").setReadOnly(true);
+
+            f.down("[name=statusinformation_temporary_ke]").setReadOnly(false);
+            f.down("[name=statusinformation_temporary_start]").setReadOnly(false);
+            f.down("[name=statusinformation_temporary_end]").setReadOnly(false);
+
+
+            f.down("[name=statusinformation_contract_ke]").setValue("");
+            f.down("[name=statusinformation_contract_start]").setValue("");
+            f.down("[name=statusinformation_contract_end]").setValue("");
+
+            //  f.down("[name=statusinformation_temporary_ke]").setValue("");
+            //  f.down("[name=statusinformation_temporary_start]").setValue("");
+            //  f.down("[name=statusinformation_temporary_end]").setValue("");
+
+            f.down("[name=statusinformation_hire_date]").setValue("");
+            f.down("[name=statusinformation_assignation_date]").setValue("");
+
+
+        }
+        //console.log("hello "+val);
+    },
+    selectEmployeeReportTo: function() {
+
+        var me = this;
+        var f = me.getFormdata();
+        var g = me.getGridlookupe();
+        var rec = g.getSelectedRecord();
+        if (rec) {
+            f.down("[name=reportto_reportto]").setValue(rec.get("employee_id"));
+	     f.down("[name=reportto_nik]").setValue(rec.get("employee_nik"));	
+            f.down("[name=reportto_name]").setValue(rec.get("employee_name"));
+            // f.down("[name=employee_employee_name]").setValue(rec.get("employee_name"));
+            //  f.down("[name=employee_employee_id]").setValue(rec.get("employee_id"));
+            g.up("window").close();
+        }
+    },
+    showLookupReportToWindow: function() {
+        var me = this;
+        /* start edited by ahmad riadi 09-06-2017*/
+        var window = me.instantWindow("Panel", 600, "Employe List", "create", "personalPSLookupRewindow", "lookup.personal", {
+            itemId: me.controllerName + 'employee'
+        });
+        /* end edited by ahmad riadi 09-06-2017*/
+
+
+        var g = window.down("grid");
+        var p = window.down("panel");
+        p.setLoading("Please wait...");
+        me.tools.ajax({
+            params: {},
+            success: function(data, model) {
+                me.tools.wesea({data: data, model: model}, g).grid();
+                p.setLoading(false);
+            }
+        }).read('employeereporto');
+
+
+    },
+    mainDataSave: function() {
+        var me = this;
+
+
+        var f = me.getFormdata();
+
+        if (me.saveClicked) {
+            return;
+        }
+
+        me.saveClicked = true;
+
+
+        me.insSave({
+            form: f,
+            grid: me.getGrid(),
+            store: me.localStore.newdetail,
+            rowStore: 0,
+            finalData: function(data) {
+
+
+
+
+
+                //// added 20 Agustus 2014
+                /* set last education in child data*/
+                var childJson = me.getGridchild().getJson();
+                for (var i in childJson) {
+                    childJson[i]["last_education"] = childJson[i]["education_education_id"];
+                }
+
+                // added 25 Agustus 2014
+                var saudaraJson = me.getGridsaudara().getJson();
+                for (var i in saudaraJson) {
+                    saudaraJson[i]["last_education"] = saudaraJson[i]["education_education_id"];
+                }
+
+                data["unit_unit_id"] = data["unit_id"];
+                data["educations"] = me.getGrideducation().getJson();
+                data["saudaras"] = saudaraJson;
+                data["childs"] = childJson;
+                data["emgcontact"] = me.getGridemgcontact().getJson();
+                data["trainings"] = me.getGridtraining().getJson();
+                data["jobhistories"] = me.getGridjobs().getJson();
+                data["organizations"] = me.getGridorganization().getJson();
+
+
+
+
+
+                /// added 25 Agustus
+                /* add skill information */
+
+
+                data["skills"] = me.processSkills();
+
+                /* check deleted data*/
+                var dd = me.getFormdata().deletedData;
+                var count = 0;
+                var arData = [];
+                if (dd) {
+                    if (dd.PrsChildGridID) {
+                        arData = dd.PrsChildGridID;
+                        count = 0;
+                        for (count in arData) {
+                            data["childs"].push({
+                                relation_id: arData[count],
+                                deleted: 1
+                            });
+                        }
+                    }
+                    if (dd.PrsEmegergencyContactGridID) {
+                        arData = dd.PrsEmegergencyContactGridID;
+                        count = 0;
+                        for (count in arData) {
+                            data["emgcontact"].push({
+                                relation_id: arData[count],
+                                deleted: 1
+                            });
+                        }
+                    }
+                    if (dd.PrsEducationGridID) {
+                        arData = dd.PrsEducationGridID;
+                        count = 0;
+                        for (count in arData) {
+                            data["educations"].push({
+                                educationhistory_id: arData[count],
+                                deleted: 1
+                            });
+                        }
+                    }
+                    if (dd.PrsSaudaraGridID) {
+                        arData = dd.PrsSaudaraGridID;
+                        count = 0;
+                        for (count in arData) {
+                            data["saudaras"].push({
+                                relation_id: arData[count],
+                                deleted: 1
+                            });
+                        }
+                    }
+                    if (dd.PrsCourseGridID) {
+                        arData = dd.PrsCourseGridID;
+                        count = 0;
+                        for (count in arData) {
+                            data["trainings"].push({
+                                traininghistory_id: arData[count],
+                                deleted: 1
+                            });
+                        }
+                    }
+                    if (dd.PrsCompanyGridID) {
+                        arData = dd.PrsCompanyGridID;
+                        count = 0;
+                        for (count in arData) {
+                            data["jobhistories"].push({
+                                jobhistory_id: arData[count],
+                                deleted: 1
+                            });
+                        }
+                    }
+                    if (dd.PrsOrganizationGridID) {
+                        arData = dd.PrsOrganizationGridID;
+                        count = 0;
+                        for (count in arData) {
+                            data["organizations"].push({
+                                organization_id: arData[count],
+                                deleted: 1
+                            });
+                        }
+                    }
+                }
+
+
+
+                // console.log(data);
+
+
+                return data;
+            },
+            sync: true,
+            callback: {
+                create: function(store, form, grid) {
+
+                    me.saveClicked = false;
+                }
+            },
+            successSaveFunc: function() {
+
+                me.saveClicked = false;
+
+
+                me.dataReset();
+                me.myTabPanelDisabled(false);
+               
+                console.log("Jalann..");
+            },
+            failSaveFunc: function() {
+                me.saveClicked = false;
+            }
+        });
+    },
+    fdar: function() {
+
+
+
+        var me = this;
+        var f = me.getFormdata();
+        var g = me.getGrid();
+        me.setActiveForm(f);
+        //   var sp = new Hrd.library.box.tools.StoreProcessor();
+        //  sp.init("detail", me.controllerName + "PRSLSTORE", "employee_id");
+
+        me.localStore.newdetail = me.instantStore({
+            id: me.controllerName + 'DetailStore',
+            extraParams: {
+                mode_read: 'detail'
+            },
+            idProperty: 'employee_id'
+        });
+
+
+
+        var x = {
+            init: function() {
+                var cb = ["religion_religion_id", "education_education_id", "bloodgroup_bloodgroup_id",
+                    "spouse_last_education"];
+                for (var c in cb) {
+                    f.down("[name=" + cb[c] + "]").bindPrefixName = me.controllerName;
+                    f.down("[name=" + cb[c] + "]").doInit(true, function() {
+
+                    });
+                }
+
+
+
+
+
+                //  var sp = new Hrd.library.box.tools.StoreProcessor();
+                //  sp.init("newdetail", me.controllerName + "PRSLSTORE", "employee_id");
+                // sp.create(me);
+                //   me.localStore[sp.id] = sp;
+                /* education */
+                me.getGrideducation().doInit();
+                /* saudara*/
+                me.getGridsaudara().doInit();
+                /* child*/
+                me.getGridchild().doInit();
+                /* emg contact*/
+                me.getGridemgcontact().doInit();
+                /* training*/
+                me.getGridtraining().doInit();
+                /* jobs*/
+                me.getGridjobs().doInit();
+                /* organization*/
+                me.getGridorganization().doInit();
+                /* tanda kasih*/
+                //  me.getGridtandakasih().doInit();
+
+            },
+            create: function() {
+
+                me.localStore.newdetail.load({
+                    params: {
+                        employee_id: 0
+                    },
+                    callback: function(recs, op) {
+                        me.attachModel(op, me.localStore.newdetail, true);
+                        var rec = me.localStore.newdetail.getAt(0);
+                        if (rec) {
+                            f.loadRecord(rec);
+
+                            f.down("button[action=save]").setDisabled(false);
+                        }
+                    }
+                });
+
+                //  me.localStore["newdetail"].loadModel(me);
+                /* education */
+                me.getGrideducation().getStore().load({
+                    params: {
+                        //  state:"load_default_attribute"
+                    },
+                    callback: function(rec, op) {
+                        me.getGrideducation().attachModel(op);
+                    }
+                });
+                /* education history*/
+                me._loadDataGrid(me.getGrideducation(), 0, true);
+                /*saudara*/
+                me._loadDataGrid(me.getGridsaudara(), 0, true);
+                /*child*/
+                me._loadDataGrid(me.getGridchild(), 0, true);
+                /*emgcontact*/
+                me._loadDataGrid(me.getGridemgcontact(), 0, true);
+                /*training*/
+                me._loadDataGrid(me.getGridtraining(), 0, true);
+                /*jobs*/
+                me._loadDataGrid(me.getGridjobs(), 0, true);
+                /*organizations*/
+                me._loadDataGrid(me.getGridorganization(), 0, true);
+                /*tanda kasih*/
+                // me._loadDataGrid(me.getGridtandakasih(), 0, true);
+
+
+            },
+            update: function() {
+                f.editedRow = g.getSelectedRow();
+                var eId = me.getGrid().getSelectedRecord().get("employee_id");
+                /*  me.localStore["detail"].loadData(eId, me, function() {
+                 var rec = me.localStore["detail"].store.getAt(0);
+                 if (rec) {
+                 f.down("[name=spouse_child]").setValue(rec.get("child_count"));
+                 
+                 }
+                 });*/
+
+                me.localStore.newdetail.load({
+                    params: {
+                        employee_id: eId
+                    },
+                    callback: function(recs, op) {
+                        me.attachModel(op, me.localStore.newdetail, true);
+                        var rec = me.localStore.newdetail.getAt(0);
+                        if (rec) {
+                            f.loadRecord(rec);
+
+
+
+                            f.down("button[action=save]").setDisabled(false);
+                        }
+                    }
+                });
+
+
+
+
+                /* education history*/
+                me._loadDataGrid(me.getGrideducation(), eId, false);
+                /*saudara*/
+                me._loadDataGrid(me.getGridsaudara(), eId, false);
+                /*child*/
+                me._loadDataGrid(me.getGridchild(), eId, false);
+                /*emgcontact*/
+                me._loadDataGrid(me.getGridemgcontact(), eId, false);
+                /*training*/
+                me._loadDataGrid(me.getGridtraining(), eId, false);
+                /*jobs*/
+                me._loadDataGrid(me.getGridjobs(), eId, false);
+                /*organizations*/
+                me._loadDataGrid(me.getGridorganization(), eId, false);
+                /*tandakasih*/
+                //me._loadDataGrid(me.getGridtandakasih(), eId, false);
+                me.loadPotencies(eId);
+
+            },
+            other: function(state) {
+
+                me.getFormdata().up('window').getEl().unmask();
+            }
+        };
+        return x;
+    },
+    /* simple grid control main control*/
+    sgcPanel: {
+        PrsEducationGridID: {
+            afterDelete: function(ctrl, row) {
+                var f = ctrl.getFormdata();
+                if (!f.deletedData.PrsEducationGridID) {
+                    f.deletedData.PrsEducationGridID = [];
+                }
+                f.deletedData.PrsEducationGridID.push(row.internalId);
+            }
+        },
+        PrsChildGridID: {
+            afterDelete: function(ctrl, row) {
+                var f = ctrl.getFormdata();
+                if (!f.deletedData.PrsChildGridID) {
+                    f.deletedData.PrsChildGridID = [];
+                }
+                f.deletedData.PrsChildGridID.push(row.internalId);
+            },
+            afterEdit: function(f, rec) {
+
+                var v = f.getValues();
+                var educationStore = f.down("[name=education_education_id]").getStore();
+                var index = educationStore.findExact('education_id', v["education_education_id"]);
+
+                rec.beginEdit();
+                rec.set({
+                    education_education: educationStore.getAt(index).get("education")
+                });
+                rec.endEdit();
+
+
+
+            }
+        },
+        PrsEmegergencyContactGridID: {
+            afterDelete: function(ctrl, row) {
+                var f = ctrl.getFormdata();
+                if (!f.deletedData.PrsEmegergencyContactGridID) {
+                    f.deletedData.PrsEmegergencyContactGridID = [];
+                }
+                f.deletedData.PrsEmegergencyContactGridID.push(row.internalId);
+            }
+        },
+        PrsSaudaraGridID: {
+            afterDelete: function(ctrl, row) {
+                var f = ctrl.getFormdata();
+                if (!f.deletedData.PrsSaudaraGridID) {
+                    f.deletedData.PrsSaudaraGridID = [];
+                }
+                f.deletedData.PrsSaudaraGridID.push(row.internalId);
+            },
+            afterEdit: function(f, rec) {
+
+                var v = f.getValues();
+                var educationStore = f.down("[name=education_education_id]").getStore();
+                var index = educationStore.findExact('education_id', v["education_education_id"]);
+
+                rec.beginEdit();
+                rec.set({
+                    education_education: educationStore.getAt(index).get("education")
+                });
+                rec.endEdit();
+
+
+
+            }
+
+        },
+        PrsCourseGridID: {
+            afterDelete: function(ctrl, row) {
+                var f = ctrl.getFormdata();
+                if (!f.deletedData.PrsCourseGridID) {
+                    f.deletedData.PrsCourseGridID = [];
+                }
+                f.deletedData.PrsCourseGridID.push(row.internalId);
+            }
+        },
+        PrsCompanyGridID: {
+            afterDelete: function(ctrl, row) {
+                var f = ctrl.getFormdata();
+                if (!f.deletedData.PrsCompanyGridID) {
+                    f.deletedData.PrsCompanyGridID = [];
+                }
+                f.deletedData.PrsCompanyGridID.push(row.internalId);
+            }
+        },
+        PrsOrganizationGridID: {
+            afterDelete: function(ctrl, row) {
+                var f = ctrl.getFormdata();
+                if (!f.deletedData.PrsOrganizationGridID) {
+                    f.deletedData.PrsOrganizationGridID = [];
+                }
+                f.deletedData.PrsOrganizationGridID.push(row.internalId);
+            }
+        }
+
+    },
+    sgcHelper: {
+        genderRadioButton: function(cols) {
+            var x = {
+                xtype: 'radiogroup',
+                fieldLabel: cols.text,
+                layout: 'hbox',
+                defaults: {
+                    margin: '0 7 0 0'
+                },
+                items: [
+                    {boxLabel: 'Male', name: cols.dataIndex, inputValue: "M", checked: true},
+                    {boxLabel: 'Female', name: cols.dataIndex, inputValue: "F"},
+                ]
+            };
+            return x;
+        }
+    },
+    _loadDataGrid: function(grid, employeeId, isCreate) {
+        var me = this;
+        var tempId = 0;
+        tempId = !isCreate ? employeeId : 0;
+        grid.getStore().getProxy().extraParams.employee_id = tempId;
+
+        me.addProgress();
+        grid.getStore().load({
+            callback: function(rec, op) {
+                grid.attachModel(op);
+                me.unMask(1);
+
+            }
+        });
+    },
+    loadPotencies: function(employeeId) {
+        var me = this;
+        //do ajax
+        me.addProgress();
+        var f = me.getFormdata();
+        /* uncheck checkbox && reset textfield*/
+        for (var x = 1; x <= 16; x++) {
+            var uel = f.down("[name=skills_" + x + "]");
+            if (uel) {
+                if (uel.getXType() === "checkboxfield") {
+                    uel.setValue(0);
+                }
+
+            }
+
+            var rtf = f.down("[name=skills_" + x + "_list]");
+            if (rtf) {
+                if (rtf.getXType() === "textfield") {
+                    rtf.setValue("");
+                }
+            }
+        }
+
+        /* set radio to pasif */
+        f.down("[name=skills_7_active]").setValue(0);
+        f.down("[name=skills_8_active]").setValue(0);
+        f.down("[name=skills_9_active]").setValue(0);
+
+        me.tools.ajax({
+            params: {
+                employee_id: employeeId
+            },
+            success: function(recs, model) {
+                var el = null, el;
+                var r = null;
+                var id = null;
+
+
+
+
+                for (var i in recs) {
+
+                    r = recs[i]['potencytran'];
+                    id = r['potency_id'];
+                    el = f.down("[name=skills_" + id + "]");
+
+                    if (el) {
+                        if (r['value']) {
+                            el.setValue(r['value']);
+                        }
+
+                    }
+
+                    /// check if list exist
+                    if (r['list']) {
+                        el = f.down("[name=skills_" + id + "_list]");
+                        if (el) {
+                            el.setValue(r['list']);
+                        }
+                    }
+
+                    /// check if active taken
+                    if (r['is_active']) {
+                        el = f.down("[name=skills_" + id + "_active]");
+                        if (el) {
+                            el.setValue(r['is_active']);
+                        }
+                    }
+
+
+                }
+                me.unMask(1);
+            }
+        }).read('potency');
+    },
+    getSelectedStatusDate: function(selectedStatus, isSet, data) {
+        var me = this;
+        var f = me.getFormdata();
+        var statusGroup = {
+            1: [1],
+            2: [2, 3],
+            3: [4, 5, 6]
+        };
+        var textField = {
+            1: "permanent_",
+            2: "contract_",
+            3: "daily_"
+        };
+        var startDate = null;
+        var endDate = null;
+        var selectedGroup = 1;
+        for (var x in statusGroup) {
+            for (var y in statusGroup[x]) {
+                if (statusGroup[x][y] == selectedStatus) {
+                    selectedGroup = x;
+                }
+            }
+        }
+        var startEl = f.down("[name=" + textField[selectedGroup] + "start_date]");
+        var endEl = f.down("[name=" + textField[selectedGroup] + "end_date]");
+        if (isSet) {
+
+            startEl.setValue(data[0]);
+            if (selectedGroup === 1) {
+                endEl.setValue(data[1]);
+            } else {
+                endEl.setValue(data[2]);
+            }
+        }
+        startDate = startEl.getValue();
+        endDate = endEl.getValue();
+        return [selectedGroup, startDate, endDate];
+
+
+    },
+    processSkills: function() {
+        var me = this;
+        var f = me.getFormdata();
+        var skills = [];
+
+        var values = f.getForm().getValues();
+        var cs = null;
+        var l = null;
+        var v = null;
+        var a = null;
+        var id = null;
+        for (var i in me.skillList) {
+            cs = me.skillList[i];
+            id = values['skills_' + cs + '_id'];
+            v = values['skills_' + cs];
+            l = values['skills_' + cs + '_list'];
+            a = values['skills_' + cs + '_active'];
+            skills.push({
+                employeepotency_id: id,
+                potency_id: cs,
+                is_active: a ? a : 0,
+                list: l ? l : '',
+                value: v ? 1 : 0
+                        // list:currentSkillElList?currentSkillElList.getValue():'',
+                        //value:currentSkillEl?currentSkillEl.getValue():0
+            });
+        }
+        return skills;
+    },
+    gridAfterRender: function() {
+        var me = this;
+
+        me.dataReset();
+        var g = me.getGrid();
+        g.getSelectionModel().setSelectionMode('SINGLE');
+
+        Ext.util.CSS.swapStyleSheet("theme", "ext/resources/css/xtheme-gray.css");
+
+        // alert(g.getStore().getCount());
+
+
+
+
+    },
+    gridSelectionChange: function() {
+        var me = this;
+      
+        me.callParent(arguments);
+        var g = me.getGrid();
+        var f = me.getFormdata();
+
+        // mask panel
+        var btnSave = f.down("button[action=save]");
+        if (btnSave) {
+            btnSave.setDisabled(true);
+        }
+
+        var p = me.getPanel();
+        p.setLoading("Please wait");
+        var selectedRecord = null;
+        
+        
+
+
+        me.tools.ajax({
+            params: {},
+            success: function(data, model) {
+                me.afterDetailRequested(data, function() {
+                    p.setLoading(false);
+                });
+
+            }
+        }).read('detail');
+
+
+    },
+    afterDetailRequested: function(data, motherFunc) {
+        // data from mode_read : 'detail'
+        // motherFunc : fungsi yang dilewatkan dari method gridSelectionChange di Controllerfdv
+
+        var me = this;
+        var f = me.getFormdata();
+        var g = me.getGrid();
+        f.editedRow = g.getSelectedRow();
+
+        f.down("[name=employee_nik]").setReadOnly(false);
+        
+        
+        /// KARENA DESELECT ALL MENTRIGGER GRIDSELECTION CHANGE
+        if(f.editedRow >= 0){
+        //    alert("Hello");
+            me.myTabPanelDisabled(false);
+        }
+        
+              
+
+        /// load parameter
+
+
+        me.tools.ajax({
+            params: {
+            },
+            success: function(data, model) {
+
+                me.tools.wesea(data.alokasibiaya, f.down("[name=alokasibiaya_alokasibiaya_id]")).comboBox();
+                me.tools.wesea(data.department, me.getFormsearch().down("[name=department_department_id]")).comboBox(true);
+                me.tools.wesea(data.position, f.down("[name=position_position_id]")).comboBox();
+                me.tools.wesea(data.groupposition, f.down("[name=groupposition_groupposition_id]")).comboBox();
+                me.tools.wesea(data.department, f.down("[name=department_department_id]")).comboBox();
+                me.tools.wesea(data.group, f.down("[name=group_group_id]")).comboBox();
+                me.tools.wesea(data.division, f.down("[name=division_division_id]")).comboBox();
+                me.tools.wesea(data.jobfunction, f.down("[name=jobfunction_jobfunction_id]")).comboBox();
+                  /* start added by ahmad riadi 21-06-2017 */
+               me.tools.wesea(data.jobfamily, f.down("[name=jobfamily_jobfamily_id]")).comboBox();
+               me.tools.wesea(data.banding, f.down("[name=banding_banding_id]")).comboBox();
+                  /* end added by ahmad riadi 21-06-2017 */
+            }
+        }).read('parameter');
+
+        // mark on 20170615
+       // me.disableEmployeeStatusFields(f.editedRow > -1 ? true : false);
+
+       // console.log(g.getStore().getCount());
+        /*
+        var pt = g.down("pagingtoolbar");
+        if (pt) {
+            pt.getStore().loadPage(1);
+        }
+        */
+
+
+
+        if (!g.getSelectedRecord()) {
+            motherFunc();
+            return;
+        }
+
+
+
+        var eId = g.getSelectedRecord().get("employee_id");
+
+
+
+        me.localStore.newdetail.load({
+            params: {
+                employee_id: eId
+            },
+            callback: function(recs, op) {
+			
+                me.attachModel(op, me.localStore.newdetail, true);
+                var rec = me.localStore.newdetail.getAt(0);
+                if (rec) {
+
+
+                    me.refreshPhotoInfo(rec.get("photo"));
+
+
+                    console.log(rec);
+                    f.loadRecord(rec);
+
+
+
+                    f.down("button[action=save]").setDisabled(false);
+
+
+                    /* education history*/
+                    me._loadDataGrid(me.getGrideducation(), eId, false);
+                    /*saudara*/
+                    me._loadDataGrid(me.getGridsaudara(), eId, false);
+                    /*child*/
+                    me._loadDataGrid(me.getGridchild(), eId, false);
+                    /*emgcontact*/
+                    me._loadDataGrid(me.getGridemgcontact(), eId, false);
+                    /*training*/
+                    me._loadDataGrid(me.getGridtraining(), eId, false);
+                    /*jobs*/
+                    me._loadDataGrid(me.getGridjobs(), eId, false);
+                    /*organizations*/
+                    me._loadDataGrid(me.getGridorganization(), eId, false);
+                    /*tandakasih*/
+                    // me._loadDataGrid(me.getGridtandakasih(), eId, false);
+                    me.loadPotencies(eId);
+
+
+                    f.down("[name=spouse_child]").setValue(f.down("[name=child_count]").getValue());
+
+                    motherFunc();
+
+
+                }else{
+					console.log("[MAINDETAILERR] Tidak ada data main detail.");
+					f.down("button[action=save]").setDisabled(false);
+					motherFunc();
+				}
+            }
+        });
+
+
+        return false;
+
+    },
+    disableEmployeeStatusFields: function(mode) {
+        var me = this;
+        var f = me.getFormdata();
+        for (var i = 1; i <= 6; i++) {
+            f.down("#esID" + i).setReadOnly(mode);
+        }
+
+        f.down("[name=statusinformation_hire_date]").setReadOnly(mode);
+        f.down("[name=statusinformation_assignation_date]").setReadOnly(mode);
+        f.down("[name=statusinformation_contract_ke]").setReadOnly(mode);
+        f.down("[name=statusinformation_contract_start]").setReadOnly(mode);
+        f.down("[name=statusinformation_contract_end]").setReadOnly(mode);
+        f.down("[name=statusinformation_temporary_ke]").setReadOnly(mode);
+        f.down("[name=statusinformation_temporary_start]").setReadOnly(mode);
+        f.down("[name=statusinformation_temporary_end]").setReadOnly(mode);
+    },
+   
+    afterCallNew: function() {
+        var me = this;
+       
+        var icr = me.isCreateRequirementsExist();
+        if (!icr.status) {
+            me.tools.alert.warning(icr.msg);
+            return;
+        }
+
+        var f = me.getFormdata();
+        f.editedRow = -1;
+
+
+      
+        me.getGrid().getSelectionModel().deselectAll();
+        
+
+        /* education history*/
+        me._loadDataGrid(me.getGrideducation(), 0, true);
+        /*saudara*/
+        me._loadDataGrid(me.getGridsaudara(), 0, true);
+        /*child*/
+        me._loadDataGrid(me.getGridchild(), 0, true);
+        /*emgcontact*/
+        me._loadDataGrid(me.getGridemgcontact(), 0, true);
+        /*training*/
+        me._loadDataGrid(me.getGridtraining(), 0, true);
+        /*jobs*/
+        me._loadDataGrid(me.getGridjobs(), 0, true);
+        /*organizations*/
+        me._loadDataGrid(me.getGridorganization(), 0, true);
+
+        me.myTabPanelDisabled(true);
+
+        me.newButtonClicked = true;
+
+        /// set default value for birthdate
+        var bdate = new Date();
+        var bel = f.down("[name=birth_date]");
+        bdate.setFullYear(bdate.getFullYear() - 17);
+        bdate.setMonth(0);
+        bdate.setDate(1);
+        bel.setValue(bdate);
+
+        me.refreshPhotoInfo("");
+
+
+        f.down("[action=save]").setDisabled(false);
+
+
+
+        f.down("[name=employee_nik]").setReadOnly(true);
+        
+     
+
+
+    },
+    isCreateRequirementsExist: function() {
+        var hasil = {status: false, msg: "Checking..."};
+        var me = this;
+        var f = me.getFormdata();
+        var status = false;
+        var msg = '';
+        if (f.down("[name=religion_religion_id]").getStore().getCount() === 0) {
+            msg = 'Data agama tidak ada';
+        } else if (f.down("[name=department_department_id]").getStore().getCount() === 0) {
+            msg = 'Data departemen tidak ada';
+        } else if (f.down("[name=group_group_id]").getStore().getCount() === 0) {
+            msg = 'Data golongan tidak ada';
+        } else if (f.down("[name=position_position_id]").getStore().getCount() === 0) {
+            msg = 'Data jabatan tidak ada';
+        } else {
+            status = true;
+        }
+
+        /// add 20160823
+        //status = true;
+
+        hasil.status = status;
+        hasil.msg = msg;
+        return hasil;
+    },
+    myTabPanelDisabled: function(isDisabled) {
+        var me = this;
+        var f = me.getFormdata();
+        /// disable semua tab panel kecuali personal dan status / posisi
+        f.down('#pFamilyTabID').setDisabled(isDisabled);
+        f.down('#pEducationTabID').setDisabled(isDisabled);
+        f.down('#pPotencyTabID').setDisabled(isDisabled);
+        f.down('#pJobsTabID').setDisabled(isDisabled);
+        f.down('#pDocumentTabID').setDisabled(isDisabled);
+      //  f.down('personalemegergencycontactgrid').setDisabled(isDisabled);
+
+    },
+    unMask: function(progress) {
+        var me = this;
+        me.loadProgressCount = me.loadProgressCount - progress;
+        if (me.loadProgressCount <= 0) {
+            me.getFormdata().up('window').getEl().unmask();
+
+            if (me.newButtonClicked) {
+                me.myTabPanelDisabled(true);
+                me.getFormdata().down('personalemegergencycontactgrid').setDisabled(false);
+                me.newButtonClicked = false;
+            }
+
+
+        }
+
+    },
+    /* start added by ahmad riadi 09-06-2017 */
+    setStoreSubholding: function () {
+        var me, store, form;
+        me = this;
+        store = me.getStore("Subholding");
+        store.load({
+            params: {
+                "mode_read": 'getsubholding',
+            },
+            callback: function (records, operation, success) {
+                var data = records[0].raw.others[0][0].data;
+                store.loadData(data);
+            }
+        });
+    },
+    
+
+    setStoreProject: function () {
+        var me, store, form;
+        me = this;
+        store = me.getStore("Project");
+        store.load({
+            params: {
+                "mode_read": 'getproject',
+            },
+            callback: function (records, operation, success) {
+                var data = records[0].raw.others[0][0].data;
+                store.loadData(data);       
+            }
+});
+
+    },
+    setStorePt: function () {
+        var me, store;
+        me = this;
+        store = me.getStore("Pt");
+        store.load({
+            params: {
+                "mode_read": 'getpt',
+            },
+            callback: function (records, operation, success) {
+                var data = records[0].raw.others[0][0].data;
+                store.loadData(data);                
+                me.tools.ajax({
+                    params: {
+                    },
+                    success: function (data, model) {
+                        me.tools.wesea(data.department, me.getFormsearhcreportto().down("[name=department_department_id]")).comboBox(true);
+                    }
+                }).read('parameter');
+            }
+        });
+    },
+     filterProjectbysubholding: function (subholding_id) {
+        var me, form, store;
+        me = this;
+        form = me.getFormsearhcreportto();
+        store = form.down("[name=project_id]").getStore();
+        store.clearFilter(true);
+        store.filterBy(function (record) {
+            return record.data.subholding_id == subholding_id;
+        });
+    },	
+
+    filterPtbyproject: function (project_id) {
+        var me, form, store;
+        me = this;
+        form = me.getFormsearhcreportto();
+        store = form.down("[name=pt_id]").getStore();
+        store.clearFilter(true);
+        store.filterBy(function (record) {
+            return record.data.project_id == project_id;
+        });
+    },
+    searchReportto: function () {
+        var me, form, store;
+        me = this;
+        form = me.getFormsearhcreportto();
+    },
+    /* end added by ahmad riadi 09-06-2017 */
+ 
+   /*start added by ahmad riadi 17-07-2017 */
+    viewdocFile: function (param) {
+        var me, grid, store, record, row,rowdata,documentdata;
+        me = this;
+        grid = me.getGrid();
+        record = grid.getSelectedRecord();
+        row = record.data;
+        me.tools.ajax({
+            params: {
+                'employee_id': row.employee_id,
+            },
+            success: function (records, model) {
+                rowdata = records.others[0][0].data[1][0];
+                documentdata = "dokumen_"+param.toLowerCase();  
+                $.each(rowdata, function(key, value) {
+                    if(documentdata==key){
+                        if(value !=null){
+                            window.open(document.URL + "app/hrd/uploads/"+value);
+                        }else{
+                            me.tools.alert.warning("Tidak ada file");
+                        }
+                    }
+                });               
+            }
+        }).read('document');
+        
+    },
+    /*end added by ahmad riadi 17-07-2017 */
+
+  /*start added by ahmad riadi 18-09-2017 */
+   validateEmailoffice: function () {
+        var me, grid, record, row, rowdata, form, email_ciputra, counter,statedata;
+        me = this;
+        form = me.getFormdata();
+        grid = me.getGrid();
+        record = grid.getSelectedRecord();
+        email_ciputra = form.down("[name=email_ciputra]").getValue();
+        if (me.validateEmail(email_ciputra)) { // jika format email valid
+            if (record !== undefined) {
+                row = record.data;
+                me.tools.ajax({
+                    params: {
+                        'email_ciputra': email_ciputra,
+                    },
+                    success: function (records, model) {
+                        counter = records.others[0][0].counter;
+                        rowdata = records.others[0][0].data;                      
+                        if (counter > 0) {
+                            if (row.email_ciputra == email_ciputra) {
+                                statedata = 'dontcreateuser';
+                                //form.down("[action=save]").setDisabled(false);
+                            } else {
+                                //form.down("[action=save]").setDisabled(true);
+                                statedata = 'dontcreateuser';
+                                me.WarningAlert('Email <b>' + email_ciputra + '</b> sudah digunakan, tidak boleh double..!');
+                            }                           
+                        } else {   
+                            //form.down("[action=save]").setDisabled(false);
+                            me.statedata = 'createuser';
+                        }                                          
+                        
+                    }
+                }).read('validateemailoffice');
+            }else{
+                me.tools.ajax({
+                    params: {
+                        'email_ciputra': email_ciputra,
+                    },
+                    success: function (records, model) {
+                        counter = records.others[0][0].counter;
+                        rowdata = records.others[0][0].data;                      
+                        if (counter > 0) { 
+                                //form.down("[action=save]").setDisabled(true);
+                                statedata = 'dontcreateuser';
+                                me.WarningAlert('Email <b>' + email_ciputra + '</b> sudah digunakan, tidak boleh double..!');
+                        } else {  
+                            //form.down("[action=save]").setDisabled(false);
+                            statedata = 'createuser';
+                        }                                           
+                    }
+                }).read('validateemailoffice');
+            }
+        } else {
+            me.WarningAlert('Email <b>' + email_ciputra + '</b> tidak valid, cek format email..!');
+        }        
+    },
+    validateEmail: function (email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        return re.test(email); //return true or false
+    },
+    WarningAlert: function (msg) {
+        Ext.Msg.show({
+            title: 'WARNING',
+            msg: msg,
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.WARNING
+        });
+
+    },
+    /*end added by ahmad riadi 18-09-2017 */
+
+
+});
